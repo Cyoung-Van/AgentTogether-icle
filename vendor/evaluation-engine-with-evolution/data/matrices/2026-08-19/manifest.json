@@ -1,0 +1,61 @@
+{
+  "as_of": "2026-08-19",
+  "audit_artifacts": {
+    "B_harnesses/crossed_task_outcomes.jsonl": {
+      "bytes": 38235914,
+      "distribution": "rebuild_only_not_in_git",
+      "produced_by": "scripts/build_ab_datasets.py",
+      "rows": 63758,
+      "sha256": "430d467ac8606d1800618140016bbe1564eb829565bd95065542c6ebda0d2b60"
+    },
+    "B_harnesses/history/provisional_same_label_blocks.jsonl": {
+      "bytes": 23358850,
+      "distribution": "rebuild_only_not_in_git",
+      "produced_by": "scripts/build_ab_datasets.py",
+      "rows": 7725,
+      "sha256": "c1842ee1061ed5f424939b49f1b3d068200778773594cfbfb8e4ab1f4f126ef9"
+    },
+    "B_harnesses/provisional_same_label_blocks.jsonl": {
+      "bytes": 23358850,
+      "distribution": "rebuild_only_not_in_git",
+      "produced_by": "scripts/build_ab_datasets.py",
+      "rows": 7725,
+      "sha256": "c1842ee1061ed5f424939b49f1b3d068200778773594cfbfb8e4ab1f4f126ef9"
+    },
+    "B_harnesses/rejected_comparisons.jsonl": {
+      "bytes": 50584344,
+      "distribution": "rebuild_only_not_in_git",
+      "produced_by": "scripts/build_ab_datasets.py",
+      "rows": 88718,
+      "sha256": "1c7972407dc6bb2aa00e23d8b07e07df348bae4791845840b7c93368e4e64ff8"
+    }
+  },
+  "files": {
+    "A_models/current/calibration_report.json": "af95e250020460e3ce6ab2f16b4dccb1b7b9a0c6667ed1571ff30e54e183e29f",
+    "A_models/current/capability_baselines.jsonl": "1d7a27b97eb8c3390223250f9d38aec96dd1b574f781c0e1dec6c162897f27b9",
+    "A_models/current/model_benchmark_observations.jsonl": "7974cb10e84bcd3a7771dfdf84249105faebef80915e4f2f8128addd31df4d10",
+    "A_models/current/source_model_configs.jsonl": "540f3e0a5ad810eeda8703c308e22fab80fbeb6b570f78981b25a836208340e9",
+    "A_models/history/model_benchmark_observations.jsonl": "27c75494fcc01010a44c35fd067be40a57727f50ed164000dab079c91a134d74",
+    "A_models/history/source_model_configs.jsonl": "a6804299923642413c9577d8f85d10aed48df9f6ceb3977c7f7c8c3a16f53fe7",
+    "A_models/model_benchmark_observations.jsonl": "ae111b7db241d4268c669c7079f5b96956097459815454384449eaf3c234ef89",
+    "A_models/model_catalog.jsonl": "2126f843511a2fbfa24b62c3317643e3ff4f257e4854f1114a9c8d503e050ca7",
+    "A_models/source_model_configs.jsonl": "8e26c98e9779289403c841084e28bf41697dd55ee83477a3c2abc935e4f8076d",
+    "B_harnesses/crossed_agent_model_observations.jsonl": "18264e3b7526e8c44fdb352f21d72cbcb9365ba653263af74d323f3daf13e7dc",
+    "B_harnesses/current/capability_baselines.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/current/exact_matched_blocks.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/design_edges.jsonl": "1a8a3d53a0c39aef19d310cea3d1e3c772011646da0de2fd83723a8858176337",
+    "B_harnesses/exact_anchor_report.json": "36231d50964d0fc183b0d5bc5cef6fe30cb964d5f2afd172fe7b8dc272ff5fe7",
+    "B_harnesses/exact_matched_blocks.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/harness_catalog.jsonl": "2e340ff5b894b47c9559393c9d2d8a9a944c7192ee5702f2382e4125bef7fca5",
+    "B_harnesses/history/exact_matched_blocks.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/pairwise_harness_comparisons.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/pairwise_harness_summaries.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "B_harnesses/rejection_summary.json": "9dce2498a3e672b1ee537ab550490a185569f94a318d1027b84b04f56a69c859",
+    "B_harnesses/stable/agent_families.jsonl": "09d76146d4b20527fc3f91ed63f25ea1dbf188b235ed479947abf0f8a89e0f97",
+    "B_harnesses/stable/aliases.jsonl": "f868e0cbef1043db1ca3cbf8138d0d76a0f2fa2e3d0b9acca599ce24efef7b19",
+    "B_harnesses/stable/capability_baselines.jsonl": "07dc741504b2d42872302f09bd53a43099cb58e2920f87d138bee038b96b8ee8",
+    "coverage.json": "e2ed263161d6def6b957d25c87e73191fa2ea7dde84b05f707c5f1708a483212",
+    "freshness_summary.json": "34b4c123c01d467f6cf85aed0aaec5d3c9ee83f5bb576c9705929469464936a5"
+  },
+  "schema_version": "experience-evaluation-ab-manifest/v0.1"
+}

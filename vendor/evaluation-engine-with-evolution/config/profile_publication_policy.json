@@ -1,0 +1,18 @@
+{
+  "policy_id": "local-subject-portrait/v0.1",
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "scale_id": "canonical_logit/v0.1",
+  "allowed_publication_scopes": ["local_controlled", "real_evidence"],
+  "forbidden_publication_scopes": ["synthetic_only", "shadow"],
+  "min_evidence_count": 1,
+  "emit_total_score": false,
+  "emit_ranking": false,
+  "missing_equals_zero": false,
+  "portrait_kind": "subject_residual_c",
+  "not_claimed": [
+    "public leaderboard",
+    "agent total score",
+    "causal experience gain",
+    "seven-axis official capability ranking"
+  ]
+}

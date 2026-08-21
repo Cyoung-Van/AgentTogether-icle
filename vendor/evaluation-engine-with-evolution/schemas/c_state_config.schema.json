@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-c-state-config/v0.1",
+  "type": "object",
+  "required": ["contract_id", "initial_mean", "initial_sd", "mean_half_life_days", "process_variance_per_day", "min_observation_sd"],
+  "properties": {
+    "contract_id": {"type": "string", "minLength": 1},
+    "initial_mean": {"type": "number"},
+    "initial_sd": {"type": "number", "exclusiveMinimum": 0},
+    "mean_half_life_days": {"type": "number", "exclusiveMinimum": 0},
+    "process_variance_per_day": {"type": "number", "minimum": 0},
+    "min_observation_sd": {"type": "number", "exclusiveMinimum": 0}
+  },
+  "additionalProperties": false
+}

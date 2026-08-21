@@ -1,0 +1,30 @@
+{
+  "by_all_reasons": {
+    "attempt_policy_unknown": 63402,
+    "benchmark_version_unknown": 63402,
+    "context_policy_unknown": 63402,
+    "environment_revision_unknown": 63402,
+    "harness_revision_unknown": 57350,
+    "identity_unresolved": 24960,
+    "model_identity_non_comparable": 356,
+    "model_revision_unknown": 53790,
+    "provider_route_unknown": 53790,
+    "reasoning_effort_unknown": 63402,
+    "resource_limits_unknown": 63402,
+    "task_revision_and_fixture_unknown": 63402,
+    "timeout_policy_unknown": 63402,
+    "verifier_revision_unknown": 63402
+  },
+  "by_primary_reason": {
+    "benchmark_version_unknown": 63402,
+    "identity_unresolved": 24960,
+    "model_identity_non_comparable": 356
+  },
+  "by_stage": {
+    "exact_gate_completeness": 63402,
+    "identity_resolution": 24960,
+    "model_identity": 356
+  },
+  "schema_version": "experience-evaluation-b-rejection-summary/v0.1",
+  "total_rejected_outcomes": 88718
+}

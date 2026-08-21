@@ -1,0 +1,16 @@
+{
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "axes": [
+    "reasoning",
+    "coding",
+    "agentic_coding",
+    "mathematics",
+    "data_analysis",
+    "language",
+    "instruction_following"
+  ],
+  "source": "LiveBench current categories, one axis per instrument category",
+  "canonical_scale_id": "canonical_logit/v0.1",
+  "level_transform": "logit",
+  "b_scale_role": "additive_effect"
+}

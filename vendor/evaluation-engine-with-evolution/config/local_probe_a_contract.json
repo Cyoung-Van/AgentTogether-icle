@@ -1,0 +1,21 @@
+{
+  "contract_id": "local-probe-same-taskspec/v0.1",
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "canonical_scale_id": "canonical_logit/v0.1",
+  "source_scale_id": "normalized_0_1",
+  "instrument_id": "frozen-local-taskspec",
+  "calibration_status": "calibrated_for_c",
+  "evidence_tier": "local_probe_same_taskspec",
+  "min_observed_tasks": 2,
+  "method": {
+    "aggregation": "J generator on baseline_model results for the same frozen TaskSpecs used by the agent batch",
+    "score_transform": "reuse J source/canonical projection; do not re-transform",
+    "stderr": "J task-block bootstrap stderr",
+    "freshness": "same pipeline run only"
+  },
+  "not_claimed": [
+    "public model ranking",
+    "IRT or MIRT latent recovery",
+    "common-item linking to a different TaskSpec set"
+  ]
+}

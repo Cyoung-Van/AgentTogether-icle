@@ -1,0 +1,24 @@
+{
+  "agent_family_count": 15,
+  "as_of": "2026-08-21",
+  "capability_cell_count": 105,
+  "files": {
+    "agent_families.jsonl": "09d76146d4b20527fc3f91ed63f25ea1dbf188b235ed479947abf0f8a89e0f97",
+    "aliases.jsonl": "f868e0cbef1043db1ca3cbf8138d0d76a0f2fa2e3d0b9acca599ce24efef7b19",
+    "capability_baselines.jsonl": "07dc741504b2d42872302f09bd53a43099cb58e2920f87d138bee038b96b8ee8",
+    "rubric.json": "26f2c4e5a0c95bbc7779e15d1047d0923735d6e2a26c70f5bed8f4a2e9ba9586",
+    "source_health.json": "f16bd60b0c7ebb7d29b3666a4dec0dfd19a0293844835307c3e795c6139f61e8"
+  },
+  "generator_version": "experience-evaluation-b-specialization/v0.1",
+  "input_files": {
+    "agents": {
+      "path": "config/mainstream_agents.json",
+      "sha256": "4a18b7e3feb45e610c44c10a0d14ade8aa279be41d0c343999ef1cce187ec6ec"
+    },
+    "rubric": {
+      "path": "config/b_specialization_rubric.json",
+      "sha256": "57ea072815f37f943b94c9d69689a23467d688fcbca1390e943101b92310d753"
+    }
+  },
+  "schema_version": "experience-evaluation-b-specialization-manifest/v0.1"
+}

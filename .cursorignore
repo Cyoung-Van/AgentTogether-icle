@@ -1,0 +1,11 @@
+capture-store/
+experience-store/
+.freebuff/
+.venv/
+web/dist/
+node_modules/
+__pycache__/
+*.pyc
+*.db
+*.db-wal
+*.db-shm

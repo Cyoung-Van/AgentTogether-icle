@@ -1,0 +1,22 @@
+evaluation engine with evolution
+Copyright 2026 evaluation-engine-with-evolution contributors
+
+This product includes software developed by the evaluation-engine-with-evolution
+contributors, licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The Apache-2.0 license covers the code, schemas, configs, and docs in this
+repository. It does NOT relicense the upstream evaluation data redistributed
+under `data/`. Each upstream source keeps its own license and terms, recorded
+with commit pins and SHA-256 digests in:
+
+    data/raw/<as-of>/source_registry.json
+
+Upstream licenses present in that registry include MIT, Apache-2.0, and
+custom dataset terms with third-party obligations. Before redistributing any
+file under `data/`, check the `license` field of its source entry. Derived
+artifacts under `data/snapshots/`, `data/matrices/`, and `data/builtin_b/`
+inherit the terms of the sources listed in their manifests.
+
+Benchmark scores referenced as A come from LiveBench. This project does not
+claim endorsement by LiveBench or by any upstream benchmark author.
+See docs/REFERENCES.md for the reuse boundaries of each referenced project.

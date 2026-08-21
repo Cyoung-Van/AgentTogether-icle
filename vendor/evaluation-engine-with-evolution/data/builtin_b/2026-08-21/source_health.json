@@ -1,0 +1,189 @@
+{
+  "as_of": "2026-08-20",
+  "checked_at": "2026-08-19T20:59:12.381331+00:00",
+  "schema_version": "experience-evaluation-b-source-health/v0.1",
+  "sources": [
+    {
+      "agent_id": "codex",
+      "error": null,
+      "source_commit": "3b45c29062ff0e76e71c91b6753290400e7fa8da",
+      "status": "verified_head",
+      "url": "https://github.com/openai/codex"
+    },
+    {
+      "agent_id": "codex",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://openai.com/index/unrolling-the-codex-agent-loop/"
+    },
+    {
+      "agent_id": "claude-code",
+      "error": null,
+      "source_commit": "084ca20bcf90249ecfcc01efe5c899554c400a85",
+      "status": "verified_head",
+      "url": "https://github.com/anthropics/claude-code"
+    },
+    {
+      "agent_id": "claude-code",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://docs.anthropic.com/en/docs/claude-code/overview"
+    },
+    {
+      "agent_id": "hermes-agent",
+      "error": null,
+      "source_commit": "657550716f370bd5d1e848a57fc24b9c404cf982",
+      "status": "verified_head",
+      "url": "https://github.com/NousResearch/hermes-agent"
+    },
+    {
+      "agent_id": "hermes-agent",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://hermes-agent.nousresearch.com/docs"
+    },
+    {
+      "agent_id": "openclaw",
+      "error": null,
+      "source_commit": "0135046830ae6887996dc35e91594077cfbe5745",
+      "status": "verified_head",
+      "url": "https://github.com/openclaw/openclaw"
+    },
+    {
+      "agent_id": "openclaw",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://docs.openclaw.ai/"
+    },
+    {
+      "agent_id": "gemini-cli",
+      "error": null,
+      "source_commit": "eaa30429a72a2a76c173ced853e9a15b14d92a64",
+      "status": "verified_head",
+      "url": "https://github.com/google-gemini/gemini-cli"
+    },
+    {
+      "agent_id": "qwen-code",
+      "error": null,
+      "source_commit": "39fc769d3a49a883d250914d8f705b6b3735720c",
+      "status": "verified_head",
+      "url": "https://github.com/QwenLM/qwen-code"
+    },
+    {
+      "agent_id": "opencode",
+      "error": null,
+      "source_commit": "e2505d434a6d78904ecfe546c4a1980d26bd8cd1",
+      "status": "verified_head",
+      "url": "https://github.com/anomalyco/opencode"
+    },
+    {
+      "agent_id": "opencode",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://opencode.ai/docs/agents/"
+    },
+    {
+      "agent_id": "openhands",
+      "error": null,
+      "source_commit": "f2dd33090592f8777e3f2d1a519ddb44866e595e",
+      "status": "verified_head",
+      "url": "https://github.com/All-Hands-AI/OpenHands"
+    },
+    {
+      "agent_id": "openhands",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://docs.all-hands.dev/"
+    },
+    {
+      "agent_id": "cline",
+      "error": null,
+      "source_commit": "3f0c5cdc922d47e232e0d538dd69c8fa31a21e16",
+      "status": "verified_head",
+      "url": "https://github.com/cline/cline"
+    },
+    {
+      "agent_id": "cline",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://docs.cline.bot/"
+    },
+    {
+      "agent_id": "roo-code",
+      "error": null,
+      "source_commit": "b867ec9145750d0ae1ff7f02d35406e9bf2a0b16",
+      "status": "verified_head",
+      "url": "https://github.com/RooCodeInc/Roo-Code"
+    },
+    {
+      "agent_id": "roo-code",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://docs.roocode.com/"
+    },
+    {
+      "agent_id": "aider",
+      "error": null,
+      "source_commit": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+      "status": "verified_head",
+      "url": "https://github.com/Aider-AI/aider"
+    },
+    {
+      "agent_id": "aider",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://aider.chat/docs/"
+    },
+    {
+      "agent_id": "goose",
+      "error": null,
+      "source_commit": "481cc0ca27f23f4fc8003bfe9b9f833c06125694",
+      "status": "verified_head",
+      "url": "https://github.com/block/goose"
+    },
+    {
+      "agent_id": "goose",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://block.github.io/goose/"
+    },
+    {
+      "agent_id": "pi",
+      "error": null,
+      "source_commit": "496185f6e4267b979e3663c45f7eb70b0c6a97b4",
+      "status": "verified_head",
+      "url": "https://github.com/badlogic/pi-mono"
+    },
+    {
+      "agent_id": "swe-agent",
+      "error": null,
+      "source_commit": "3ea751c087f32b16e039a2233dd6eefecef325d5",
+      "status": "verified_head",
+      "url": "https://github.com/SWE-agent/SWE-agent"
+    },
+    {
+      "agent_id": "swe-agent",
+      "error": null,
+      "source_commit": null,
+      "status": "registered_non_git",
+      "url": "https://arxiv.org/abs/2405.15793"
+    },
+    {
+      "agent_id": "mini-swe-agent",
+      "error": null,
+      "source_commit": "25941c89cfbc91eb40b3f8756348c91d9977d57e",
+      "status": "verified_head",
+      "url": "https://github.com/SWE-agent/mini-swe-agent"
+    }
+  ]
+}

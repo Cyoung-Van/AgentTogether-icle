@@ -1,0 +1,40 @@
+{
+  "schema_version": "experience-evaluation-ab-coverage/v0.1",
+  "as_of": "2026-08-19",
+  "A": {
+    "catalog_models": 33,
+    "livebench_model_configs": 44,
+    "subtask_observations": 1012,
+    "categories": [
+      "Agentic Coding",
+      "Coding",
+      "Data Analysis",
+      "IF",
+      "Language",
+      "Mathematics",
+      "Reasoning"
+    ],
+    "granularity": "model_by_subtask_score",
+    "current_model_configs": 22,
+    "current_subtask_observations": 506,
+    "historical_subtask_observations": 506
+  },
+  "B": {
+    "catalog_harnesses": 23,
+    "resolved_agent_model_observations": 246,
+    "task_outcomes": 63758,
+    "design_edges": 236,
+    "observed_harnesses": 76,
+    "observed_models": 91,
+    "exact_matched_blocks": 0,
+    "provisional_same_label_blocks": 7725,
+    "pairwise_comparisons": 0,
+    "pair_summaries": 0,
+    "rejected_records": 88718,
+    "granularity": "strict_exact_or_provisional_crossed_model_harness_task_or_submission",
+    "current_exact_blocks": 0,
+    "historical_provisional_blocks": 7725,
+    "stable_agent_families": 15
+  },
+  "rule": "A and B are physically separate; no score is copied between them."
+}

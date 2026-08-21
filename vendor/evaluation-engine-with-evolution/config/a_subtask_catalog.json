@@ -1,0 +1,37 @@
+{
+  "catalog_id": "livebench-current-subtask/v0.1",
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "instrument_id": "livebench",
+  "source": {
+    "repository": "https://github.com/LiveBench/new-livebench",
+    "commit": "fb3db47fd22d40740d2e6949623bd4bcca9182dd",
+    "categories_file": "data/raw/2026-08-19/livebench/categories_2026_06_25.json",
+    "as_of": "2026-06-25"
+  },
+  "aggregation_to_axis": "unweighted mean of current subtask scores in the category, then score/100 and logit",
+  "subtasks": [
+    {"subtask_id": "theory_of_mind", "livebench_category": "Reasoning", "axis_id": "reasoning"},
+    {"subtask_id": "zebra_puzzle", "livebench_category": "Reasoning", "axis_id": "reasoning"},
+    {"subtask_id": "spatial", "livebench_category": "Reasoning", "axis_id": "reasoning"},
+    {"subtask_id": "logic_with_navigation", "livebench_category": "Reasoning", "axis_id": "reasoning"},
+    {"subtask_id": "code_generation", "livebench_category": "Coding", "axis_id": "coding"},
+    {"subtask_id": "code_completion", "livebench_category": "Coding", "axis_id": "coding"},
+    {"subtask_id": "javascript", "livebench_category": "Agentic Coding", "axis_id": "agentic_coding"},
+    {"subtask_id": "typescript", "livebench_category": "Agentic Coding", "axis_id": "agentic_coding"},
+    {"subtask_id": "python", "livebench_category": "Agentic Coding", "axis_id": "agentic_coding"},
+    {"subtask_id": "AMPS_Hard", "livebench_category": "Mathematics", "axis_id": "mathematics"},
+    {"subtask_id": "integrals_with_game", "livebench_category": "Mathematics", "axis_id": "mathematics"},
+    {"subtask_id": "math_comp", "livebench_category": "Mathematics", "axis_id": "mathematics"},
+    {"subtask_id": "olympiad", "livebench_category": "Mathematics", "axis_id": "mathematics"},
+    {"subtask_id": "consecutive_events", "livebench_category": "Data Analysis", "axis_id": "data_analysis"},
+    {"subtask_id": "tablejoin", "livebench_category": "Data Analysis", "axis_id": "data_analysis"},
+    {"subtask_id": "tablereformat", "livebench_category": "Data Analysis", "axis_id": "data_analysis"},
+    {"subtask_id": "connections", "livebench_category": "Language", "axis_id": "language"},
+    {"subtask_id": "plot_unscrambling", "livebench_category": "Language", "axis_id": "language"},
+    {"subtask_id": "typos", "livebench_category": "Language", "axis_id": "language"},
+    {"subtask_id": "paraphrase", "livebench_category": "IF", "axis_id": "instruction_following"},
+    {"subtask_id": "simplify", "livebench_category": "IF", "axis_id": "instruction_following"},
+    {"subtask_id": "story_generation", "livebench_category": "IF", "axis_id": "instruction_following"},
+    {"subtask_id": "summarize", "livebench_category": "IF", "axis_id": "instruction_following"}
+  ]
+}

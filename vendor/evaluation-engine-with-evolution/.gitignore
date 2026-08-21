@@ -1,0 +1,20 @@
+.cursor/
+.DS_Store
+*.icloud
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+data/generated/
+scripts/_debug_review_probe.py
+
+# Rebuild-only audit dumps. Their digests stay in the snapshot manifests under
+# audit_artifacts, so a locally rebuilt copy is still verifiable.
+data/snapshots/*/task_outcomes.jsonl
+data/matrices/*/B_harnesses/rejected_comparisons.jsonl
+data/matrices/*/B_harnesses/crossed_task_outcomes.jsonl
+data/matrices/*/B_harnesses/provisional_same_label_blocks.jsonl
+data/matrices/*/B_harnesses/history/provisional_same_label_blocks.jsonl

@@ -1,0 +1,12 @@
+{"result_id":"alpha-diagnose","subject_id":"agent-alpha","task_id":"diagnose-service","task_revision":"1.0.0","status":"completed","metrics":{"root_cause":1,"recovered":1}}
+{"result_id":"alpha-feature","subject_id":"agent-alpha","task_id":"implement-feature","task_revision":"1.0.0","status":"completed","metrics":{"tests_passed":9,"regressions":1}}
+{"result_id":"alpha-tools","subject_id":"agent-alpha","task_id":"data-tool-workflow","task_revision":"1.0.0","status":"completed","metrics":{"valid_steps":7,"invalid_calls":1}}
+{"result_id":"alpha-plan","subject_id":"agent-alpha","task_id":"plan-migration","task_revision":"1.0.0","status":"completed","metrics":{"requirements_covered":10}}
+{"result_id":"alpha-recover","subject_id":"agent-alpha","task_id":"recover-failed-build","task_revision":"1.0.0","status":"completed","metrics":{"recovery_complete":1,"extra_failures":1}}
+{"result_id":"alpha-verify","subject_id":"agent-alpha","task_id":"verify-release","task_revision":"1.0.0","status":"completed","metrics":{"checks_passed":9,"escaped_defects":0}}
+{"result_id":"beta-diagnose","subject_id":"agent-beta","task_id":"diagnose-service","task_revision":"1.0.0","status":"completed","metrics":{"root_cause":1,"recovered":0}}
+{"result_id":"beta-feature","subject_id":"agent-beta","task_id":"implement-feature","task_revision":"1.0.0","status":"completed","metrics":{"tests_passed":8,"regressions":0}}
+{"result_id":"beta-tools","subject_id":"agent-beta","task_id":"data-tool-workflow","task_revision":"1.0.0","status":"subject_failure","metrics":{}}
+{"result_id":"beta-plan","subject_id":"agent-beta","task_id":"plan-migration","task_revision":"1.0.0","status":"completed","metrics":{"requirements_covered":11}}
+{"result_id":"beta-recover","subject_id":"agent-beta","task_id":"recover-failed-build","task_revision":"1.0.0","status":"completed","metrics":{"recovery_complete":0,"extra_failures":2}}
+{"result_id":"beta-verify","subject_id":"agent-beta","task_id":"verify-release","task_revision":"1.0.0","status":"infrastructure_failure","metrics":{}}

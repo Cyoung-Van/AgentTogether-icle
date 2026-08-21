@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-execution-result/v0.1",
+  "type": "object",
+  "required": ["result_id", "subject_id", "task_id", "task_revision", "status", "metrics"],
+  "properties": {
+    "result_id": {"type": "string", "minLength": 1},
+    "subject_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "task_revision": {"type": "string", "minLength": 1},
+    "status": {"enum": ["completed", "subject_failure", "infrastructure_failure", "invalid"]},
+    "metrics": {"type": "object", "additionalProperties": {"type": ["number", "null"]}},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

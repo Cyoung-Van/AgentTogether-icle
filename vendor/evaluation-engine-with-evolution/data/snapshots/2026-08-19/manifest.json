@@ -1,0 +1,197 @@
+{
+  "audit_artifacts": {
+    "task_outcomes.jsonl": {
+      "bytes": 56053608,
+      "distribution": "rebuild_only_not_in_git",
+      "produced_by": "scripts/build_public_dataset.py",
+      "rows": 88718,
+      "sha256": "252cd1e5f7b9b20811ffa6875d71250fc09dcbc396087a1d5539c65ada85efc8"
+    }
+  },
+  "generated_at": "2026-08-19T18:24:15.627464+00:00",
+  "outputs": {
+    "agent_model_observations": "agent_model_observations.jsonl",
+    "coverage": "coverage.json",
+    "harness_catalog": "harness_catalog.jsonl",
+    "model_catalog": "model_catalog.jsonl",
+    "task_outcomes": "task_outcomes.jsonl"
+  },
+  "schema_version": "experience-evaluation-dataset-manifest/v0.1",
+  "source_files": [
+    {
+      "path": "data/raw/2026-08-19/agent-psychometrics/gso/responses.jsonl",
+      "record_count": 15,
+      "sha256": "011c7523795bfc88976d0e9d60ac3a040a35993be491561eb1d1d7fcb8dc1732",
+      "source_id": "agent-psychometrics-gso-8c882718121a",
+      "task_outcome_count": 1530
+    },
+    {
+      "path": "data/raw/2026-08-19/agent-psychometrics/swebench-pro/responses.jsonl",
+      "record_count": 14,
+      "sha256": "ce5e89d5dcd680eda7b4aaed92a8b57901d6886fca2a23fda052232ef0e72f77",
+      "source_id": "agent-psychometrics-swebench-pro-8c882718121a",
+      "task_outcome_count": 10220
+    },
+    {
+      "path": "data/raw/2026-08-19/agent-psychometrics/swebench-verified/responses.jsonl",
+      "record_count": 134,
+      "sha256": "b2bda9545ca0122a38ddefde41437141a1c409389dd1742545c99978d5ea8054",
+      "source_id": "agent-psychometrics-swebench-verified-8c882718121a",
+      "task_outcome_count": 67000
+    },
+    {
+      "path": "data/raw/2026-08-19/agent-psychometrics/terminal-bench-2.0/responses.jsonl",
+      "record_count": 112,
+      "sha256": "5e4304cbf18eea1dca87b6401869cef2a6508182620080fa84080f98d0582b2e",
+      "source_id": "agent-psychometrics-terminal-bench-2.0-8c882718121a",
+      "task_outcome_count": 9968
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-anthropic-claude-opus-4-7-max-claude-code.json",
+      "record_count": 1,
+      "sha256": "de3833ffef181e389c86961c8b2bd99becc933a10f5149c182a0085f39d5b6c3",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-anthropic-claude-opus-4-7-max-terminus-2.json",
+      "record_count": 1,
+      "sha256": "03d20549ae30ba035e1f591acfb3df22379164c3cdc8c52a9bbc30d90751b265",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-gemini-gemini-3-pro-preview-high-gemini-cli.json",
+      "record_count": 1,
+      "sha256": "8afd8a98513e8d96985af29ca8de59a64e7f0dc40f995babb8714219c6310c5b",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-gemini-gemini-3-pro-preview-high-terminus-2.json",
+      "record_count": 1,
+      "sha256": "617c01c29e60a2f9c351858fb2db99279b15817463e952feec14ed41b30add35",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-glm-5-1-max-claude-code.json",
+      "record_count": 1,
+      "sha256": "80ba7ec32c0027fc9af0f05d55a477cc0b7fc0d77153816d62b537b8ab0990b7",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-openai-gpt-5-5-xhigh-codex.json",
+      "record_count": 1,
+      "sha256": "fedbd2f895bfb672c64f937e10f3e49291f752b6df15a22761882550f932f54e",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-01-openai-gpt-5-5-xhigh-terminus-2.json",
+      "record_count": 1,
+      "sha256": "67b179597758619e909c11d6e7d78e4dfb4f9c1942539a15eefde2e09480d3ae",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-05-gemini-gemini-3-1-pro-preview-high-gemini-cli.json",
+      "record_count": 1,
+      "sha256": "f2d5268d317a9518330db213b908c7c351baa5a7f05198ef085351d05614e771",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-05-05-gemini-gemini-3-1-pro-preview-high-terminus-2.json",
+      "record_count": 1,
+      "sha256": "1750f8e4819d4c4522c4005b68528fba18f8c4902490578fa9dcafe920a34728",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-06-05-anthropic-claude-fable-5-high-terminus-2.json",
+      "record_count": 1,
+      "sha256": "ec4699f2d6771108eb6acbe50c0a99212258302a36d035cd96140515ee3ccf30",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-06-07-anthropic-claude-fable-5-xhigh-claude-code.json",
+      "record_count": 1,
+      "sha256": "1524efefb5df3407b27358b13be7e775664fcbe90b111a55ebb9954d581cf73f",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-09-anthropic-claude-opus-4-8-high-claude-code.json",
+      "record_count": 1,
+      "sha256": "2b8125cf8ab6a7a501d467af55317b4d87e7239508055aac9d9881621c49b40a",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-09-anthropic-claude-sonnet-5-high-claude-code.json",
+      "record_count": 1,
+      "sha256": "aa4cfb2586723790e5638fa1d5e2b4f48c726a679cc9e80e7a670c3cad78acff",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-09-cursor-grok-4-5-none-cursor-cli.json",
+      "record_count": 1,
+      "sha256": "a73454861c91299b501637e6df6082f2f16cf9c9f6c98f07bce315189f82eb23",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-09-openai-muse-spark-1-1-xhigh-mini-swe-agent.json",
+      "record_count": 1,
+      "sha256": "57af8397e210a8a06ae0cd673190b1424df55d4e062747de48180db0233dde14",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-10-gpt-5-6-luna-max-codex.json",
+      "record_count": 1,
+      "sha256": "3e289210be5bdb5ce1c13a77b456650ad1103a48f925cbbd0333d71f82680b8e",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-10-gpt-5-6-sol-max-codex.json",
+      "record_count": 1,
+      "sha256": "62d1a44f1d05654833cf1770c9f2ead98dde9d47e6e431511b83964f5a525c0c",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-10-gpt-5-6-terra-max-codex.json",
+      "record_count": 1,
+      "sha256": "22f251afce1ebc387560d908a6a4ea310632e6152ca3b81792148036a3bb98f2",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-11-openai-gpt-5-6-luna-max-codex.json",
+      "record_count": 1,
+      "sha256": "2fb0bbc937c376fb379ab5507cdd64a1d6fd18a44ee202880e60fb5f33ef281d",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    },
+    {
+      "path": "data/raw/2026-08-19/terminal-bench-2.1/submissions/2026-07-11-openai-gpt-5-6-terra-max-codex.json",
+      "record_count": 1,
+      "sha256": "142eeec16527114021a4eed383464cbaaccda6f3c5c5eebb975bb82a0057d718",
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "task_outcome_count": 0
+    }
+  ],
+  "source_ids": [
+    "agent-psychometrics-gso-8c882718121a",
+    "agent-psychometrics-swebench-pro-8c882718121a",
+    "agent-psychometrics-swebench-verified-8c882718121a",
+    "agent-psychometrics-terminal-bench-2.0-8c882718121a",
+    "terminal-bench-2.1-official-submissions"
+  ]
+}

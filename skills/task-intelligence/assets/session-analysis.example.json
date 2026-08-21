@@ -1,0 +1,44 @@
+{
+  "schema_version": "icle-session-analysis/v0.1",
+  "session_id": "ses-example",
+  "status": "ok",
+  "facts": [
+    {"text": "用户要求给 Router 增加置信度输出", "evidence": ["e1", "e2"]},
+    {"text": "测试 test_confidence 失败", "evidence": ["e12"]}
+  ],
+  "inferences": [
+    {"text": "问题可能出在置信度归一化边界", "evidence": ["e12", "e14"], "confidence": 0.8}
+  ],
+  "proposals": [
+    {"text": "检查归一化函数的 < 与 <= 边界条件"}
+  ],
+  "confidence": {"boundary": 0.9, "intent": 0.85, "outcome": 0.9, "task_profile": 0.6},
+  "tasks": [
+    {
+      "candidate_id": "c1",
+      "boundaries": {"start_event": "e1", "end_event": "e30"},
+      "title": "重构 Router 置信度",
+      "goal": "让 Router 输出更稳定的置信度分数",
+      "original_request": "给 Router 加个置信度",
+      "final_request": "改为按成本+经验加权推荐并输出置信度",
+      "task_type": "CODING",
+      "subtype": "refactor",
+      "difficulty": "D3",
+      "risk": "R1",
+      "constraints": ["保持兼容现有 API"],
+      "success_criteria": ["test_confidence 通过"],
+      "known_facts": ["现有 Router 用规则打分"],
+      "unknowns": ["归一化函数的行为"],
+      "decisions": ["改用加权推荐"],
+      "assumptions": ["旧 API 调用方可平滑迁移"],
+      "attempts": ["直接加置信度字段"],
+      "failures": ["测试未过"],
+      "corrections": ["改为加权方案后通过"],
+      "artifacts": ["router.py", "test_confidence.py"],
+      "outcome": {"status": "completed", "summary": "加权推荐已实现且测试通过"},
+      "user_feedback": ["用户确认行为正确"],
+      "evidence_refs": ["e1", "e2", "e12", "e14", "e30"],
+      "confidence": {"boundary": 0.9, "intent": 0.85, "outcome": 0.9, "task_profile": 0.6}
+    }
+  ]
+}

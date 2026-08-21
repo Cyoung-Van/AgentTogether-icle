@@ -1,0 +1,8 @@
+{
+  "contract_id": "experience-evaluation-c-state/default-v0.1",
+  "initial_mean": 0.0,
+  "initial_sd": 1.0,
+  "mean_half_life_days": 180.0,
+  "process_variance_per_day": 0.001,
+  "min_observation_sd": 0.05
+}

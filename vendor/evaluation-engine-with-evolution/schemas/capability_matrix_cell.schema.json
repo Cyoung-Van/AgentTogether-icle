@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-capability-matrix-cell/v0.4",
+  "type": "object",
+  "required": [
+    "cell_id",
+    "subject_id",
+    "dimension_id",
+    "axis_contract_id",
+    "source_scale_id",
+    "canonical_scale_id",
+    "value",
+    "canonical_value",
+    "coverage",
+    "publish_status"
+  ],
+  "properties": {
+    "cell_id": {"type": "string", "minLength": 1},
+    "subject_id": {"type": "string", "minLength": 1},
+    "dimension_id": {"enum": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"]},
+    "axis_contract_id": {"const": "livebench-capability-seven/v0.1"},
+    "source_scale_id": {"const": "normalized_0_1"},
+    "canonical_scale_id": {"const": "canonical_logit/v0.1"},
+    "value": {"type": ["number", "null"]},
+    "source_value": {"type": ["number", "null"]},
+    "stderr": {"type": ["number", "null"], "minimum": 0},
+    "source_stderr": {"type": ["number", "null"], "minimum": 0},
+    "canonical_value": {"type": ["number", "null"]},
+    "canonical_stderr": {"type": ["number", "null"], "minimum": 0},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "publish_status": {"enum": ["publishable", "synthetic_only", "shadow_only_unverified_comparability", "insufficient_coverage"]},
+    "evidence_origin": {"type": ["string", "null"]},
+    "publication_scope": {"enum": ["real_evidence", "local_controlled", "synthetic_only", "shadow", null]}
+  },
+  "additionalProperties": true
+}

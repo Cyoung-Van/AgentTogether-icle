@@ -1,0 +1,15 @@
+{
+  "generator": {
+    "dimensions": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"],
+    "axis_contract_id": "livebench-capability-seven/v0.1",
+    "source_scale_id": "normalized_0_1",
+    "canonical_scale_id": "canonical_logit/v0.1",
+    "attempt_reducer": "mean",
+    "subject_failure_score": 0.0,
+    "bootstrap_replicates": 1000,
+    "bootstrap_seed": 20260820,
+    "min_coverage": 0.6,
+    "comparability_verified": false
+  },
+  "calibration_contract": null
+}

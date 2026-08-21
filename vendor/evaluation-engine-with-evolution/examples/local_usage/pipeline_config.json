@@ -1,0 +1,39 @@
+{
+  "generator": {
+    "dimensions": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"],
+    "axis_contract_id": "livebench-capability-seven/v0.1",
+    "source_scale_id": "normalized_0_1",
+    "canonical_scale_id": "canonical_logit/v0.1",
+    "attempt_reducer": "mean",
+    "subject_failure_score": 0.0,
+    "bootstrap_replicates": 80,
+    "bootstrap_seed": 20260820,
+    "min_coverage": 0.6,
+    "comparability_verified": true,
+    "comparison_contract_id": "local-usage-controlled-v1",
+    "publication_scope": "local_controlled",
+    "evidence_origin": "local_controlled_runs"
+  },
+  "calibration_contract": {
+    "contract_id": "local-usage-c/v0.1",
+    "verified": true,
+    "scale_id": "canonical_logit/v0.1",
+    "independence_assumption": true,
+    "publication_scope": "local_controlled",
+    "evidence_origin": "local_controlled_runs"
+  },
+  "local_probe_a": {
+    "enabled": true,
+    "baseline_subject_id": "model-baseline",
+    "contract": {
+      "contract_id": "local-probe-same-taskspec/v0.1",
+      "axis_contract_id": "livebench-capability-seven/v0.1",
+      "canonical_scale_id": "canonical_logit/v0.1",
+      "source_scale_id": "normalized_0_1",
+      "instrument_id": "frozen-local-taskspec",
+      "calibration_status": "calibrated_for_c",
+      "evidence_tier": "local_probe_same_taskspec",
+      "min_observed_tasks": 2
+    }
+  }
+}

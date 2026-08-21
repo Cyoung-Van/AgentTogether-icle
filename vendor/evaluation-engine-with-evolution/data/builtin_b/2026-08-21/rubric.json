@@ -1,0 +1,58 @@
+{
+  "base_mean_logit": 0.15,
+  "feature_deltas": {
+    "automation": {
+      "agentic_coding": 0.1
+    },
+    "browser_tools": {
+      "agentic_coding": 0.05
+    },
+    "checkpoint_undo": {
+      "agentic_coding": 0.1
+    },
+    "coding_agent": {
+      "coding": 0.12
+    },
+    "git_workflow": {
+      "agentic_coding": 0.03,
+      "coding": 0.05
+    },
+    "mcp_extensible": {
+      "agentic_coding": 0.1
+    },
+    "persistent_memory": {
+      "agentic_coding": 0.08,
+      "reasoning": 0.04
+    },
+    "plan_mode": {
+      "agentic_coding": 0.1,
+      "reasoning": 0.02
+    },
+    "repo_context": {
+      "coding": 0.05,
+      "reasoning": 0.06
+    },
+    "sandbox_isolation": {
+      "agentic_coding": 0.05
+    },
+    "shell_tools": {
+      "agentic_coding": 0.08
+    },
+    "skills_learning": {
+      "agentic_coding": 0.1,
+      "coding": 0.04
+    },
+    "subagents": {
+      "agentic_coding": 0.12,
+      "reasoning": 0.04
+    },
+    "test_verification": {
+      "coding": 0.08,
+      "instruction_following": 0.05
+    }
+  },
+  "max_logit": 0.6,
+  "min_logit": -0.25,
+  "prior_sd_logit": 0.75,
+  "rubric_id": "official-description-seven-axis/v0.1"
+}

@@ -1,0 +1,122 @@
+{
+  "schema_version": "experience-evaluation-source-registry/v0.1",
+  "as_of": "2026-08-19",
+  "sources": [
+    {
+      "source_id": "agent-psychometrics",
+      "title": "Agent Psychometrics public response matrices",
+      "repository": "https://github.com/dariakryvosheieva/agent-psychometrics",
+      "commit": "8c882718121a20ab83a40fe0069a439e45653a66",
+      "license": "MIT",
+      "status": "downloaded_task_level",
+      "files": [
+        {
+          "benchmark_id": "swebench-verified",
+          "path": "data/raw/2026-08-19/agent-psychometrics/swebench-verified/responses.jsonl",
+          "sha256": "b2bda9545ca0122a38ddefde41437141a1c409389dd1742545c99978d5ea8054"
+        },
+        {
+          "benchmark_id": "swebench-pro",
+          "path": "data/raw/2026-08-19/agent-psychometrics/swebench-pro/responses.jsonl",
+          "sha256": "ce5e89d5dcd680eda7b4aaed92a8b57901d6886fca2a23fda052232ef0e72f77"
+        },
+        {
+          "benchmark_id": "gso",
+          "path": "data/raw/2026-08-19/agent-psychometrics/gso/responses.jsonl",
+          "sha256": "011c7523795bfc88976d0e9d60ac3a040a35993be491561eb1d1d7fcb8dc1732"
+        },
+        {
+          "benchmark_id": "terminal-bench-2.0",
+          "path": "data/raw/2026-08-19/agent-psychometrics/terminal-bench-2.0/responses.jsonl",
+          "sha256": "5e4304cbf18eea1dca87b6401869cef2a6508182620080fa84080f98d0582b2e"
+        }
+      ],
+      "identity_mapping": {
+        "path": "data/raw/2026-08-19/agent-psychometrics/identity_map.json",
+        "sha256": "0d9e5ba14222360e138183e75600469084c768b8fc794cbb6b3f118bfa058f81",
+        "upstream_parser_path": "data/raw/2026-08-19/agent-psychometrics/split_agents_model_scaffold.py",
+        "upstream_parser_sha256": "90d94c4b378bd287eef12d7e644bdd2fd8a828ca27059fb0742c0da50e9da62f",
+        "resolved_subjects": 222
+      }
+    },
+    {
+      "source_id": "terminal-bench-2.1-official-submissions",
+      "title": "Terminal-Bench 2.1 official verified submissions",
+      "repository": "https://github.com/harbor-framework/terminal-bench-2-1",
+      "commit": "7131e4375048a0e408a8fb404b5f499d726b695b",
+      "license": "Apache-2.0",
+      "status": "downloaded_submission_summary",
+      "submission_count": 20
+    },
+    {
+      "source_id": "agent-reward-bench",
+      "title": "AgentRewardBench expert-labelled trajectory dataset",
+      "repository": "https://huggingface.co/datasets/McGill-NLP/agent-reward-bench",
+      "license": "custom_terms_and_third_party_sources",
+      "status": "registered_not_downloaded_38gb",
+      "purpose": "judge calibration; not a base model/harness response matrix"
+    },
+    {
+      "source_id": "devai-agent-as-a-judge",
+      "title": "DevAI tasks, requirements, workspaces and trajectories",
+      "repository": "https://github.com/metauto-ai/agent-as-a-judge",
+      "status": "registered_not_downloaded",
+      "purpose": "trajectory and Evidence-Criterion research"
+    },
+    {
+      "source_id": "livebench",
+      "title": "LiveBench model-by-subtask scores",
+      "repository": "https://github.com/LiveBench/new-livebench",
+      "commit": "fb3db47fd22d40740d2e6949623bd4bcca9182dd",
+      "license": "repository LICENSE",
+      "status": "downloaded_subtask_matrix",
+      "files": [
+        {
+          "path": "data/raw/2026-08-19/livebench/table_2026_06_25.csv",
+          "sha256": "6e0171ee9f601a5ca4c6043c062d145b721921f55535d6b26eeca936492cdd1b"
+        },
+        {
+          "path": "data/raw/2026-08-19/livebench/categories_2026_06_25.json",
+          "sha256": "dad300ad18655b69db720e1b88fc5a5eac06c5b2f0e52c2bf50f10ff057674f3"
+        }
+      ]
+    },
+    {
+      "source_id": "bfcl-v4",
+      "title": "Berkeley Function Calling Leaderboard V4 task bank",
+      "repository": "https://github.com/LLLeoLi/bfcl",
+      "commit": "54265ddbdfcef6a4e55a4ecf0e8d165a399e27c0",
+      "status": "downloaded_task_bank_no_full_model_matrix",
+      "purpose": "future Tool Use Q and Matrix A extension"
+    },
+    {
+      "source_id": "livecodebench",
+      "title": "LiveCodeBench",
+      "repository": "https://github.com/LiveCodeBench/LiveCodeBench",
+      "status": "registered_runner_and_dataset; leaderboard-result-ingest pending"
+    },
+    {
+      "source_id": "helm",
+      "title": "Stanford HELM",
+      "repository": "https://github.com/stanford-crfm/helm",
+      "status": "registered; result-ingest pending"
+    },
+    {
+      "source_id": "lmarena",
+      "title": "LMArena human preference data",
+      "repository": "https://github.com/lmarena/arena-rank",
+      "status": "registered; preference-matrix ingest pending"
+    },
+    {
+      "source_id": "artificial-analysis",
+      "title": "Artificial Analysis Data API",
+      "repository": "https://artificialanalysis.ai/data-api/docs",
+      "status": "registered; API key required for current data"
+    }
+  ],
+  "catalog": {
+    "models": 33,
+    "harnesses": 23,
+    "repository_metadata_errors": []
+  }
+}

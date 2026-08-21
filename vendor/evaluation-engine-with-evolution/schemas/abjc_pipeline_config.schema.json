@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-abjc-pipeline-config/v0.1",
+  "type": "object",
+  "required": ["generator"],
+  "properties": {
+    "generator": {"type": "object"},
+    "calibration_contract": {
+      "type": ["object", "null"],
+      "properties": {
+        "contract_id": {"type": "string", "minLength": 1},
+        "verified": {"type": "boolean"},
+        "scale_id": {"type": "string", "minLength": 1},
+        "independence_assumption": {"type": "boolean"},
+        "publication_scope": {"enum": ["real_evidence", "local_controlled", "synthetic_only", "shadow"]},
+        "evidence_origin": {"type": "string", "minLength": 1}
+      },
+      "required": ["contract_id", "verified", "scale_id", "independence_assumption"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

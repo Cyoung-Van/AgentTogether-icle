@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-matrix-generator-config/v0.4",
+  "type": "object",
+  "required": ["dimensions", "axis_contract_id", "source_scale_id", "canonical_scale_id"],
+  "properties": {
+    "dimensions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"]}},
+    "axis_contract_id": {"const": "livebench-capability-seven/v0.1"},
+    "source_scale_id": {"const": "normalized_0_1"},
+    "canonical_scale_id": {"const": "canonical_logit/v0.1"},
+    "attempt_reducer": {"enum": ["mean", "max"]},
+    "subject_failure_score": {"type": "number", "minimum": 0, "maximum": 1},
+    "bootstrap_replicates": {"type": "integer", "minimum": 0},
+    "bootstrap_seed": {"type": "integer"},
+    "min_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "comparability_verified": {"type": "boolean"},
+    "comparison_contract_id": {"type": "string", "minLength": 1},
+    "evidence_origin": {"type": ["string", "null"], "minLength": 1},
+    "publication_scope": {"enum": ["real_evidence", "local_controlled", "synthetic_only", "shadow", null]},
+    "atom_projection": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "config_dir": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

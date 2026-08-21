@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-capability-baseline/v0.1",
+  "type": "object",
+  "required": ["baseline_id", "dimension_id", "value", "scale_id", "axis_contract_id", "calibration_status"],
+  "properties": {
+    "baseline_id": {"type": "string", "minLength": 1},
+    "model_config_id": {"type": "string"},
+    "harness_revision_id": {"type": "string"},
+    "dimension_id": {"enum": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"]},
+    "value": {"type": "number"},
+    "stderr": {"type": ["number", "null"], "minimum": 0},
+    "scale_id": {"type": "string", "minLength": 1},
+    "scale_role": {"enum": ["probability_level", "additive_effect"]},
+    "axis_contract_id": {"const": "livebench-capability-seven/v0.1"},
+    "calibration_status": {"enum": ["calibrated_for_c", "uncalibrated_reference", "default_prior_for_c", "document_specialized_prior_for_c", "specialized_for_c"]},
+    "evidence_tier": {"type": "string"},
+    "evidence_origin": {"type": ["string", "null"]},
+    "publication_scope": {"enum": ["real_evidence", "local_controlled", "synthetic_only", "shadow", null]}
+  },
+  "additionalProperties": true
+}

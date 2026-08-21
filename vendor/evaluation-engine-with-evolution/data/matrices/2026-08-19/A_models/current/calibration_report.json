@@ -1,0 +1,19 @@
+{
+  "approved_dimensions": [
+    "agentic_coding",
+    "coding",
+    "data_analysis",
+    "instruction_following",
+    "language",
+    "mathematics",
+    "reasoning"
+  ],
+  "as_of": "2026-08-19",
+  "cell_count": 154,
+  "contract_id": "livebench-current-axis-mean/v0.2",
+  "generator_version": "experience-evaluation-a-calibrator/v0.1",
+  "model_config_count": 22,
+  "rejected_groups": [],
+  "schema_version": "experience-evaluation-a-calibration-report/v0.1",
+  "skipped_observations": []
+}

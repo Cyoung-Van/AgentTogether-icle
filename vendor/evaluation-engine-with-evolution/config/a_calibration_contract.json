@@ -1,0 +1,32 @@
+{
+  "contract_id": "livebench-current-axis-mean/v0.2",
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "canonical_scale_id": "canonical_logit/v0.1",
+  "source_scale_id": "normalized_0_1",
+  "instrument_id": "livebench",
+  "a_subtask_catalog_id": "livebench-current-subtask/v0.1",
+  "calibration_status": "calibrated_for_c",
+  "evidence_tier": "livebench_current_axis_mean",
+  "min_items": 2,
+  "approved_category_map": {
+    "Reasoning": "reasoning",
+    "Coding": "coding",
+    "Agentic Coding": "agentic_coding",
+    "Mathematics": "mathematics",
+    "Data Analysis": "data_analysis",
+    "Language": "language",
+    "IF": "instruction_following"
+  },
+  "unmapped_categories": [],
+  "method": {
+    "aggregation": "unweighted mean of current LiveBench subtask scores on an approved axis",
+    "score_transform": "score/100 then logit with delta-method stderr",
+    "stderr": "sample_sd / sqrt(n)",
+    "freshness": "A current view only"
+  },
+  "not_claimed": [
+    "IRT or MIRT latent recovery",
+    "common-item linking to J task sets",
+    "ranking or total score"
+  ]
+}

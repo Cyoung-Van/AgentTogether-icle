@@ -1,0 +1,29 @@
+{
+  "A": {
+    "calibration_contract_id": "livebench-current-axis-mean/v0.2",
+    "current_capability_baselines": 154,
+    "current_model_configs": 22,
+    "current_observations": 506,
+    "historical_model_configs": 22,
+    "historical_observations": 506
+  },
+  "B": {
+    "current_capability_baselines": 0,
+    "current_exact_blocks": 0,
+    "historical_exact_blocks": 0,
+    "historical_provisional_blocks": 7725,
+    "stable_agent_families": 15,
+    "stable_capability_priors": 105
+  },
+  "as_of": "2026-08-19",
+  "current_view_ready": true,
+  "policy": {
+    "a_max_age_days": 120,
+    "b_max_age_days": 120,
+    "policy_id": "experience-evaluation-current-evidence/v0.1",
+    "provisional_b_is_current": false,
+    "require_current_catalog_link_for_a": true,
+    "unknown_date_is_current": false
+  },
+  "schema_version": "experience-evaluation-freshness-summary/v0.1"
+}

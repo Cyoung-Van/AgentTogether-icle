@@ -1,0 +1,125 @@
+{
+  "schema_version": "experience-evaluation-mainstream-agent-seed/v0.1",
+  "agents": [
+    {
+      "agent_id": "codex",
+      "display_name": "Codex",
+      "aliases": ["Codex CLI", "OpenAI Codex", "openai-codex"],
+      "description": "OpenAI coding agent with repository tools, planning, MCP, sandboxing and delegated agent workflows.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification", "sandbox_isolation", "git_workflow"],
+      "sources": [{"url": "https://github.com/openai/codex", "kind": "official_repo"}, {"url": "https://openai.com/index/unrolling-the-codex-agent-loop/", "kind": "official_description"}]
+    },
+    {
+      "agent_id": "claude-code",
+      "display_name": "Claude Code",
+      "aliases": ["Claude CLI", "Anthropic Claude Code"],
+      "description": "Anthropic terminal coding agent with repository editing, shell, MCP, hooks, subagents and verification workflows.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification", "automation", "git_workflow"],
+      "sources": [{"url": "https://github.com/anthropics/claude-code", "kind": "official_repo"}, {"url": "https://docs.anthropic.com/en/docs/claude-code/overview", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "hermes-agent",
+      "display_name": "Hermes Agent",
+      "aliases": ["Hermes", "Nous Hermes", "NousResearch Hermes"],
+      "description": "Model-agnostic personal agent with memory, skill learning, subagents, scheduled automation and multiple sandbox backends.",
+      "features": ["shell_tools", "mcp_extensible", "subagents", "persistent_memory", "skills_learning", "automation", "sandbox_isolation"],
+      "sources": [{"url": "https://github.com/NousResearch/hermes-agent", "kind": "official_repo"}, {"url": "https://hermes-agent.nousresearch.com/docs", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "openclaw",
+      "display_name": "OpenClaw",
+      "aliases": ["Open Claw", "Clawdbot", "Moltbot"],
+      "description": "Personal assistant agent with messaging channels, local deployment, tools, skills, memory and scheduled automation.",
+      "features": ["shell_tools", "mcp_extensible", "persistent_memory", "skills_learning", "automation", "browser_tools", "sandbox_isolation"],
+      "sources": [{"url": "https://github.com/openclaw/openclaw", "kind": "official_repo"}, {"url": "https://docs.openclaw.ai/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "gemini-cli",
+      "display_name": "Gemini CLI",
+      "aliases": ["Google Gemini CLI", "gemini"],
+      "description": "Google terminal agent with file, shell, web, MCP, plan mode, skills, checkpointing and headless automation.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification", "checkpoint_undo", "skills_learning", "browser_tools"],
+      "sources": [{"url": "https://github.com/google-gemini/gemini-cli", "kind": "official_repo"}]
+    },
+    {
+      "agent_id": "qwen-code",
+      "display_name": "Qwen Code",
+      "aliases": ["Qwen CLI", "qwen-code-cli"],
+      "description": "Terminal coding agent with multi-provider support, skills, subagents, arena isolation and automation channels.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification", "skills_learning", "automation", "sandbox_isolation"],
+      "sources": [{"url": "https://github.com/QwenLM/qwen-code", "kind": "official_repo"}]
+    },
+    {
+      "agent_id": "opencode",
+      "display_name": "OpenCode",
+      "aliases": ["Open Code", "opencode-cli"],
+      "description": "Open-source coding agent with build/plan modes, specialized subagents and configurable tool permissions.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification"],
+      "sources": [{"url": "https://github.com/anomalyco/opencode", "kind": "official_repo"}, {"url": "https://opencode.ai/docs/agents/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "openhands",
+      "display_name": "OpenHands",
+      "aliases": ["Open Hands", "All Hands AI"],
+      "description": "Open-source software development agent platform with repository, shell, browser and sandbox execution.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "test_verification", "sandbox_isolation", "browser_tools", "git_workflow"],
+      "sources": [{"url": "https://github.com/All-Hands-AI/OpenHands", "kind": "official_repo"}, {"url": "https://docs.all-hands.dev/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "cline",
+      "display_name": "Cline",
+      "aliases": ["Cline CLI", "Cline IDE Agent"],
+      "description": "IDE coding agent with repository editing, terminal, browser, MCP, planning and checkpoints.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "test_verification", "checkpoint_undo", "browser_tools", "git_workflow"],
+      "sources": [{"url": "https://github.com/cline/cline", "kind": "official_repo"}, {"url": "https://docs.cline.bot/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "roo-code",
+      "display_name": "Roo Code",
+      "aliases": ["Roo", "RooCode"],
+      "description": "IDE coding agent with specialized modes, repository tools, MCP, browser use and checkpoints.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "plan_mode", "subagents", "test_verification", "checkpoint_undo", "browser_tools", "git_workflow"],
+      "sources": [{"url": "https://github.com/RooCodeInc/Roo-Code", "kind": "official_repo"}, {"url": "https://docs.roocode.com/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "aider",
+      "display_name": "Aider",
+      "aliases": ["Aider AI", "aider-chat"],
+      "description": "Terminal pair-programming agent with repository maps, Git integration, linting and test execution.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "test_verification", "git_workflow"],
+      "sources": [{"url": "https://github.com/Aider-AI/aider", "kind": "official_repo"}, {"url": "https://aider.chat/docs/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "goose",
+      "display_name": "Goose",
+      "aliases": ["Block Goose", "Goose AI"],
+      "description": "Extensible local agent with terminal workflows, MCP-compatible extensions and reusable recipes.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible", "automation", "test_verification"],
+      "sources": [{"url": "https://github.com/block/goose", "kind": "official_repo"}, {"url": "https://block.github.io/goose/", "kind": "official_docs"}]
+    },
+    {
+      "agent_id": "pi",
+      "display_name": "Pi Coding Agent",
+      "aliases": ["Pi", "pi-agent", "pi-mono"],
+      "description": "Minimal extensible terminal coding agent with repository and shell tooling.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "mcp_extensible"],
+      "sources": [{"url": "https://github.com/badlogic/pi-mono", "kind": "official_repo"}]
+    },
+    {
+      "agent_id": "swe-agent",
+      "display_name": "SWE-agent",
+      "aliases": ["SWE Agent", "sweagent"],
+      "description": "Research coding agent with a specialized agent-computer interface for repository navigation, editing and tests.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "test_verification", "checkpoint_undo", "git_workflow"],
+      "sources": [{"url": "https://github.com/SWE-agent/SWE-agent", "kind": "official_repo"}, {"url": "https://arxiv.org/abs/2405.15793", "kind": "paper"}]
+    },
+    {
+      "agent_id": "mini-swe-agent",
+      "display_name": "mini-SWE-agent",
+      "aliases": ["Mini SWE Agent", "mini-swe"],
+      "description": "Minimal software engineering agent centered on a compact shell-based interaction loop.",
+      "features": ["coding_agent", "repo_context", "shell_tools", "test_verification"],
+      "sources": [{"url": "https://github.com/SWE-agent/mini-swe-agent", "kind": "official_repo"}]
+    }
+  ]
+}

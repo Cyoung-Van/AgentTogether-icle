@@ -1,0 +1,2 @@
+{"subject_id":"agent-alpha","model_revision":"gpt-5-6-terra-max","provider":"openai","harness":"Claude Code","harness_revision":"2.0.31"}
+{"subject_id":"agent-beta","model_revision":"gpt-5-6-terra-max","provider":"openai","harness":"OpenHands","harness_revision":"0.60.0"}

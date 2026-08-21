@@ -1,0 +1,24 @@
+{
+  "prior_id": "literature-shrunk-harness-prior/v0.1",
+  "axis_contract_id": "livebench-capability-seven/v0.1",
+  "scale_id": "canonical_logit/v0.1",
+  "scale_role": "additive_effect",
+  "mean_logit": 0.15,
+  "sd_logit": 0.75,
+  "axis_policy": "same weak prior on all seven LiveBench-aligned axes until axis-specific evidence exists",
+  "derivation": {
+    "method": "conservative cross-study center, not a formal meta-analysis",
+    "notes": [
+      "SWE-agent same-model ACI comparison: 11% shell-only to 18% SWE-agent on SWE-bench Lite",
+      "AgencyBench scaffold gaps span -12.8 to +20.5 percentage points and average about +1.2 points across the 12 reported alternatives",
+      "Corral reports framework choice can have minor or negative effects when task-tool alignment is poor",
+      "Qwen Code longitudinal study reports no statistically significant average improvement across scaffold releases"
+    ]
+  },
+  "references": [
+    "https://arxiv.org/abs/2405.15793",
+    "https://aclanthology.org/2026.acl-long.337.pdf",
+    "https://openreview.net/pdf?id=7cbwuA5k0T",
+    "https://arxiv.org/abs/2607.03691"
+  ]
+}

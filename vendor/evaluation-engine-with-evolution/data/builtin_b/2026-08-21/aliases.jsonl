@@ -1,0 +1,46 @@
+{"agent_id": "aider", "alias": "aider", "normalized_alias": "aider", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "aider", "alias": "Aider AI", "normalized_alias": "aider-ai", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "aider", "alias": "aider-chat", "normalized_alias": "aider-chat", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openhands", "alias": "All Hands AI", "normalized_alias": "all-hands-ai", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "claude-code", "alias": "Anthropic Claude Code", "normalized_alias": "anthropic-claude-code", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "goose", "alias": "Block Goose", "normalized_alias": "block-goose", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "claude-code", "alias": "Claude CLI", "normalized_alias": "claude-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "claude-code", "alias": "claude-code", "normalized_alias": "claude-code", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openclaw", "alias": "Clawdbot", "normalized_alias": "clawdbot", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "cline", "alias": "cline", "normalized_alias": "cline", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "cline", "alias": "Cline CLI", "normalized_alias": "cline-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "cline", "alias": "Cline IDE Agent", "normalized_alias": "cline-ide-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "codex", "alias": "codex", "normalized_alias": "codex", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "codex", "alias": "Codex CLI", "normalized_alias": "codex-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "gemini-cli", "alias": "gemini", "normalized_alias": "gemini", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "gemini-cli", "alias": "gemini-cli", "normalized_alias": "gemini-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "gemini-cli", "alias": "Google Gemini CLI", "normalized_alias": "google-gemini-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "goose", "alias": "goose", "normalized_alias": "goose", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "goose", "alias": "Goose AI", "normalized_alias": "goose-ai", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "hermes-agent", "alias": "Hermes", "normalized_alias": "hermes", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "hermes-agent", "alias": "hermes-agent", "normalized_alias": "hermes-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "mini-swe-agent", "alias": "mini-swe", "normalized_alias": "mini-swe", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "mini-swe-agent", "alias": "mini-swe-agent", "normalized_alias": "mini-swe-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openclaw", "alias": "Moltbot", "normalized_alias": "moltbot", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "hermes-agent", "alias": "Nous Hermes", "normalized_alias": "nous-hermes", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "hermes-agent", "alias": "NousResearch Hermes", "normalized_alias": "nousresearch-hermes", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openclaw", "alias": "Open Claw", "normalized_alias": "open-claw", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "opencode", "alias": "Open Code", "normalized_alias": "open-code", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openhands", "alias": "Open Hands", "normalized_alias": "open-hands", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "codex", "alias": "OpenAI Codex", "normalized_alias": "openai-codex", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openclaw", "alias": "openclaw", "normalized_alias": "openclaw", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "opencode", "alias": "opencode", "normalized_alias": "opencode", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "opencode", "alias": "opencode-cli", "normalized_alias": "opencode-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "openhands", "alias": "openhands", "normalized_alias": "openhands", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "pi", "alias": "pi", "normalized_alias": "pi", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "pi", "alias": "pi-agent", "normalized_alias": "pi-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "pi", "alias": "Pi Coding Agent", "normalized_alias": "pi-coding-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "pi", "alias": "pi-mono", "normalized_alias": "pi-mono", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "qwen-code", "alias": "Qwen CLI", "normalized_alias": "qwen-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "qwen-code", "alias": "qwen-code", "normalized_alias": "qwen-code", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "qwen-code", "alias": "qwen-code-cli", "normalized_alias": "qwen-code-cli", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "roo-code", "alias": "Roo", "normalized_alias": "roo", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "roo-code", "alias": "roo-code", "normalized_alias": "roo-code", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "roo-code", "alias": "RooCode", "normalized_alias": "roocode", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "swe-agent", "alias": "swe-agent", "normalized_alias": "swe-agent", "schema_version": "experience-evaluation-agent-alias/v0.1"}
+{"agent_id": "swe-agent", "alias": "sweagent", "normalized_alias": "sweagent", "schema_version": "experience-evaluation-agent-alias/v0.1"}

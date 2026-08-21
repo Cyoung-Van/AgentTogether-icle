@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-c-state/v0.1",
+  "type": "object",
+  "required": ["state_id", "subject_id", "dimension_id", "mean", "variance", "evidence_count", "last_observed_at", "axis_contract_id", "scale_id"],
+  "properties": {
+    "state_id": {"type": "string"},
+    "subject_id": {"type": "string"},
+    "dimension_id": {"enum": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"]},
+    "mean": {"type": "number"},
+    "variance": {"type": "number", "minimum": 0},
+    "sd": {"type": "number", "minimum": 0},
+    "evidence_count": {"type": "integer", "minimum": 1},
+    "last_observed_at": {"type": "string", "format": "date-time"},
+    "axis_contract_id": {"const": "livebench-capability-seven/v0.1"},
+    "scale_id": {"const": "canonical_logit/v0.1"}
+  },
+  "additionalProperties": true
+}

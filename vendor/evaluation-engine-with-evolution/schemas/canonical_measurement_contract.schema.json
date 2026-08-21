@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-canonical-measurement-contract/v0.1",
+  "type": "object",
+  "required": ["axis_contract_id", "axes", "canonical_scale_id", "level_transform", "b_scale_role"],
+  "properties": {
+    "axis_contract_id": {"const": "livebench-capability-seven/v0.1"},
+    "axes": {"const": ["reasoning", "coding", "agentic_coding", "mathematics", "data_analysis", "language", "instruction_following"]},
+    "canonical_scale_id": {"const": "canonical_logit/v0.1"},
+    "level_transform": {"const": "logit"},
+    "b_scale_role": {"const": "additive_effect"}
+  },
+  "additionalProperties": false
+}

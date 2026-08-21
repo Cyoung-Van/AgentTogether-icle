@@ -1,0 +1,8 @@
+{
+  "policy_id": "experience-evaluation-current-evidence/v0.1",
+  "a_max_age_days": 120,
+  "b_max_age_days": 120,
+  "unknown_date_is_current": false,
+  "require_current_catalog_link_for_a": true,
+  "provisional_b_is_current": false
+}

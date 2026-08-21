@@ -1,0 +1,890 @@
+{
+  "20231010_rag_claude2": {
+    "harness": "RAG",
+    "model": "Claude 2"
+  },
+  "20231010_rag_gpt35": {
+    "harness": "RAG",
+    "model": "GPT-3.5"
+  },
+  "20231010_rag_swellama13b": {
+    "harness": "RAG",
+    "model": "swellama13b"
+  },
+  "20231010_rag_swellama7b": {
+    "harness": "RAG",
+    "model": "swellama7b"
+  },
+  "20240402_rag_claude3opus": {
+    "harness": "RAG",
+    "model": "Claude 3 Opus"
+  },
+  "20240402_rag_gpt4": {
+    "harness": "RAG",
+    "model": "GPT-4"
+  },
+  "20240402_sweagent_claude3opus": {
+    "harness": "SWE-agent",
+    "model": "Claude 3 Opus"
+  },
+  "20240402_sweagent_gpt4": {
+    "harness": "SWE-agent",
+    "model": "GPT-4"
+  },
+  "20240612_MASAI_gpt4o": {
+    "harness": "MASAI",
+    "model": "GPT-4o"
+  },
+  "20240615_appmap-navie_gpt4o": {
+    "harness": "appmap-navie",
+    "model": "GPT-4o"
+  },
+  "20240620_sweagent_claude3.5sonnet": {
+    "harness": "SWE-agent",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20240628_autocoderover-v20240620": {
+    "harness": "autocoderover-v20240620",
+    "model": "GPT-4"
+  },
+  "20240728_sweagent_gpt4o": {
+    "harness": "SWE-agent",
+    "model": "GPT-4o"
+  },
+  "20240820_epam-ai-run-gpt-4o": {
+    "harness": "epam-ai-run",
+    "model": "GPT-4o"
+  },
+  "20240918_lingma-agent_lingma-swe-gpt-72b": {
+    "harness": "lingma-agent",
+    "model": "lingma-swe-gpt-72b"
+  },
+  "20240918_lingma-agent_lingma-swe-gpt-7b": {
+    "harness": "lingma-agent",
+    "model": "lingma-swe-gpt-7b"
+  },
+  "20241002_lingma-agent_lingma-swe-gpt-72b": {
+    "harness": "lingma-agent",
+    "model": "lingma-swe-gpt-72b"
+  },
+  "20241002_lingma-agent_lingma-swe-gpt-7b": {
+    "harness": "lingma-agent",
+    "model": "lingma-swe-gpt-7b"
+  },
+  "20241016_composio_swekit": {
+    "harness": "20241016_composio_swekit",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241016_epam-ai-run-gpt-4o": {
+    "harness": "epam-ai-run",
+    "model": "GPT-4o"
+  },
+  "20241022_tools_claude-3-5-haiku": {
+    "harness": "Tools",
+    "model": "Claude 3.5 Haiku"
+  },
+  "20241022_tools_claude-3-5-sonnet-updated": {
+    "harness": "Tools",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241028_agentless-1.5_gpt4o": {
+    "harness": "agentless-1.5",
+    "model": "GPT-4o"
+  },
+  "20241029_OpenHands-CodeAct-2.1-sonnet-20241022": {
+    "harness": "OpenHands-CodeAct-2.1",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241029_epam-ai-run-claude-3-5-sonnet": {
+    "harness": "epam-ai-run",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241108_autocoderover-v2.0-claude-3-5-sonnet-20241022": {
+    "harness": "autocoderover-v2.0",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241108_devlo": {
+    "harness": "20241108_devlo",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241120_artemis_agent": {
+    "harness": "Artemis Agent v1",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241125_enginelabs": {
+    "harness": "enginelabs",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241128_SWE-Fixer_Qwen2.5-7b-retriever_Qwen2.5-72b-editor_20241128": {
+    "harness": "SWE-Fixer_Qwen2.5-7b-retriever",
+    "model": "Qwen2.5-72b-editor"
+  },
+  "20241202_agentless-1.5_claude-3.5-sonnet-20241022": {
+    "harness": "agentless-1.5",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241212_epam-ai-run-claude-3-5-sonnet": {
+    "harness": "epam-ai-run",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20241212_google_jules_gemini_2.0_flash_experimental": {
+    "harness": "google_jules",
+    "model": "gemini_2.0_flash_experimental"
+  },
+  "20241221_codestory_midwit_claude-3-5-sonnet_swe-search": {
+    "harness": "codestory_midwit",
+    "model": "claude-3-5-sonnet_swe-search"
+  },
+  "20250110_learn_by_interact_claude3.5": {
+    "harness": "learn_by_interact",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20250112_ugaiforge": {
+    "harness": "ugaiforge",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20250117_wandb_programmer_o1_crosscheck5": {
+    "harness": "wandb_programmer",
+    "model": "o1_crosscheck5"
+  },
+  "20250118_codeshellagent_gemini_2.0_flash_experimental": {
+    "harness": "codeshellagent",
+    "model": "gemini_2.0_flash_experimental"
+  },
+  "20250120_Bracket": {
+    "harness": "Bracket",
+    "model": "GPT-4o-mini"
+  },
+  "20250122_autocoderover-v2.1-claude-3-5-sonnet-20241022": {
+    "harness": "autocoderover-v2.1",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20250206_agentscope": {
+    "harness": "agentscope",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20250214_agentless_lite_o3_mini": {
+    "harness": "agentless_lite",
+    "model": "o3_mini"
+  },
+  "20250224_tools_claude-3-7-sonnet": {
+    "harness": "Tools",
+    "model": "Claude 3.7 Sonnet"
+  },
+  "20250225_sweagent_claude-3-7-sonnet": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude 3.7 Sonnet"
+  },
+  "20250226_swerl_llama3_70b": {
+    "harness": "swerl",
+    "model": "llama3_70b"
+  },
+  "20250228_epam-ai-run-claude-3-5-sonnet": {
+    "harness": "epam-ai-run",
+    "model": "Claude 3.5 Sonnet"
+  },
+  "20250306_SWE-Fixer_Qwen2.5-7b-retriever_Qwen2.5-72b-editor": {
+    "harness": "SWE-Fixer_Qwen2.5-7b-retriever",
+    "model": "Qwen2.5-72b-editor"
+  },
+  "20250405_swe-rizzo_claude37": {
+    "harness": "swe-rizzo",
+    "model": "Claude 3.7 Sonnet"
+  },
+  "20250503_patchpilot-v1.1-o4-mini": {
+    "harness": "patchpilot-v1.1",
+    "model": "o4-mini"
+  },
+  "20250511_sweagent_lm_32b": {
+    "harness": "SWE-agent 1.0",
+    "model": "SWE-agent-LM-32B"
+  },
+  "20250514_aime_coder": {
+    "harness": "aime-coder",
+    "model": "Claude 3.7 Sonnet"
+  },
+  "20250520_openhands_devstral_small": {
+    "harness": "OpenHands",
+    "model": "devstral_small"
+  },
+  "20250522_sweagent_claude-4-sonnet-20250514": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude Sonnet 4"
+  },
+  "20250522_tools_claude-4-opus": {
+    "harness": "Tools",
+    "model": "Claude Opus 4"
+  },
+  "20250522_tools_claude-4-sonnet": {
+    "harness": "Tools",
+    "model": "Claude Sonnet 4"
+  },
+  "20250524_openhands_claude_4_sonnet": {
+    "harness": "OpenHands",
+    "model": "Claude Sonnet 4"
+  },
+  "20250527_amazon.nova-premier-v1.0": {
+    "harness": "NoScaffold",
+    "model": "Amazon Nova Premier 1.0"
+  },
+  "20250611_moatless_claude-4-sonnet-20250514": {
+    "harness": "moatless",
+    "model": "Claude Sonnet 4"
+  },
+  "20250616_Skywork-SWE-32B": {
+    "harness": "OpenHands",
+    "model": "Skywork-SWE-32B"
+  },
+  "20250627_agentless_MCTS-Refine-7B": {
+    "harness": "agentless",
+    "model": "MCTS-Refine-7B"
+  },
+  "20250629_deepswerl_r2eagent": {
+    "harness": "R2E-Gym",
+    "model": "DeepSWE-Preview"
+  },
+  "20250710_bloop": {
+    "harness": "bloop",
+    "model": "Claude Sonnet 4"
+  },
+  "20250716_openhands_kimi_k2": {
+    "harness": "OpenHands",
+    "model": "Kimi K2 Instruct"
+  },
+  "20250720_Lingxi-v1.5_claude-4-sonnet-20250514": {
+    "harness": "Lingxi v1.5",
+    "model": "Claude Sonnet 4"
+  },
+  "20250725_sweagent_devstral_small_2507": {
+    "harness": "SWE-agent 1.0",
+    "model": "devstral_small_2507"
+  },
+  "20250728_zai_glm4-5": {
+    "harness": "OpenHands",
+    "model": "GLM 4.5"
+  },
+  "20250731_harness_ai": {
+    "harness": "Harness",
+    "model": "Claude Sonnet 4"
+  },
+  "20250804_codesweep_sweagent_kimi_k2_instruct": {
+    "harness": "SWE-agent 1.0",
+    "model": "Kimi K2 Instruct"
+  },
+  "20250804_epam-ai-run-claude-4-sonnet": {
+    "harness": "epam-ai-run",
+    "model": "Claude Sonnet 4"
+  },
+  "20250805_openhands-Qwen3-Coder-30B-A3B-Instruct": {
+    "harness": "OpenHands",
+    "model": "Qwen3-Coder-30B-A3B-Instruct"
+  },
+  "20250805_openhands-Qwen3-Coder-480B-A35B-Instruct": {
+    "harness": "OpenHands",
+    "model": "Qwen3-Coder-480B-A35B-Instruct"
+  },
+  "20250806_SWE-Exp_DeepSeek-V3": {
+    "harness": "SWE-Exp",
+    "model": "DeepSeek-V3"
+  },
+  "20250807_openhands_gpt5": {
+    "harness": "OpenHands",
+    "model": "GPT-5"
+  },
+  "20250901_entroPO_R2E_QwenCoder30BA3B": {
+    "harness": "entroPO_R2E",
+    "model": "Qwen3-Coder-30B-A3B-Instruct"
+  },
+  "20250901_entroPO_R2E_QwenCoder30BA3B_tts": {
+    "harness": "entroPO_R2E",
+    "model": "QwenCoder30BA3B_tts"
+  },
+  "20250924_artemis_agent_v2": {
+    "harness": "Artemis Agent v2",
+    "model": "Claude Sonnet 4"
+  },
+  "20250929_Prometheus_v1.2_gpt5": {
+    "harness": "Prometheus_v1.2",
+    "model": "GPT-5"
+  },
+  "20250930_zai_glm4-6": {
+    "harness": "zai",
+    "model": "GLM 4.6"
+  },
+  "20251014_Lingxi_kimi_k2": {
+    "harness": "Lingxi v1.5",
+    "model": "Kimi K2 Instruct"
+  },
+  "20251015_Prometheus_v1.2.1_gpt5": {
+    "harness": "Prometheus_v1.2.1",
+    "model": "GPT-5"
+  },
+  "20251103_sonar-foundation-agent_claude-sonnet-4-5": {
+    "harness": "sonar-foundation-agent",
+    "model": "Claude Sonnet 4.5"
+  },
+  "20251110_frogboss-32b": {
+    "harness": "R2E-Gym",
+    "model": "FrogBoss-32B"
+  },
+  "20251110_frogmini-14b": {
+    "harness": "R2E-Gym",
+    "model": "FrogMini-14B"
+  },
+  "20251120_livesweagent_gemini-3-pro-preview": {
+    "harness": "livesweagent",
+    "model": "Gemini 3 Pro"
+  },
+  "20251127_openhands_claude-opus-4-5": {
+    "harness": "OpenHands",
+    "model": "Claude Opus 4.5"
+  },
+  "20251205_sonar-foundation-agent_claude-opus-4-5": {
+    "harness": "sonar-foundation-agent",
+    "model": "Claude Opus 4.5"
+  },
+  "20251215_livesweagent_claude-opus-4-5": {
+    "harness": "livesweagent",
+    "model": "Claude Opus 4.5"
+  },
+  "Claude 4.5 Haiku -- 10222025": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude Haiku 4.5"
+  },
+  "Claude 4.5 Sonnet - 10132025": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude Sonnet 4.5"
+  },
+  "Claude Opus 4.1 - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude Opus 4.1"
+  },
+  "Claude Sonnet 4 - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "Claude Sonnet 4"
+  },
+  "GLM-4.5 -- 10222025": {
+    "harness": "SWE-agent 1.0",
+    "model": "GLM 4.5"
+  },
+  "GPT OSS - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "GPT OSS 120B"
+  },
+  "GPT-4o - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "GPT-4o"
+  },
+  "GPT-5 - 10132025": {
+    "harness": "SWE-agent 1.0",
+    "model": "GPT-5"
+  },
+  "GPT-5 Codex -- debug-oct22": {
+    "harness": "SWE-agent 1.0",
+    "model": "GPT-5-Codex"
+  },
+  "GPT-5 High - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "GPT-5 High"
+  },
+  "Gemini 2.5 Pro Preview - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "Gemini 2.5 Pro"
+  },
+  "Kimi - paper": {
+    "harness": "SWE-agent 1.0",
+    "model": "Kimi K2 Instruct"
+  },
+  "ante_gemini_3_pro": {
+    "harness": "Ante",
+    "model": "Gemini 3 Pro"
+  },
+  "camel_ai_claude_sonnet_4_5": {
+    "harness": "CAMEL-AI",
+    "model": "Claude Sonnet 4.5"
+  },
+  "claude-opus-4": {
+    "harness": "OpenHands",
+    "model": "claude-opus-4"
+  },
+  "claude-opus-4.5": {
+    "harness": "OpenHands",
+    "model": "claude-opus-4.5"
+  },
+  "claude-opus-4.6": {
+    "harness": "OpenHands",
+    "model": "claude-opus-4.6"
+  },
+  "claude-sonnet-4": {
+    "harness": "OpenHands",
+    "model": "claude-sonnet-4"
+  },
+  "claude-sonnet-4.5": {
+    "harness": "OpenHands",
+    "model": "claude-sonnet-4.5"
+  },
+  "claude_code_claude_haiku_4_5": {
+    "harness": "Claude Code",
+    "model": "Claude Haiku 4.5"
+  },
+  "claude_code_claude_opus_4_1": {
+    "harness": "Claude Code",
+    "model": "Claude Opus 4.1"
+  },
+  "claude_code_claude_opus_4_5": {
+    "harness": "Claude Code",
+    "model": "Claude Opus 4.5"
+  },
+  "claude_code_claude_opus_4_6": {
+    "harness": "Claude Code",
+    "model": "Claude Opus 4.6"
+  },
+  "claude_code_claude_sonnet_4_5": {
+    "harness": "Claude Code",
+    "model": "Claude Sonnet 4.5"
+  },
+  "codebrain_1_gemini_3_pro": {
+    "harness": "CodeBrain-1",
+    "model": "Gemini 3 Pro"
+  },
+  "codebrain_1_gpt_5_3_codex": {
+    "harness": "CodeBrain-1",
+    "model": "GPT-5.3-Codex"
+  },
+  "codex_cli_gpt_5": {
+    "harness": "Codex CLI",
+    "model": "GPT-5"
+  },
+  "codex_cli_gpt_5_1_codex_max": {
+    "harness": "Codex CLI",
+    "model": "GPT-5.1-Codex-Max"
+  },
+  "codex_cli_gpt_5_2": {
+    "harness": "Codex CLI",
+    "model": "GPT-5.2"
+  },
+  "codex_cli_gpt_5_codex": {
+    "harness": "Codex CLI",
+    "model": "GPT-5-Codex"
+  },
+  "codex_cli_gpt_5_mini": {
+    "harness": "Codex CLI",
+    "model": "GPT-5-Mini"
+  },
+  "codex_cli_gpt_5_nano": {
+    "harness": "Codex CLI",
+    "model": "GPT-5-Nano"
+  },
+  "crux_claude_opus_4_6": {
+    "harness": "Crux",
+    "model": "Claude Opus 4.6"
+  },
+  "crux_glm_4_7": {
+    "harness": "Crux",
+    "model": "GLM 4.7"
+  },
+  "crux_gpt_5_1_codex": {
+    "harness": "Crux",
+    "model": "GPT-5.1-Codex"
+  },
+  "crux_gpt_5_1_codex_mini": {
+    "harness": "Crux",
+    "model": "GPT-5.1-Codex-Mini"
+  },
+  "crux_minimax_m2_1": {
+    "harness": "Crux",
+    "model": "MiniMax M2.1"
+  },
+  "dakou_agent_qwen_3_coder_480b": {
+    "harness": "Dakou Agent",
+    "model": "Qwen3-Coder-480B-A35B-Instruct"
+  },
+  "deep_agents_gpt_5_2_codex": {
+    "harness": "Deep Agents",
+    "model": "GPT-5.2-Codex"
+  },
+  "droid_claude_opus_4_5": {
+    "harness": "Droid",
+    "model": "Claude Opus 4.5"
+  },
+  "droid_claude_opus_4_6": {
+    "harness": "Droid",
+    "model": "Claude Opus 4.6"
+  },
+  "droid_gemini_3_pro": {
+    "harness": "Droid",
+    "model": "Gemini 3 Pro"
+  },
+  "droid_gpt_5_2": {
+    "harness": "Droid",
+    "model": "GPT-5.2"
+  },
+  "droid_gpt_5_3_codex": {
+    "harness": "Droid",
+    "model": "GPT-5.3-Codex"
+  },
+  "forge_code_gemini_3_1_pro": {
+    "harness": "Forge Code",
+    "model": "Gemini 3.1 Pro"
+  },
+  "gemini-2.5-pro": {
+    "harness": "OpenHands",
+    "model": "gemini-2.5-pro"
+  },
+  "gemini-3-flash": {
+    "harness": "OpenHands",
+    "model": "gemini-3-flash"
+  },
+  "gemini-3-pro": {
+    "harness": "OpenHands",
+    "model": "gemini-3-pro"
+  },
+  "gemini_cli_gemini_2_5_flash": {
+    "harness": "Gemini CLI",
+    "model": "Gemini 2.5 Flash"
+  },
+  "gemini_cli_gemini_2_5_pro": {
+    "harness": "Gemini CLI",
+    "model": "Gemini 2.5 Pro"
+  },
+  "gemini_cli_gemini_3_flash": {
+    "harness": "Gemini CLI",
+    "model": "Gemini 3 Flash"
+  },
+  "glm-4.5": {
+    "harness": "OpenHands",
+    "model": "glm-4.5"
+  },
+  "goose_claude_haiku_4_5": {
+    "harness": "Goose",
+    "model": "Claude Haiku 4.5"
+  },
+  "goose_claude_opus_4_5": {
+    "harness": "Goose",
+    "model": "Claude Opus 4.5"
+  },
+  "goose_claude_sonnet_4_5": {
+    "harness": "Goose",
+    "model": "Claude Sonnet 4.5"
+  },
+  "gpt-5": {
+    "harness": "OpenHands",
+    "model": "gpt-5"
+  },
+  "gpt-5.1": {
+    "harness": "OpenHands",
+    "model": "gpt-5.1"
+  },
+  "gpt-5.2": {
+    "harness": "OpenHands",
+    "model": "gpt-5.2"
+  },
+  "ii_agent_gemini_3_pro": {
+    "harness": "II-Agent",
+    "model": "Gemini 3 Pro"
+  },
+  "junie_cli_gemini_3_flash": {
+    "harness": "Junie CLI",
+    "model": "Gemini 3 Flash"
+  },
+  "kimi-k2": {
+    "harness": "OpenHands",
+    "model": "kimi-k2"
+  },
+  "letta_code_claude_opus_4_5": {
+    "harness": "Letta Code",
+    "model": "Claude Opus 4.5"
+  },
+  "letta_code_gemini_3_pro": {
+    "harness": "Letta Code",
+    "model": "Gemini 3 Pro"
+  },
+  "letta_code_gpt_5_1_codex": {
+    "harness": "Letta Code",
+    "model": "GPT-5.1-Codex"
+  },
+  "maya_claude_4_5_sonnet": {
+    "harness": "MAYA",
+    "model": "Claude Sonnet 4.5"
+  },
+  "mini_swe_agent_claude_haiku_4_5": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Claude Haiku 4.5"
+  },
+  "mini_swe_agent_claude_opus_4_1": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Claude Opus 4.1"
+  },
+  "mini_swe_agent_claude_sonnet_4_5": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Claude Sonnet 4.5"
+  },
+  "mini_swe_agent_gemini_2_5_flash": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Gemini 2.5 Flash"
+  },
+  "mini_swe_agent_gemini_2_5_pro": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Gemini 2.5 Pro"
+  },
+  "mini_swe_agent_gpt_5": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT-5"
+  },
+  "mini_swe_agent_gpt_5_codex": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT-5-Codex"
+  },
+  "mini_swe_agent_gpt_5_mini": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT-5-Mini"
+  },
+  "mini_swe_agent_gpt_5_nano": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT-5-Nano"
+  },
+  "mini_swe_agent_gpt_oss_120b": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT OSS 120B"
+  },
+  "mini_swe_agent_gpt_oss_20b": {
+    "harness": "Mini-SWE-Agent",
+    "model": "GPT OSS 20B"
+  },
+  "mini_swe_agent_grok_4": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Grok 4"
+  },
+  "mini_swe_agent_grok_code_fast_1": {
+    "harness": "Mini-SWE-Agent",
+    "model": "Grok Code Fast 1"
+  },
+  "mux_claude_opus_4_5": {
+    "harness": "Mux",
+    "model": "Claude Opus 4.5"
+  },
+  "mux_claude_opus_4_6": {
+    "harness": "Mux",
+    "model": "Claude Opus 4.6"
+  },
+  "mux_gpt_5_2": {
+    "harness": "Mux",
+    "model": "GPT-5.2"
+  },
+  "mux_gpt_5_3_codex": {
+    "harness": "Mux",
+    "model": "GPT-5.3-Codex"
+  },
+  "o3": {
+    "harness": "OpenHands",
+    "model": "o3"
+  },
+  "opencode_claude_opus_4_5": {
+    "harness": "OpenCode",
+    "model": "Claude Opus 4.5"
+  },
+  "openhands_claude_haiku_4_5": {
+    "harness": "OpenHands",
+    "model": "Claude Haiku 4.5"
+  },
+  "openhands_claude_opus_4_1": {
+    "harness": "OpenHands",
+    "model": "Claude Opus 4.1"
+  },
+  "openhands_claude_opus_4_5": {
+    "harness": "OpenHands",
+    "model": "Claude Opus 4.5"
+  },
+  "openhands_claude_sonnet_4_5": {
+    "harness": "OpenHands",
+    "model": "Claude Sonnet 4.5"
+  },
+  "openhands_gemini_2_5_flash": {
+    "harness": "OpenHands",
+    "model": "Gemini 2.5 Flash"
+  },
+  "openhands_gemini_2_5_pro": {
+    "harness": "OpenHands",
+    "model": "Gemini 2.5 Pro"
+  },
+  "openhands_gpt_5": {
+    "harness": "OpenHands",
+    "model": "GPT-5"
+  },
+  "openhands_gpt_5_mini": {
+    "harness": "OpenHands",
+    "model": "GPT-5-Mini"
+  },
+  "openhands_gpt_5_nano": {
+    "harness": "OpenHands",
+    "model": "GPT-5-Nano"
+  },
+  "openhands_grok_4": {
+    "harness": "OpenHands",
+    "model": "Grok 4"
+  },
+  "openhands_kimi_k2_instruct": {
+    "harness": "OpenHands",
+    "model": "Kimi K2 Instruct"
+  },
+  "openhands_qwen_3_coder_480b": {
+    "harness": "OpenHands",
+    "model": "Qwen3-Coder-480B-A35B-Instruct"
+  },
+  "qwen3-coder": {
+    "harness": "OpenHands",
+    "model": "qwen3-coder"
+  },
+  "sageagent_gemini_3_pro": {
+    "harness": "SageAgent",
+    "model": "Gemini 3 Pro"
+  },
+  "simple_codex_gpt_5_3_codex": {
+    "harness": "Simple Codex",
+    "model": "GPT-5.3-Codex"
+  },
+  "spoox_m_gpt_5_mini": {
+    "harness": "spoox-m",
+    "model": "GPT-5-Mini"
+  },
+  "terminus_2_claude_haiku_4_5": {
+    "harness": "Terminus 2",
+    "model": "Claude Haiku 4.5"
+  },
+  "terminus_2_claude_opus_4_1": {
+    "harness": "Terminus 2",
+    "model": "Claude Opus 4.1"
+  },
+  "terminus_2_claude_opus_4_5": {
+    "harness": "Terminus 2",
+    "model": "Claude Opus 4.5"
+  },
+  "terminus_2_claude_opus_4_6": {
+    "harness": "Terminus 2",
+    "model": "Claude Opus 4.6"
+  },
+  "terminus_2_claude_sonnet_4_5": {
+    "harness": "Terminus 2",
+    "model": "Claude Sonnet 4.5"
+  },
+  "terminus_2_deepseek_v3_2": {
+    "harness": "Terminus 2",
+    "model": "DeepSeek-V3.2"
+  },
+  "terminus_2_gemini_2_5_flash": {
+    "harness": "Terminus 2",
+    "model": "Gemini 2.5 Flash"
+  },
+  "terminus_2_gemini_2_5_pro": {
+    "harness": "Terminus 2",
+    "model": "Gemini 2.5 Pro"
+  },
+  "terminus_2_gemini_3_flash": {
+    "harness": "Terminus 2",
+    "model": "Gemini 3 Flash"
+  },
+  "terminus_2_gemini_3_pro": {
+    "harness": "Terminus 2",
+    "model": "Gemini 3 Pro"
+  },
+  "terminus_2_glm_4_6": {
+    "harness": "Terminus 2",
+    "model": "GLM 4.6"
+  },
+  "terminus_2_glm_4_7": {
+    "harness": "Terminus 2",
+    "model": "GLM 4.7"
+  },
+  "terminus_2_glm_5": {
+    "harness": "Terminus 2",
+    "model": "GLM 5"
+  },
+  "terminus_2_gpt_5": {
+    "harness": "Terminus 2",
+    "model": "GPT-5"
+  },
+  "terminus_2_gpt_5_1": {
+    "harness": "Terminus 2",
+    "model": "GPT-5.1"
+  },
+  "terminus_2_gpt_5_1_codex": {
+    "harness": "Terminus 2",
+    "model": "GPT-5.1-Codex"
+  },
+  "terminus_2_gpt_5_2": {
+    "harness": "Terminus 2",
+    "model": "GPT-5.2"
+  },
+  "terminus_2_gpt_5_3_codex": {
+    "harness": "Terminus 2",
+    "model": "GPT-5.3-Codex"
+  },
+  "terminus_2_gpt_5_codex": {
+    "harness": "Terminus 2",
+    "model": "GPT-5-Codex"
+  },
+  "terminus_2_gpt_5_mini": {
+    "harness": "Terminus 2",
+    "model": "GPT-5-Mini"
+  },
+  "terminus_2_gpt_5_nano": {
+    "harness": "Terminus 2",
+    "model": "GPT-5-Nano"
+  },
+  "terminus_2_gpt_oss_120b": {
+    "harness": "Terminus 2",
+    "model": "GPT OSS 120B"
+  },
+  "terminus_2_gpt_oss_20b": {
+    "harness": "Terminus 2",
+    "model": "GPT OSS 20B"
+  },
+  "terminus_2_grok_4": {
+    "harness": "Terminus 2",
+    "model": "Grok 4"
+  },
+  "terminus_2_grok_code_fast_1": {
+    "harness": "Terminus 2",
+    "model": "Grok Code Fast 1"
+  },
+  "terminus_2_kimi_k2_5": {
+    "harness": "Terminus 2",
+    "model": "Kimi K2.5"
+  },
+  "terminus_2_kimi_k2_instruct": {
+    "harness": "Terminus 2",
+    "model": "Kimi K2 Instruct"
+  },
+  "terminus_2_kimi_k2_thinking": {
+    "harness": "Terminus 2",
+    "model": "Kimi K2 Thinking"
+  },
+  "terminus_2_minimax_m2": {
+    "harness": "Terminus 2",
+    "model": "MiniMax M2"
+  },
+  "terminus_2_minimax_m2_1": {
+    "harness": "Terminus 2",
+    "model": "MiniMax M2.1"
+  },
+  "terminus_2_minimax_m2_5": {
+    "harness": "Terminus 2",
+    "model": "Minimax m2.5"
+  },
+  "terminus_2_qwen_3_coder_480b": {
+    "harness": "Terminus 2",
+    "model": "Qwen3-Coder-480B-A35B-Instruct"
+  },
+  "terminus_kira_claude_opus_4_6": {
+    "harness": "Terminus-KIRA",
+    "model": "Claude Opus 4.6"
+  },
+  "terminus_kira_gemini_3_1_pro": {
+    "harness": "Terminus-KIRA",
+    "model": "Gemini 3.1 Pro"
+  },
+  "tongagents_claude_opus_4_6": {
+    "harness": "TongAgents",
+    "model": "Claude Opus 4.6"
+  }
+}

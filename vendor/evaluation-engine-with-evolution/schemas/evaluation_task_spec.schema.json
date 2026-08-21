@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-task-spec/v0.1",
+  "type": "object",
+  "required": ["task_id", "task_revision", "weight", "capability_loadings", "metrics"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "task_revision": {"type": "string", "minLength": 1},
+    "task_family": {"type": ["string", "null"]},
+    "weight": {"type": "number", "exclusiveMinimum": 0},
+    "capability_loadings": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["metric_id", "min", "max", "direction"],
+        "properties": {
+          "metric_id": {"type": "string", "minLength": 1},
+          "min": {"type": "number"},
+          "max": {"type": "number"},
+          "direction": {"enum": ["maximize", "minimize"]},
+          "weight": {"type": "number", "exclusiveMinimum": 0},
+          "required": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}

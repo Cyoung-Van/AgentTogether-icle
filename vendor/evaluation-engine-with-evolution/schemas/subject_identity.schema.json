@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience-evaluation-subject-identity/v0.1",
+  "type": "object",
+  "required": ["subject_id"],
+  "properties": {
+    "subject_id": {"type": "string", "minLength": 1},
+    "model_id": {"type": "string"},
+    "model": {"type": "string"},
+    "model_revision": {"type": "string"},
+    "model_config_id": {"type": "string"},
+    "provider": {"type": "string"},
+    "harness_id": {"type": "string"},
+    "harness": {"type": "string"},
+    "harness_revision": {"type": "string"}
+  },
+  "additionalProperties": true
+}

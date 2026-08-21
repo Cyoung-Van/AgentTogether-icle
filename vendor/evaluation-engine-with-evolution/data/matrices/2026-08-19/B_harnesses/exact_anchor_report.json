@@ -1,0 +1,12 @@
+{
+  "anchor_status": "none_in_current_public_snapshot",
+  "as_of": "2026-08-19",
+  "exact_anchor_blocks": 0,
+  "exact_pairwise_comparisons": 0,
+  "next_action_if_zero": [
+    "obtain task-level public runs with complete benchmark/task/model/harness/environment revisions",
+    "run a controlled cross-harness benchmark with all non-harness conditions frozen"
+  ],
+  "provisional_same_label_blocks": 7725,
+  "schema_version": "experience-evaluation-b-exact-anchor-report/v0.1"
+}
