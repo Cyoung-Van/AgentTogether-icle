@@ -1,4 +1,4 @@
-# DECISIONS — AgentDesk (`icle`)
+# DECISIONS — AgentTogether (`icle`)
 
 ## 2026-08-14 D1: 项目定位
 
@@ -54,8 +54,8 @@ icle 收成三层 OS，不再用合成分当能力：
 - 批次流水、接手笔记、历史计划书留在本地 `docs/internal/` 与 `docs/archive/`，不进 Git。
 - vendor 引擎代码是 Apache-2.0；`vendor/.../data/` 不随 MIT 重新授权，见该目录 `NOTICE`。
 
-## 2026-08-22 D8: 对外名 AgentDesk
+## 2026-08-22 D8: 对外名 AgentTogether
 
-- 对外产品名是 AgentDesk；代码名仍是 `icle`。
+- 对外产品名是 AgentTogether；代码名仍是 `icle`；仓库是 `AgentTogether-icle`。
 - 包、CLI（`python -m icle`）、环境变量（`ICLE_TOKEN`）、schema id 不改。
-- 界面品牌、README、文档标题用 AgentDesk。
+- 界面品牌、README、文档标题用 AgentTogether。

@@ -1,4 +1,4 @@
-# AgentDesk 控制面
+# AgentTogether 控制面
 
 Vite + React。从仓库根目录构建并让 FastAPI 托管：
 

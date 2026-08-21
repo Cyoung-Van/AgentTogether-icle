@@ -49,7 +49,7 @@ function Shell() {
     <div className="shell">
       <aside className="sidebar">
         <div className="brand-row">
-          <div className="brand">AgentDesk</div>
+          <div className="brand">AgentTogether</div>
         </div>
         <nav aria-label={t('nav.primary')}>
           {PRIMARY_NAV.map((item) => (

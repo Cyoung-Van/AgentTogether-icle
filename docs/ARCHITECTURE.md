@@ -1,6 +1,6 @@
-# AgentDesk 架构（2026-08-22，批次 46）
+# AgentTogether 架构（2026-08-22，批次 46）
 
-AgentDesk（代码名 `icle`）= Runner + 控制面。度量内核是 vendored `experience_evaluation`。决策层单独标量化。
+AgentTogether（代码名 `icle`）= Runner + 控制面。度量内核是 vendored `experience_evaluation`。决策层单独标量化。
 
 现行规则：`DECISIONS.md`。评价原则对齐 vendored 引擎 README。
 

@@ -197,7 +197,7 @@ def cost_center(request: Request) -> dict:
     )
     by_agent = _cost_bucket(
         actuals,
-        lambda item: item.get("agent") or ("AgentDesk Intelligence" if item.get("scope") == "intelligence" else item.get("provider")),
+        lambda item: item.get("agent") or ("AgentTogether Intelligence" if item.get("scope") == "intelligence" else item.get("provider")),
     )
     by_model = _cost_bucket(actuals, lambda item: f"{item.get('provider', '?')}/{item.get('model', '?')}")
     by_project = _cost_bucket(actuals, lambda item: item.get("project_id") or "Unattributed")
