@@ -1,6 +1,6 @@
-# icle
+# AgentDesk
 
-个人 Agent 的运行器、度量器和决策器。它在你自己的任务上跑 Agent、记下谁做成了什么、按七轴算残差，再按你的政策决定下次用谁。
+个人 Agent 工作台（代码名 `icle`）。运行、度量、决策：在你自己的任务上跑 Agent，记下谁做成了什么，按七轴算残差，再按你的政策决定下次用谁。
 
 它不是公开 Benchmark 排行榜。缺失不是 0。未知成本不是 `$0`。
 
@@ -12,7 +12,7 @@
 
 **今天**
 
-![ICLE 主页](docs/screenshots/home.png)
+![AgentDesk 主页](docs/screenshots/home.png)
 
 **任务工作台**
 
@@ -77,7 +77,7 @@ PYTHONPATH=src python -m unittest discover -s tests -q
 
 ## 许可
 
-icle 源码与文档为 [MIT](LICENSE)。
+AgentDesk（`icle`）源码与文档为 [MIT](LICENSE)。
 
 本仓库还带了第三方组件，许可不因 MIT 而改变：
 
