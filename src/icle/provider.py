@@ -22,6 +22,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .http_transport import validate_endpoint, open_authenticated
+
 PROVIDER_TYPES = ("openai-compatible", "anthropic-compatible", "local", "cli", "custom")
 PROVIDER_ROLES = ("extraction", "judging", "planning", "routing", "general")
 PROVIDER_STATUSES = ("connected", "unavailable", "misconfigured")
@@ -72,11 +74,10 @@ def validate_provider_config(data: Any) -> dict:
     if data["type"] in ("openai-compatible", "anthropic-compatible", "local") and not base_url.strip():
         raise ProviderError(f"{SCHEMA}: {data['type']} requires base_url")
     if data["type"] in ("openai-compatible", "anthropic-compatible", "local"):
-        if not (base_url.startswith("https://") or base_url.startswith("http://127.0.0.1")
-                or base_url.startswith("http://localhost")):
-            raise ProviderError(
-                f"{SCHEMA}: base_url must be https (or localhost for testing)"
-            )
+        try:
+            validate_endpoint(base_url)
+        except ValueError as exc:
+            raise ProviderError(str(exc)) from exc
     roles = data.get("roles", [])
     if not isinstance(roles, list) or not all(r in PROVIDER_ROLES for r in roles):
         raise ProviderError(f"{SCHEMA}: roles must be known roles {', '.join(PROVIDER_ROLES)}")
@@ -109,6 +110,17 @@ def validate_provider_config(data: Any) -> dict:
     if last_checked_at is not None and not isinstance(last_checked_at, str):
         raise ProviderError(f"{SCHEMA}: last_checked_at must be a string or null")
     return data
+
+
+def _serialized(func):
+    from functools import wraps
+    from .storage import transaction
+
+    @wraps(func)
+    def wrapped(store, *args, **kwargs):
+        with transaction(Path(store) / "providers.lock"):
+            return func(store, *args, **kwargs)
+    return wrapped
 
 
 # ---------------------------------------------------------------- persistence
@@ -163,6 +175,7 @@ def get_provider(store: str | Path, provider_id: str) -> dict[str, Any]:
     return configs[provider_id]
 
 
+@_serialized
 def save_provider(
     store: str | Path,
     config: dict[str, Any],
@@ -196,6 +209,7 @@ def save_provider(
     return mask_provider(merged)
 
 
+@_serialized
 def delete_provider(store: str | Path, provider_id: str) -> None:
     configs = _load_configs(store)
     if provider_id not in configs:
@@ -206,6 +220,18 @@ def delete_provider(store: str | Path, provider_id: str) -> None:
     if provider_id in secrets:
         del secrets[provider_id]
         _save_secrets(store, secrets)
+
+
+@_serialized
+def _update_provider_fields(store, provider_id, *, only_if_models_empty=False, **fields):
+    configs = _load_configs(store)
+    if provider_id not in configs:
+        raise ProviderError(f"provider not found: {provider_id}")
+    if only_if_models_empty and configs[provider_id].get("models"):
+        return configs[provider_id]
+    configs[provider_id] = {**configs[provider_id], **fields}
+    _save_configs(store, configs)
+    return configs[provider_id]
 
 
 def _is_local_endpoint(config: dict[str, Any]) -> bool:
@@ -257,9 +283,13 @@ def mask_provider(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _http_get(base_url: str, path: str, headers: dict[str, str], timeout: float) -> str:
+    try:
+        validate_endpoint(base_url)
+    except ValueError as exc:
+        raise ProviderError(str(exc)) from exc
     url = base_url.rstrip("/") + path
     request = urllib.request.Request(url, headers=headers, method="GET")
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    with open_authenticated(request, timeout=timeout) as response:
         return response.read().decode("utf-8")
 
 
@@ -296,16 +326,14 @@ def test_provider(
         status, error = "connected", None
     except (ProviderError, urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as exc:
         status, error = "unavailable", str(exc)[:200]
-    configs = _load_configs(store)
-    configs[provider_id] = {**configs[provider_id], "status": status, "last_checked_at": _now()}
-    _save_configs(store, configs)
+    updated = _update_provider_fields(store, provider_id, status=status, last_checked_at=_now())
     return {
         "provider_id": provider_id,
         "ok": status == "connected",
         "status": status,
         "error": error,
         "latency_ms": round((time.monotonic() - started) * 1000),
-        "last_checked_at": configs[provider_id]["last_checked_at"],
+        "last_checked_at": updated["last_checked_at"],
     }
 
 
@@ -356,14 +384,10 @@ def discover_models(
                 if isinstance(item.get("display_name"), str) and item["display_name"]:
                     entry["alias"] = item["display_name"]
                 models.append(entry)
-        configs = _load_configs(store)
-        configs[provider_id] = {**configs[provider_id], "status": "connected", "last_checked_at": _now()}
-        _save_configs(store, configs)
+        _update_provider_fields(store, provider_id, status="connected", last_checked_at=_now())
         return {"provider_id": provider_id, "ok": True, "models": models, "error": None}
     except (ProviderError, urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError, json.JSONDecodeError) as exc:
-        configs = _load_configs(store)
-        configs[provider_id] = {**configs[provider_id], "status": "unavailable", "last_checked_at": _now()}
-        _save_configs(store, configs)
+        _update_provider_fields(store, provider_id, status="unavailable", last_checked_at=_now())
         return {
             "provider_id": provider_id,
             "ok": False,
@@ -394,14 +418,8 @@ def test_and_discover(
         if not config.get("models"):
             found = discover_models(store, provider_id, timeout=timeout)
             if found["ok"] and found["models"]:
-                configs = _load_configs(store)
-                configs[provider_id] = {
-                    **configs[provider_id],
-                    "models": found["models"],
-                    "status": "connected",
-                    "last_checked_at": _now(),
-                }
-                _save_configs(store, configs)
+                _update_provider_fields(store, provider_id, only_if_models_empty=True,
+                                        models=found["models"], status="connected", last_checked_at=_now())
                 result["models_synced"] = True
     result["provider"] = mask_provider(get_provider(store, provider_id))
     return result

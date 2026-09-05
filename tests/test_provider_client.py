@@ -44,7 +44,7 @@ class TemperatureFallbackTests(unittest.TestCase):
         return [json.loads(call.args[0].data.decode()) for call in calls]
 
     def test_temperature_zero_is_the_default(self):
-        with mock.patch("urllib.request.urlopen", return_value=_response()) as urlopen:
+        with mock.patch("icle.http_transport.open_authenticated", return_value=_response()) as urlopen:
             self.provider.complete("hi")
         self.assertEqual(self._bodies(urlopen.call_args_list)[0]["temperature"], 0)
 
@@ -55,7 +55,7 @@ class TemperatureFallbackTests(unittest.TestCase):
             400, '{"error":{"message":"invalid temperature: only 1 is allowed for this model"}}'
         )
         with mock.patch(
-            "urllib.request.urlopen", side_effect=[rejection, _response("ok")]
+            "icle.http_transport.open_authenticated", side_effect=[rejection, _response("ok")]
         ) as urlopen:
             self.assertEqual(self.provider.complete("hi"), "ok")
         bodies = self._bodies(urlopen.call_args_list)
@@ -65,7 +65,7 @@ class TemperatureFallbackTests(unittest.TestCase):
 
     def test_an_unrelated_400_is_not_retried(self):
         rejection = _http_error(400, '{"error":{"message":"model not found"}}')
-        with mock.patch("urllib.request.urlopen", side_effect=rejection) as urlopen:
+        with mock.patch("icle.http_transport.open_authenticated", side_effect=rejection) as urlopen:
             with self.assertRaises(IntelligenceError):
                 self.provider.complete("hi")
         self.assertEqual(urlopen.call_count, 1)
@@ -74,7 +74,7 @@ class TemperatureFallbackTests(unittest.TestCase):
         provider = OpenAICompatibleProvider(
             base_url="https://api.example.com/v1", api_key="super-secret", model="m"
         )
-        with mock.patch("urllib.request.urlopen", side_effect=_http_error(500, "boom")):
+        with mock.patch("icle.http_transport.open_authenticated", side_effect=_http_error(500, "boom")):
             with self.assertRaises(IntelligenceError) as caught:
                 provider.complete("hi")
         self.assertNotIn("super-secret", str(caught.exception))
@@ -85,7 +85,7 @@ class TemperatureFallbackTests(unittest.TestCase):
             base_url="https://api.example.com/v1", api_key="super-secret", model="m"
         )
         with mock.patch(
-            "urllib.request.urlopen", side_effect=[rejection, _http_error(500, "boom")]
+            "icle.http_transport.open_authenticated", side_effect=[rejection, _http_error(500, "boom")]
         ):
             with self.assertRaises(IntelligenceError) as caught:
                 provider.complete("hi")

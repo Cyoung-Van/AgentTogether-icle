@@ -758,13 +758,14 @@ def _skill_step_to_task_step(step: dict) -> dict:
     """
     verification = step.get("verification") or {}
     return {
+        "step_id": str(step.get("step_id") or "").split("-")[-1],
         "title": step.get("goal") or step.get("step_id") or "Step",
         "description": step.get("goal") or "",
         "type": "other",
         "context_policy": step.get("context_policy") or "CLEAN",
         "risk": step.get("risk") or "R0",
         # dependencies 可能是候选内引用(S1)或带候选前缀(A-S1);统一取最后段,
-        # 与 _normalize_steps 的 S1..Sn 重编号对齐
+        # 同时保留步骤身份与依赖，避免位置变化使引用指向错误步骤
         "depends_on": [str(d).split("-")[-1] for d in (step.get("dependencies") or [])],
         "required_capabilities": list(step.get("required_capabilities") or []),
         "expected_output": "\n".join(step.get("expected_outputs") or []),

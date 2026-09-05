@@ -132,7 +132,7 @@ class TaskApiTests(unittest.TestCase):
             json={"strategy": "DECOMPOSE", "steps": STEPS},
         )
         edited = [
-            {"title": "Renamed step", "description": "x", "recommended_agent": "hermes",
+            {"step_id": "S1", "title": "Renamed step", "description": "x", "recommended_agent": "hermes",
              "type": "review", "context_policy": "CLEAN"},
         ]
         response = self.client.post(

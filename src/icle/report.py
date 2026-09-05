@@ -362,6 +362,14 @@ def consolidation(
 
 def finishing_consolidation(entries: list[dict[str, Any]]) -> dict[str, Any]:
     """No intelligence layer: the finishing agent's form is authoritative."""
+    if any("is_final" in item for item in entries):
+        finalists = [item for item in entries if item.get("is_final")]
+        winner = max(finalists, key=lambda item: item.get("order", 0)) if finalists else None
+        if winner is None or winner.get("report_status") != "observed":
+            return consolidation(entries, report=None, source="none", reason="final_agent_report_missing")
+        return consolidation(entries, report=winner["report"],
+                             source="single_agent" if len(entries) <= 1 else "finishing_agent",
+                             reason=f"finishing_agent:{winner['task_id']}")
     usable = [item for item in entries if item.get("report_status") == "observed"]
     if not usable:
         return consolidation(entries, report=None, source="none", reason="no_agent_report")

@@ -223,9 +223,9 @@ class TaskCoreTests(unittest.TestCase):
         task = self._task()
         self._plan(task)
         edited = [
-            {"title": "Renamed inspect", "description": "x", "recommended_agent": "hermes",
+            {"step_id": "S1", "title": "Renamed inspect", "description": "x", "recommended_agent": "hermes",
              "type": "analysis", "context_policy": "CLEAN"},
-            {"title": "Implement", "description": "y", "recommended_agent": "kimi",
+            {"step_id": "S2", "title": "Implement", "description": "y", "recommended_agent": "kimi",
              "type": "implementation", "context_policy": "ARTIFACT_ONLY"},
         ]
         task = update_plan_steps(self.store, task["task_id"], steps=edited)

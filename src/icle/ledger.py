@@ -34,6 +34,14 @@ def _sha_text(text: str) -> str:
 
 
 def _chain(record: dict[str, Any], prev_chain: str) -> str:
+    version = record.get("hash_version", 1)
+    if version == 2:
+        protected = {key: value for key, value in record.items() if key != "chain"}
+        protected["prev"] = prev_chain
+        return _sha_text(json.dumps(protected, sort_keys=True, ensure_ascii=False,
+                                    separators=(",", ":"), allow_nan=False))
+    if version != 1:
+        raise LedgerError(f"unsupported ledger hash_version: {version!r}")
     protected = {
         "record_id": record["record_id"],
         "kind": record["kind"],
@@ -172,6 +180,8 @@ class ExperienceLedger:
         records = self._read_records_locked()
         prev = records[-1]["chain"] if records else GENESIS
         entry = dict(record)
+        entry["hash_version"] = 2
+        entry.pop("chain", None)
         entry["seq"] = len(records) + 1
         entry["prev"] = prev
         entry["chain"] = _chain(entry, prev)

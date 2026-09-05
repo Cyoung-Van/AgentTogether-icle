@@ -6,6 +6,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -20,6 +21,10 @@ from icle.experience import record_observation  # noqa: E402
 
 class AgentDecisionProfileTests(unittest.TestCase):
     def setUp(self) -> None:
+        # Fixture bindings must not depend on the developer's installed CLI model.
+        local_config = patch("icle.external_evaluation._configured_model_identity", return_value=None)
+        local_config.start()
+        self.addCleanup(local_config.stop)
         self.store = Path(tempfile.mkdtemp()) / "store"
         self.store.mkdir()
         now = datetime.now(timezone.utc)

@@ -95,8 +95,12 @@ class OpenAICompatibleProvider:
     name = "openai"
 
     def __init__(self, base_url: str, api_key: str, model: str, timeout: float = 120):
-        if not base_url.startswith("https://") and not base_url.startswith("http://127.0.0.1") and not base_url.startswith("http://localhost"):
-            raise IntelligenceError("base_url must be https (or localhost for testing)")
+        from .http_transport import validate_endpoint
+
+        try:
+            validate_endpoint(base_url)
+        except ValueError as exc:
+            raise IntelligenceError(str(exc)) from exc
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
@@ -107,6 +111,7 @@ class OpenAICompatibleProvider:
         return self.complete_with_usage(prompt)[0]
 
     def _post(self, body: dict[str, Any]) -> dict[str, Any]:
+        from .http_transport import open_authenticated
         import urllib.error
         import urllib.request
 
@@ -120,7 +125,7 @@ class OpenAICompatibleProvider:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            with open_authenticated(request, timeout=self.timeout) as response:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             if exc.code == 400 and "temperature" in body:

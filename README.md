@@ -42,13 +42,13 @@
 
 ## 运行
 
-Python 3.11、Node 18+。默认只绑环回；非 `127.0.0.1` 必须设置 `ICLE_TOKEN`。
+支持 macOS / Linux（Python 3.11、Node 22.12+）。锁实现依赖 `fcntl`，Windows 请使用 WSL，暂不支持原生 Windows。默认只绑环回；非 `127.0.0.1` 必须设置 `ICLE_TOKEN`。
 
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-cd web && npm install && npm run build && cd ..
+pip install --require-hashes -r requirements.lock
+cd web && npm ci && npm run build && cd ..
 
 PYTHONPATH=src python -m icle serve \
   --store ./experience-store \
@@ -62,6 +62,14 @@ PYTHONPATH=src python -m unittest discover -s tests -q
 ```
 
 `experience-store/` 和 `capture-store/` 含本地证据与密钥引用，已忽略，不要提交。
+
+## 执行与证据边界
+
+执行使用**当前工作树的过滤副本**，包括未提交修改和未跟踪文件，不复制 Git 历史。默认排除 `.env`、`.env.*`、私钥、密钥目录、依赖目录和符号链接；项目根目录 `.icleignore` 可按行增加 glob 排除规则。运行页显示提交号、脏状态和排除清单。目录副本不限制 CLI Agent 的系统权限，不是安全沙箱。
+
+API 步骤通过提示获得文件正文；每步完整输出独立保存。文本上下文超过 40 个文件或 256,000 字节、含无法读取的二进制/非 UTF-8 文件时，API 执行明确失败，需缩小输入范围或使用本地 CLI。`CLEAN` 不传文件；`ARTIFACT_ONLY` 仅传初始化后变化的文件，`PROJECT_STATE` 传过滤后的项目文件。
+
+新运行保存实际执行顺序与最终步骤，旧运行只能按时间戳推断顺序。新账本使用 `hash_version: 2` 覆盖完整记录；旧账本仍按原规则验证，**旧记录的 Agent / Episode 归属不因此获得完整性保证**。详见 [可靠性修复说明](docs/RELIABILITY.md)。
 
 ## 仓库里有什么
 

@@ -311,6 +311,15 @@ export interface TaskRun {
   task_id: string
   status: string
   steps: TaskRunStep[]
+  final_step_id?: string | null
+  workspace_init?: {
+    mode: string
+    snapshot_policy?: string
+    source_commit?: string | null
+    source_dirty?: boolean | null
+    excluded_files?: string[]
+    reason?: string
+  }
   created_at?: string
 }
 

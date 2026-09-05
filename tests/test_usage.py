@@ -77,7 +77,7 @@ class RunnerCostSettlementTests(unittest.TestCase):
     def _run(self, executor) -> dict:
         from icle.task import approve_plan, create_task, run_task, save_plan
 
-        task = create_task(self.store, title="t", description="d", project_id="p", project_path="/tmp")
+        task = create_task(self.store, title="t", description="d", project_id="p", project_path="")
         save_plan(self.store, task["task_id"], strategy="DECOMPOSE", steps=[
             {"title": "s", "description": "d", "recommended_agent": "p-1/deepseek-v4-flash",
              "type": "implementation", "context_policy": "ARTIFACT_ONLY",

@@ -557,9 +557,10 @@ function PlanSection({ task, invalidate }: { task: TaskInfo; invalidate: () => v
         return orig ?? { step_id: sid, title: sid, description: '', type: 'other' as const, context_policy: 'CLEAN', risk: 'R0' }
       })
       const convert = (s: any) => ({
+        step_id: String(s.step_id || '').split('-').at(-1) || '',
         title: s.goal || s.step_id, description: s.goal || '', type: 'other' as const,
         context_policy: s.context_policy || 'CLEAN', risk: s.risk || 'R0',
-        depends_on: s.dependencies || [], required_capabilities: s.required_capabilities || [],
+        depends_on: (s.dependencies || []).map((id: string) => id.split('-').at(-1)), required_capabilities: s.required_capabilities || [],
         expected_output: (s.expected_outputs || []).join('\n'),
         verification: s.verification?.type || '',
       })
@@ -721,7 +722,7 @@ function PlanSection({ task, invalidate }: { task: TaskInfo; invalidate: () => v
             <button key={c.candidate_id} className="secondary"
               onClick={async () => {
                 try {
-                  const saved = await api.updatePlanSteps(task.task_id, (c.steps ?? []).map((s: any) => ({ ...s, step_id: '', status: undefined })), c.execution_pattern)
+                  const saved = await api.updatePlanSteps(task.task_id, (c.steps ?? []).map((s: any) => ({ ...s, status: undefined })), c.execution_pattern)
                   setPlanDirty(false)
                   setStrategy(saved.plan?.strategy ?? c.execution_pattern)
                   setSteps(saved.plan?.steps ?? [])
@@ -752,7 +753,7 @@ function PlanSection({ task, invalidate }: { task: TaskInfo; invalidate: () => v
         {steps.map((step, index) => (
           <div key={index} className="step-editor">
             <div className="row-meta">
-              <span className="badge dim">S{index + 1}</span>
+              <span className="badge dim">{index + 1} · {step.step_id || "new"}</span>
               <button className="mini" onClick={() => moveStep(index, -1)} disabled={index === 0}>↑</button>
               <button className="mini" onClick={() => moveStep(index, 1)} disabled={index === steps.length - 1}>↓</button>
               <button className="mini danger" onClick={() => removeStep(index)}>✕</button>
@@ -842,6 +843,9 @@ function PlanSection({ task, invalidate }: { task: TaskInfo; invalidate: () => v
         )}
       </div>
       {error && <div className="error">{error}</div>}
+      {task.project_path && <p className="muted">{lang === 'zh'
+        ? '执行会复制当前文件，包括未提交修改和未跟踪文件；不复制 Git 历史。默认排除 .env、私钥及依赖目录，可通过项目根目录的 .icleignore 增加排除规则。'
+        : 'Execution copies current files, including uncommitted and untracked files, without Git history. Environment files, private keys and dependency folders are excluded. Add exclusions in .icleignore at the project root.'}</p>}
       {task.status === 'approved' && <p className="muted">{t('task.reviewNote')}</p>}
     </section>
   )
@@ -872,6 +876,18 @@ function RunSection({ task }: { task: TaskInfo }) {
     <section className="panel">
       <h2>{t('task.run')} {run?.run_id ?? ''}</h2>
       {!run && <p className="muted">{t('task.noRunYet')}</p>}
+      {run?.workspace_init && <div className="muted">
+        {run.workspace_init.snapshot_policy === 'current_worktree' && <p>
+          {lang === 'zh' ? '已复制当前工作树' : 'Current working tree copied'}
+          {run.workspace_init.source_commit && <> · {run.workspace_init.source_commit.slice(0, 12)}</>}
+          {run.workspace_init.source_dirty && <> · {lang === 'zh' ? '含未提交文件' : 'includes uncommitted files'}</>}
+        </p>}
+        {run.workspace_init.reason && <p className="error">{run.workspace_init.reason}</p>}
+        {!!run.workspace_init.excluded_files?.length && <details>
+          <summary>{lang === 'zh' ? '未进入工作区的文件或目录' : 'Excluded files or folders'} ({run.workspace_init.excluded_files.length})</summary>
+          <pre>{run.workspace_init.excluded_files.join('\n')}</pre>
+        </details>}
+      </div>}
       {run && (
         <CollapsibleList initialCount={8}>
           {run.steps.map((step) => (
