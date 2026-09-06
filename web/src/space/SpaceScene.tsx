@@ -4,7 +4,7 @@ import { useLang } from '../i18n'
 import { SpaceController } from './engine/SpaceController'
 import { galaxyForPath } from './hierarchy'
 import SpaceFallback from './SpaceFallback'
-import { useSpaceNav } from './SpaceNav'
+import { useSpaceNav } from './SpaceNavContext'
 
 export default function SpaceScene() {
   const location = useLocation()
@@ -96,6 +96,7 @@ export default function SpaceScene() {
           return (
             <div
               key={node.id}
+              data-node-id={node.id}
               className="space-label is-center is-root"
               ref={(el) => {
                 if (el) labelsRef.current.set(node.id, el)
@@ -116,11 +117,13 @@ export default function SpaceScene() {
               if (el) labelsRef.current.set(node.id, el)
               else labelsRef.current.delete(node.id)
             }}
-            aria-label={canReturn ? `${label}. ${returnHint}` : showBlurb ? `${label}. ${blurb}` : label}
+            aria-label={canReturn ? `${label}. ${t('space.youAreHere')}. ${returnHint}` : `${t('space.enterPrefix')}${label}`}
             disabled={locked}
-            autoFocus={lastFocusId === node.id}
+            data-node-id={node.id}
             onFocus={() => controllerRef.current?.setFocus(node.id)}
             onBlur={() => controllerRef.current?.setFocus(null)}
+            onPointerEnter={() => controllerRef.current?.setHover(node.id)}
+            onPointerLeave={() => controllerRef.current?.setHover(null)}
             onClick={() => {
               if (canReturn) back()
               else enter(node.path, node.id)
@@ -128,7 +131,7 @@ export default function SpaceScene() {
           >
             <span className="space-label-name">{label}</span>
             {canReturn ? (
-              <span className="space-label-return">{returnHint}</span>
+              <><span className="space-label-here">{t('space.youAreHere')}</span><span className="space-label-return">{returnHint}</span></>
             ) : (
               <span className={`space-label-blurb ${showBlurb ? 'is-on' : ''}`}>{blurb}</span>
             )}

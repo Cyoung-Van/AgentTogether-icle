@@ -3,13 +3,17 @@ import type { GalaxyLayer, PlanetNode, SpaceField } from './types'
 
 const today: PlanetNode = {
   id: 'today',
-  path: '/today',
+  path: '/space/today',
   titleKey: 'home.title',
   blurbKey: 'space.blurb.today',
   icon: 'today',
   palette: ice,
-  desktop: { x: 22, y: 30, size: 96, depth: 0.18 },
-  mobile: { x: 28, y: 20, size: 84, depth: 0.12 },
+  children: [
+    { id: 'today-overview', path: '/today', titleKey: 'space.section.overview', blurbKey: 'space.section.overviewHint', palette: ice, icon: 'today' },
+    { id: 'today-needs', path: '/today#needs-attention', titleKey: 'overview.needsYou', blurbKey: 'space.section.needsHint', palette: cyan, icon: 'tasks' },
+    { id: 'today-active', path: '/today#active-work', titleKey: 'home.continue', blurbKey: 'space.section.activeHint', palette: azure, icon: 'tasks' },
+    { id: 'today-resources', path: '/today#resources', titleKey: 'space.section.resources', blurbKey: 'space.section.resourcesHint', palette: steel, icon: 'cost' },
+  ],
 }
 
 const taskList: PlanetNode = {
@@ -19,8 +23,6 @@ const taskList: PlanetNode = {
   blurbKey: 'space.blurb.taskList',
   icon: 'tasks',
   palette: cyan,
-  desktop: { x: 30, y: 36, size: 104, depth: 0.06 },
-  mobile: { x: 30, y: 22, size: 90, depth: 0.04 },
 }
 
 const newTask: PlanetNode = {
@@ -30,8 +32,6 @@ const newTask: PlanetNode = {
   blurbKey: 'space.blurb.newTask',
   icon: 'newTask',
   palette: { c0: '#b4d8cc', c1: '#3d7f6c', c2: '#142820', core: '#e4f2ec' },
-  desktop: { x: 62, y: 28, size: 88, depth: 0.22 },
-  mobile: { x: 72, y: 28, size: 80, depth: 0.16 },
 }
 
 const episodes: PlanetNode = {
@@ -41,8 +41,6 @@ const episodes: PlanetNode = {
   blurbKey: 'space.blurb.episodes',
   icon: 'episodes',
   palette: { c0: '#b0cddd', c1: '#447088', c2: '#142430', core: '#e2eef4' },
-  desktop: { x: 40, y: 68, size: 84, depth: 0.34 },
-  mobile: { x: 32, y: 58, size: 78, depth: 0.28 },
 }
 
 const collabs: PlanetNode = {
@@ -52,8 +50,6 @@ const collabs: PlanetNode = {
   blurbKey: 'space.blurb.collabs',
   icon: 'collabs',
   palette: { c0: '#a8c8d4', c1: '#3a6c80', c2: '#142428', core: '#deecee' },
-  desktop: { x: 72, y: 64, size: 78, depth: 0.4 },
-  mobile: { x: 70, y: 64, size: 74, depth: 0.32 },
 }
 
 const agentDir: PlanetNode = {
@@ -63,8 +59,6 @@ const agentDir: PlanetNode = {
   blurbKey: 'space.blurb.agentDir',
   icon: 'agents',
   palette: azure,
-  desktop: { x: 30, y: 38, size: 104, depth: 0.08 },
-  mobile: { x: 30, y: 26, size: 90, depth: 0.06 },
 }
 
 const localAgents: PlanetNode = {
@@ -74,8 +68,6 @@ const localAgents: PlanetNode = {
   blurbKey: 'space.blurb.localAgents',
   icon: 'local',
   palette: { c0: '#b0c4dc', c1: '#446088', c2: '#162030', core: '#e4ecf4' },
-  desktop: { x: 66, y: 32, size: 90, depth: 0.24 },
-  mobile: { x: 72, y: 30, size: 80, depth: 0.18 },
 }
 
 const recommend: PlanetNode = {
@@ -85,8 +77,6 @@ const recommend: PlanetNode = {
   blurbKey: 'space.blurb.recommend',
   icon: 'recommend',
   palette: { c0: '#b8c8dc', c1: '#4a6488', c2: '#182436', core: '#e6eef4' },
-  desktop: { x: 50, y: 68, size: 82, depth: 0.36 },
-  mobile: { x: 50, y: 64, size: 76, depth: 0.3 },
 }
 
 const taskStudio: PlanetNode = {
@@ -96,8 +86,6 @@ const taskStudio: PlanetNode = {
   blurbKey: 'space.blurb.tasks',
   icon: 'tasks',
   palette: cyan,
-  desktop: { x: 48, y: 40, size: 120, depth: 0 },
-  mobile: { x: 70, y: 28, size: 100, depth: 0 },
   children: [taskList, newTask, episodes, collabs],
 }
 
@@ -108,31 +96,37 @@ const agents: PlanetNode = {
   blurbKey: 'space.blurb.agents',
   icon: 'agents',
   palette: azure,
-  desktop: { x: 74, y: 26, size: 94, depth: 0.22 },
-  mobile: { x: 32, y: 50, size: 86, depth: 0.2 },
   children: [agentDir, localAgents, recommend],
 }
 
 const sessions: PlanetNode = {
   id: 'sessions',
-  path: '/sessions',
+  path: '/space/sessions',
   titleKey: 'nav.sessions',
   blurbKey: 'space.blurb.sessions',
   icon: 'sessions',
   palette: lilac,
-  desktop: { x: 36, y: 70, size: 84, depth: 0.38 },
-  mobile: { x: 72, y: 56, size: 78, depth: 0.32 },
+  children: [
+    { id: 'sessions-browse', path: '/sessions#browse', titleKey: 'space.section.browse', blurbKey: 'space.section.browseHint', palette: lilac, icon: 'sessions' },
+    { id: 'sessions-task', path: '/sessions#task-preparation', titleKey: 'space.section.sessionTask', blurbKey: 'space.section.sessionTaskHint', palette: cyan, icon: 'newTask' },
+    { id: 'sessions-analysis', path: '/sessions#analysis-preparation', titleKey: 'space.section.sessionAnalysis', blurbKey: 'space.section.sessionAnalysisHint', palette: azure, icon: 'episodes' },
+  ],
 }
 
 const settings: PlanetNode = {
   id: 'settings',
-  path: '/settings',
+  path: '/space/settings',
   titleKey: 'nav.settings',
   blurbKey: 'space.blurb.settings',
   icon: 'settings',
   palette: steel,
-  desktop: { x: 70, y: 72, size: 76, depth: 0.46 },
-  mobile: { x: 50, y: 80, size: 74, depth: 0.4 },
+  children: [
+    { id: 'settings-general', path: '/settings#general', titleKey: 'space.section.general', blurbKey: 'space.section.generalHint', palette: steel, icon: 'settings' },
+    { id: 'settings-providers', path: '/providers', titleKey: 'nav.providers', blurbKey: 'space.section.providersHint', palette: azure, icon: 'providers' },
+    { id: 'settings-pricing', path: '/settings#pricing', titleKey: 'settings.pricingCatalog', blurbKey: 'space.section.pricingHint', palette: ice, icon: 'cost' },
+    { id: 'settings-budgets', path: '/settings#budgets', titleKey: 'space.section.budgets', blurbKey: 'space.section.budgetsHint', palette: cyan, icon: 'cost' },
+    { id: 'settings-data', path: '/settings#data', titleKey: 'space.section.dataSafety', blurbKey: 'space.section.dataHint', palette: lilac, icon: 'settings' },
+  ],
 }
 
 export const HOME_CENTER: PlanetNode = {
@@ -142,70 +136,37 @@ export const HOME_CENTER: PlanetNode = {
   blurbKey: 'space.blurb.home',
   icon: 'today',
   palette: ice,
-  desktop: { x: 50, y: 50, size: 128, depth: 0 },
-  mobile: { x: 50, y: 50, size: 110, depth: 0 },
+  children: [today, taskStudio, agents, sessions, settings],
 }
 
-export const HOME_FIELD: SpaceField = {
-  id: 'home',
-  path: '/',
-  titleKey: 'nav.home',
-  planets: [today, taskStudio, agents, sessions, settings],
+// One tree defines centers, their direct entrances, and semantic parents.
+// Nodes without children always resolve to the existing DOM workspace routes.
+const GALAXIES: GalaxyLayer[] = []
+const ALL_NODES: PlanetNode[] = []
+const PARENTS = new Map<string, string | null>()
+function indexNode(node: PlanetNode, parent: PlanetNode | null) {
+  ALL_NODES.push(node)
+  PARENTS.set(node.path, parent?.path ?? null)
+  if (!node.children?.length) return
+  GALAXIES.push({ id: node.id, path: node.path, titleKey: node.titleKey, center: node, parent, children: node.children })
+  node.children.forEach(child => indexNode(child, node))
 }
+indexNode(HOME_CENTER, null)
+// Legacy whole-page URLs remain available and return to their owning galaxy.
+PARENTS.set('/sessions', '/space/sessions')
+PARENTS.set('/settings', '/space/settings')
+export const HOME_GALAXY = GALAXIES.find(g => g.path === '/')!
+export const TASK_GALAXY = GALAXIES.find(g => g.path === '/space/tasks')!
+export const AGENT_GALAXY = GALAXIES.find(g => g.path === '/space/agents')!
 
-export const HOME_GALAXY: GalaxyLayer = {
-  id: 'home',
-  path: '/',
-  titleKey: 'nav.home',
-  center: HOME_CENTER,
-  parent: null,
-  children: HOME_FIELD.planets,
+export const ALL_GALAXIES = GALAXIES
+
+// Only known section fragments participate in navigation; unrelated fragments
+// and query parameters keep the original workspace behavior.
+export function navigationPath(location: { pathname: string; hash?: string }): string {
+  const section = location.pathname + (location.hash ?? '')
+  return PARENTS.has(section) ? section : location.pathname
 }
-
-export const TASK_GALAXY: GalaxyLayer = {
-  id: 'tasks',
-  path: '/space/tasks',
-  titleKey: 'nav.tasks',
-  center: taskStudio,
-  parent: HOME_CENTER,
-  children: taskStudio.children ?? [],
-}
-
-export const AGENT_GALAXY: GalaxyLayer = {
-  id: 'agents',
-  path: '/space/agents',
-  titleKey: 'nav.agents',
-  center: agents,
-  parent: HOME_CENTER,
-  children: agents.children ?? [],
-}
-
-const GALAXIES = [HOME_GALAXY, TASK_GALAXY, AGENT_GALAXY]
-
-export const CLUSTER_FIELDS: SpaceField[] = [
-  {
-    id: 'tasks',
-    path: '/space/tasks',
-    titleKey: 'nav.tasks',
-    planets: taskStudio.children ?? [],
-  },
-  {
-    id: 'agents',
-    path: '/space/agents',
-    titleKey: 'nav.agents',
-    planets: agents.children ?? [],
-  },
-]
-
-const ALL_NODES = [
-  HOME_CENTER,
-  today,
-  taskStudio,
-  agents,
-  sessions,
-  settings,
-  ...CLUSTER_FIELDS.flatMap((field) => field.planets),
-]
 
 export function galaxyForPath(pathname: string): GalaxyLayer | null {
   return GALAXIES.find((layer) => layer.path === pathname) ?? null
@@ -231,28 +192,9 @@ export function nodeForPath(pathname: string): PlanetNode | undefined {
 }
 
 export function parentPath(pathname: string): string | null {
-  if (pathname === '/') return null
-  if (pathname.startsWith('/space/')) return '/'
-  if (
-    pathname === '/today' ||
-    pathname === '/sessions' ||
-    pathname === '/settings' ||
-    pathname === '/activity'
-  ) {
-    return '/'
-  }
-  if (
-    pathname === '/tasks' ||
-    pathname === '/tasks/new' ||
-    pathname === '/episodes' ||
-    pathname === '/collabs'
-  ) {
-    return '/space/tasks'
-  }
-  if (pathname === '/agents' || pathname === '/agents/local' || pathname === '/recommend') {
-    return '/space/agents'
-  }
-  if (pathname === '/providers' || pathname === '/cost') return '/settings'
+  if (PARENTS.has(pathname)) return PARENTS.get(pathname) ?? null
+  if (pathname === '/activity') return '/'
+  if (pathname === '/cost') return '/settings#budgets'
   if (pathname === '/agent-profile') return '/agents'
   const task = pathname.match(/^\/tasks\/([^/]+)$/)
   if (task) return '/tasks'
@@ -279,7 +221,8 @@ export function trailForPath(pathname: string): Array<{ path: string; titleKey: 
 
 export function titleKeyForPath(pathname: string): string {
   if (pathname === '/') return 'nav.home'
-  if (pathname === '/today') return 'home.title'
+  if (pathname === '/settings') return 'nav.settings'
+  if (pathname === '/sessions') return 'nav.sessions'
   const node = nodeForPath(pathname)
   if (node) return node.titleKey
   if (pathname.startsWith('/tasks/')) return 'nav.tasks'

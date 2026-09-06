@@ -7,3 +7,5 @@
 | [screenshots/](screenshots/) | README 里的控制面截图 |
 
 关键决定在仓库根 [`DECISIONS.md`](../DECISIONS.md)。
+
+- [立体星系导航实现与验证](GALAXY_NAVIGATION.md)

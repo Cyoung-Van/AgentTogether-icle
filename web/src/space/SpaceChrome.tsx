@@ -3,16 +3,17 @@ import { useQuery } from '@tanstack/react-query'
 import IntelligenceStatus from '../components/IntelligenceStatus'
 import { api } from '../api/client'
 import { useLang, type Lang } from '../i18n'
-import { isComposingPath, parentPath, trailForPath } from './hierarchy'
-import { useSpaceNav } from './SpaceNav'
+import { isComposingPath, parentPath, trailForPath, navigationPath } from './hierarchy'
+import { useSpaceNav } from './SpaceNavContext'
 
 export default function SpaceChrome() {
   const { lang, t, setLang } = useLang()
   const location = useLocation()
   const { back, home, locked } = useSpaceNav()
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, refetchInterval: 30_000 })
-  const trail = trailForPath(location.pathname)
-  const parent = parentPath(location.pathname)
+  const path = navigationPath(location)
+  const trail = trailForPath(path)
+  const parent = parentPath(path)
   const composing = isComposingPath(location.pathname)
 
   return (

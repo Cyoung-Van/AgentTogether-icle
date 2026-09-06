@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import { galaxyForPath } from '../hierarchy'
-import { clamp, easeInOutCubic, easeOutCubic, lerp } from '../motion'
+import { galaxyForPath, parentPath } from '../hierarchy'
+import { clamp, easeInOutCubic, lerp } from '../motion'
 import type { GalaxyLayer, PlanetNode } from '../types'
-import { CAM_REST, centerRadius, nodeRadius, orbitAngle, orbitFor, orbitOffset, satRadius, type OrbitParams } from './orbits'
+import { CAM_REST, cameraDistance, centerRadius, nodeRadius, orbitAngle, orbitFor, orbitOffset, satRadius, type OrbitParams } from './orbits'
 
 export type PlayHooks = {
   onCovered?: () => void
@@ -35,6 +35,9 @@ type LayerMemory = {
   path: string
   anchor: THREE.Vector3
   satTimes: Record<string, number>
+  magnets: Record<string, THREE.Vector3>
+  cam: THREE.Vector3
+  look: THREE.Vector3
 }
 
 type AnimKind = 'enter-galaxy' | 'enter-leaf' | 'return-galaxy' | 'return-leaf'
@@ -53,6 +56,9 @@ type Anim = {
   toLook: THREE.Vector3
   nextPath: string
   nextGalaxy: GalaxyLayer | null
+  settled: boolean
+  sourcePath: string
+  startRadius: number
   covered: boolean
   swapped: boolean
   hooks: PlayHooks
@@ -62,7 +68,7 @@ const TAU = Math.PI * 2
 const CLEAR = 0x050816
 const MAGNET_NDC = 0.15
 const MAGNET_KEEP = 0.2
-const MAGNET_MAX = 0.16
+const MAGNET_MAX = 0.06
 const ENTER_MS = 880
 const RETURN_MS = 820
 
@@ -97,12 +103,16 @@ export class SpaceController {
   private sphereGeo: THREE.SphereGeometry
   private atmosphereGeo: THREE.SphereGeometry
   private planets = new Map<string, Body>()
+  private bodyCache = new Map<string, Body>()
+  private routePath = '/'
+  private leafId: string | null = null
+  private viewHeight = 700
+  private debugTrace: unknown[] = []
   private planetRoot: THREE.Group
   private farStars: THREE.Points
   private midStars: THREE.Points
   private band: THREE.Points
   private dust: THREE.Points
-  private dustVel: Float32Array
   private pointTex: THREE.CanvasTexture
   private nebulaRoot: THREE.Group
   private nebulae: THREE.Sprite[] = []
@@ -123,6 +133,7 @@ export class SpaceController {
   private idleWeight = 1
   private attractedId: string | null = null
   private focusId: string | null = null
+  private hoverId: string | null = null
   private pointerNdc = new THREE.Vector2(-9, -9)
   private pointerInside = false
   private anchor = new THREE.Vector3()
@@ -148,6 +159,7 @@ export class SpaceController {
     canvas: HTMLCanvasElement,
     hooks: {
       onAttracted: (id: string | null) => void
+      createRenderer?: (canvas: HTMLCanvasElement) => THREE.WebGLRenderer
     },
   ) {
     this.canvas = canvas
@@ -156,7 +168,7 @@ export class SpaceController {
     this.reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     this.fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = hooks.createRenderer?.(canvas) ?? new THREE.WebGLRenderer({
       canvas,
       antialias: !this.compact,
       alpha: true,
@@ -181,7 +193,7 @@ export class SpaceController {
     this.scene.add(this.hemi, this.keyLight, this.fill)
 
     this.sphereGeo = new THREE.SphereGeometry(1, 48, 32)
-    this.atmosphereGeo = new THREE.SphereGeometry(1.09, 32, 20)
+    this.atmosphereGeo = new THREE.SphereGeometry(1.025, 32, 20)
     this.planetRoot = new THREE.Group()
     this.nebulaRoot = new THREE.Group()
     this.scene.add(this.planetRoot, this.nebulaRoot)
@@ -192,7 +204,6 @@ export class SpaceController {
     this.midStars = stars.mid
     this.band = stars.band
     this.dust = stars.dust
-    this.dustVel = stars.dustVel
     this.scene.add(this.farStars, this.midStars, this.band, this.dust)
     this.makeNebulae()
 
@@ -203,12 +214,17 @@ export class SpaceController {
     window.addEventListener('pointermove', this.onWindowPointer)
     this.lastTime = performance.now()
     this.frame = requestAnimationFrame(this.tick)
-    ;(window as unknown as { __icleSpace?: SpaceController }).__icleSpace = this
   }
 
   inspect() {
     return {
-      path: this.galaxy?.path ?? null,
+      path: this.routePath,
+      layer: this.galaxy?.path ?? null,
+      progress: this.anim ? this.anim.elapsed / this.anim.duration : null,
+      paused: this.paused,
+      reduced: this.reduce,
+      renderer: { memory: this.renderer.info.memory, render: this.renderer.info.render },
+      memory: [...this.memory].map(([path, m]) => ({ path, times: m.satTimes })),
       workspace: this.workspace,
       anim: this.anim?.kind ?? null,
       anchor: this.anchor.toArray(),
@@ -216,6 +232,11 @@ export class SpaceController {
       look: this.camLook.toArray(),
       bodies: [...this.planets.values()].map((body) => ({
         id: body.id,
+        uuid: body.group.uuid,
+        spin: body.spin.rotation.y,
+        opacity: body.opacity,
+        speed: body.speedScale,
+        projected: body.group.position.clone().project(this.camera).toArray(),
         role: body.role,
         x: +body.group.position.x.toFixed(3),
         y: +body.group.position.y.toFixed(3),
@@ -250,6 +271,8 @@ export class SpaceController {
     this.labels = labels
   }
 
+  setHover(id: string | null) { this.hoverId = id }
+
   setFocus(id: string | null) {
     this.focusId = id
     if (id) this.setAttracted(id)
@@ -263,113 +286,88 @@ export class SpaceController {
     return this.generation
   }
 
-  syncRoute(pathname: string) {
-    if (this.anim && this.expectedPath === pathname) return
+  syncRoute(pathname: string, external = false) {
+    if (!external && this.anim && this.expectedPath === pathname) { this.routePath = pathname; return }
     if (this.anim) this.cancelAnim()
+    else if (!this.workspace && this.galaxy?.path !== pathname) this.rememberLayer()
+    if (!external && this.workspace && this.routePath === pathname) return
+    this.routePath = pathname
     const next = galaxyForPath(pathname)
+    if (!external && next && this.galaxy?.path === pathname && !this.workspace) return
     if (next) {
-      this.workspace = false
-      this.planetRoot.visible = true
       const mem = this.memory.get(next.path)
-      this.applyGalaxy(next, {
-        anchor: mem?.anchor ?? new THREE.Vector3(),
-        times: mem?.satTimes,
-        fadeInNew: false,
-      })
+      this.applyGalaxy(next, { anchor: mem?.anchor ?? new THREE.Vector3(), times: mem?.satTimes, magnets: mem?.magnets })
+      for (const body of this.planets.values()) {
+        body.radius = body.radiusGoal
+        body.group.scale.setScalar(body.radius)
+      }
       this.applyRest(true)
+      this.idleWeight = 0
     } else {
       this.workspace = true
+      this.leafId = null
       this.planetRoot.visible = false
-      this.setAttracted(null)
     }
+    this.focusId = null
+    this.setAttracted(null)
     this.expectedPath = null
   }
 
   playEnter(nodeId: string, nextPath: string, hooks: PlayHooks) {
-    if (this.reduce) {
-      this.rememberLayer()
-      hooks.onCovered?.()
-      this.syncRoute(nextPath)
-      hooks.onDone?.()
-      return
-    }
+    if (this.anim) return
     const body = this.planets.get(nodeId)
-    if (!body || body.role !== 'sat') {
-      hooks.onCovered?.()
+    if (this.reduce || !body || body.role !== 'sat') {
+      this.rememberLayer()
       this.syncRoute(nextPath)
-      hooks.onDone?.()
+      hooks.onCovered?.(); hooks.onDone?.()
       return
     }
-    this.rememberLayer()
     this.generation += 1
-    body.speedScale = 0
-    body.magnet.set(0, 0, 0)
+    this.debugTrace = []
+    // Freeze the actual rendered target, including its small magnetic displacement.
+    // Other bodies decelerate for the first 100 ms before the parent snapshot is taken.
     const lockedPos = body.group.position.clone()
     const nextGalaxy = galaxyForPath(nextPath)
-    const offset = this.camOffset()
-    const toLook = lockedPos.clone()
-    const toCam = nextGalaxy
-      ? lockedPos.clone().add(offset)
-      : lockedPos.clone().add(this.leafOffset(body.radius))
-    const fromCam = this.camPos.clone()
-    const fromLook = this.camLook.clone()
+    const distance = cameraDistance(this.camera.aspect, nextGalaxy?.children.length ?? 1, this.viewHeight)
+    const toCam = lockedPos.clone().add(nextGalaxy ? new THREE.Vector3(0, 0, distance) : this.leafOffset(body.radius))
     this.anim = {
-      kind: nextGalaxy ? 'enter-galaxy' : 'enter-leaf',
-      generation: this.generation,
-      elapsed: 0,
-      duration: ENTER_MS / 1000,
-      targetId: nodeId,
-      lockedPos,
-      fromCam,
-      midCam: this.arcMid(fromCam, toCam),
-      toCam,
-      fromLook,
-      toLook,
-      nextPath,
-      nextGalaxy,
-      covered: false,
-      swapped: false,
-      hooks,
+      kind: nextGalaxy ? 'enter-galaxy' : 'enter-leaf', generation: this.generation,
+      elapsed: 0, duration: ENTER_MS / 1000, targetId: nodeId, lockedPos,
+      fromCam: this.camPos.clone(), fromLook: this.camLook.clone(),
+      midCam: new THREE.Vector3(), toCam, toLook: lockedPos.clone(),
+      nextPath, nextGalaxy, sourcePath: this.routePath, startRadius: body.radius,
+      settled: false, covered: false, swapped: false, hooks,
     }
     this.expectedPath = nextPath
-    this.idleWeight = 0
+    this.focusId = null
   }
 
   playReturn(nextPath: string, hooks: PlayHooks) {
-    if (this.reduce) {
-      hooks.onCovered?.()
+    if (this.anim) return
+    const nextGalaxy = galaxyForPath(nextPath)
+    const mem = this.memory.get(nextPath)
+    // A refreshed/deep-linked page has no visual history. Use the deterministic parent.
+    if (this.reduce || (this.workspace && !this.leafId) || !nextGalaxy || !mem || parentPath(this.routePath) !== nextPath) {
       this.syncRoute(nextPath)
-      hooks.onDone?.()
+      hooks.onCovered?.(); hooks.onDone?.()
       return
     }
-    this.rememberLayer()
+    if (!this.workspace) this.rememberLayer()
     this.generation += 1
-    const nextGalaxy = galaxyForPath(nextPath)
-    const mem = nextGalaxy ? this.memory.get(nextGalaxy.path) : undefined
-    const nextAnchor = mem?.anchor.clone() ?? new THREE.Vector3()
-    const toCam = nextAnchor.clone().add(this.camOffset())
-    const fromCam = this.camPos.clone()
-    const targetId = this.galaxy?.center.id ?? nextGalaxy?.center.id ?? 'home'
+    this.debugTrace = []
+    const targetId = this.workspace ? this.leafId : this.galaxy?.center.id
+    const target = targetId ? this.planets.get(targetId) : undefined
     this.anim = {
-      kind: this.workspace ? 'return-leaf' : 'return-galaxy',
-      generation: this.generation,
-      elapsed: 0,
-      duration: RETURN_MS / 1000,
-      targetId,
-      lockedPos: this.planets.get(targetId)?.group.position.clone() ?? this.anchor.clone(),
-      fromCam,
-      midCam: this.arcMid(fromCam, toCam),
-      toCam,
-      fromLook: this.camLook.clone(),
-      toLook: nextAnchor.clone(),
-      nextPath,
-      nextGalaxy,
-      covered: false,
-      swapped: false,
-      hooks,
+      kind: this.workspace ? 'return-leaf' : 'return-galaxy', generation: this.generation,
+      elapsed: 0, duration: RETURN_MS / 1000, targetId: targetId ?? '',
+      lockedPos: target?.group.position.clone() ?? this.anchor.clone(),
+      fromCam: this.camPos.clone(), midCam: this.arcMid(this.camPos, mem.cam), toCam: mem.cam.clone(),
+      fromLook: this.camLook.clone(), toLook: mem.look.clone(),
+      nextPath, nextGalaxy, sourcePath: this.routePath, startRadius: target?.radius ?? .32,
+      settled: true, covered: false, swapped: false, hooks,
     }
     this.expectedPath = nextPath
-    this.idleWeight = 0
+    this.focusId = null
   }
 
   pick(clientX: number, clientY: number): string | null {
@@ -399,155 +397,128 @@ export class SpaceController {
     let dt = (now - this.lastTime) / 1000
     this.lastTime = now
     if (dt > 0.05) dt = 1 / 60
-    this.time += dt
+    if (!this.paused && !this.reduce) this.time += dt
+    const tracedAnim = this.anim
     this.updateAnim(dt)
     this.updateMagnet(dt)
     this.updateBodies(dt)
     this.updateDust(dt)
     this.updateCamera(dt)
-    this.nebulaRoot.position.copy(this.anchor)
-    this.keepStarsOffCamera()
+    this.camera.updateMatrixWorld()
+    this.planetRoot.updateMatrixWorld(true)
     this.updateLabels()
+    if (import.meta.env?.DEV) {
+      const state = this.inspect()
+      this.canvas.dataset.spaceState = JSON.stringify(state)
+      if (tracedAnim) {
+        this.debugTrace.push({ ...state, progress: Math.min(1, tracedAnim.elapsed / tracedAnim.duration) })
+        if (!this.anim) this.canvas.dataset.spaceTransition = JSON.stringify(this.debugTrace)
+      }
+    }
     this.renderer.render(this.scene, this.camera)
   }
 
   private updateAnim(dt: number) {
     const anim = this.anim
     if (!anim) {
-      this.idleWeight = lerp(this.idleWeight, this.reduce || this.workspace || this.paused ? 0 : 1, 0.04)
+      this.idleWeight = lerp(this.idleWeight, this.reduce || this.workspace || this.paused ? 0 : 1, 1 - Math.exp(-dt * 3))
       return
     }
     anim.elapsed += dt
     const t = clamp(anim.elapsed / anim.duration, 0, 1)
-    const k = easeInOutCubic(t)
-    this.bezier(this.camPos, anim.fromCam, anim.midCam, anim.toCam, k)
-    this.camLook.copy(anim.fromLook).lerp(anim.toLook, easeOutCubic(t))
-
-    if (anim.kind === 'enter-galaxy') this.stepEnterGalaxy(anim, t)
-    else if (anim.kind === 'enter-leaf') this.stepEnterLeaf(anim, t)
-    else if (anim.kind === 'return-galaxy') this.stepReturnGalaxy(anim, t)
-    else this.stepReturnLeaf(anim, t)
-
-    if (t >= 1) {
-      const done = anim.hooks.onDone
-      this.anim = null
-      this.expectedPath = null
-      this.idleWeight = this.workspace ? 0 : 1
-      for (const body of this.planets.values()) body.speedScale = 1
-      if (!this.workspace) this.applyRest(false)
-      done?.()
-    }
-  }
-
-  private stepEnterGalaxy(anim: Anim, t: number) {
-    const target = this.planets.get(anim.targetId)
-    if (target) {
-      target.group.position.copy(anim.lockedPos)
-      target.speedScale = 0
-      target.radiusGoal = anim.nextGalaxy ? centerRadius(anim.targetId) : target.radiusGoal
-    }
-    const fade = 1 - easeOutCubic(clamp(t / 0.48, 0, 1))
-    for (const body of this.planets.values()) {
-      if (body.id === anim.targetId) continue
-      if (!anim.swapped) this.setOpacity(body, fade)
-    }
-    if (!anim.swapped && t >= 0.46 && anim.nextGalaxy) {
-      this.applyGalaxy(anim.nextGalaxy, {
-        anchor: anim.lockedPos,
-        keepId: anim.targetId,
-        fadeInNew: true,
-        times: {},
-      })
-      anim.swapped = true
-    }
-    if (anim.swapped) {
-      const appear = easeOutCubic(clamp((t - 0.46) / 0.5, 0, 1))
-      for (const body of this.planets.values()) {
-        if (body.role === 'sat') {
+    this.idleWeight *= Math.exp(-dt * 25)
+    const entering = anim.kind.startsWith('enter')
+    if (entering) {
+      if (!anim.settled && t >= .12) {
+        this.rememberLayer()
+        const parent = this.memory.get(anim.sourcePath)
+        if (parent) { parent.cam.copy(anim.fromCam); parent.look.copy(anim.fromLook) }
+        anim.settled = true
+      }
+      // First aim and reposition at constant target distance. Only then dolly in.
+      const aim = easeInOutCubic(clamp((t - .08) / .25, 0, 1))
+      const approach = easeInOutCubic(clamp((t - .33) / .67, 0, 1))
+      const startDir = anim.fromCam.clone().sub(anim.lockedPos)
+      const startDistance = startDir.length()
+      const endDir = anim.toCam.clone().sub(anim.lockedPos).normalize()
+      const dir = startDir.normalize().lerp(endDir, aim).normalize()
+      const centered = anim.lockedPos.clone().addScaledVector(dir, startDistance)
+      this.camPos.copy(centered)
+      if (t > .33) {
+        const mid = this.arcMid(centered, anim.toCam)
+        this.bezier(this.camPos, centered, mid, anim.toCam, approach)
+      }
+      this.camLook.copy(anim.fromLook).lerp(anim.lockedPos, aim)
+      const target = this.planets.get(anim.targetId)
+      if (target) {
+        target.group.position.copy(anim.lockedPos)
+        target.radiusGoal = lerp(anim.startRadius, anim.nextGalaxy ? centerRadius(anim.targetId) : anim.startRadius * 1.12, approach)
+      }
+      if (!anim.swapped) {
+        const fade = 1 - easeInOutCubic(clamp((t - .25) / .27, 0, 1))
+        for (const body of this.planets.values()) if (body.id !== anim.targetId) this.setOpacity(body, fade)
+      }
+      if (anim.nextGalaxy && !anim.swapped && t >= .52) {
+        const memory = this.memory.get(anim.nextPath)
+        this.applyGalaxy(anim.nextGalaxy, { anchor: anim.lockedPos, keepId: anim.targetId, times: memory?.satTimes, fadeInNew: true })
+        anim.swapped = true
+      }
+      if (anim.swapped) {
+        const appear = easeInOutCubic(clamp((t - .52) / .48, 0, 1))
+        for (const body of this.planets.values()) if (body.role === 'sat') {
           this.setOpacity(body, appear)
-          body.orbitScale = lerp(0.76, 1, appear)
-        } else if (body.id === anim.targetId) {
-          this.setOpacity(body, 1)
+          body.orbitScale = lerp(.9, 1, appear)
+        }
+      } else if (!anim.nextGalaxy && target) {
+        this.setOpacity(target, 1 - easeInOutCubic(clamp((t - .72) / .28, 0, 1)))
+      }
+    } else {
+      const k = easeInOutCubic(t)
+      this.bezier(this.camPos, anim.fromCam, anim.midCam, anim.toCam, k)
+      this.camLook.copy(anim.fromLook).lerp(anim.toLook, k)
+      if (!anim.swapped) {
+        const fade = 1 - easeInOutCubic(clamp(t / .28, 0, 1))
+        for (const body of this.planets.values()) if (body.id !== anim.targetId) {
+          this.setOpacity(body, fade)
+          if (body.role === 'sat') body.orbitScale = lerp(.9, 1, fade)
+        }
+      }
+      if (!anim.swapped && t >= .28 && anim.nextGalaxy) {
+        const mem = this.memory.get(anim.nextPath)!
+        this.applyGalaxy(anim.nextGalaxy, { anchor: mem.anchor, times: mem.satTimes, magnets: mem.magnets, keepId: anim.targetId, fadeInNew: true })
+        anim.swapped = true
+        if (anim.kind === 'return-leaf') {
+          anim.covered = true
+          anim.hooks.onCovered?.()
+        }
+      }
+      if (anim.swapped) {
+        const appear = easeInOutCubic(clamp((t - .28) / .72, 0, 1))
+        for (const body of this.planets.values()) {
+          this.setOpacity(body, body.id === anim.targetId ? 1 : appear)
+          body.orbitScale = 1
         }
       }
     }
-    if (!anim.covered && t >= 0.5) {
-      anim.covered = true
-      anim.hooks.onCovered?.()
-    }
-  }
-
-  private stepEnterLeaf(anim: Anim, t: number) {
-    const target = this.planets.get(anim.targetId)
-    if (target) {
-      target.group.position.copy(anim.lockedPos)
-      target.speedScale = 0
-    }
-    const fadeOthers = 1 - easeOutCubic(clamp(t / 0.42, 0, 1))
-    const fadeTarget = 1 - easeOutCubic(clamp((t - 0.42) / 0.46, 0, 1))
-    for (const body of this.planets.values()) {
-      this.setOpacity(body, body.id === anim.targetId ? Math.max(fadeTarget, 0.12) : fadeOthers)
-    }
-    if (!anim.covered && t >= 0.56) {
-      anim.covered = true
-      this.workspace = true
-      anim.hooks.onCovered?.()
-    }
-    if (t >= 0.82) this.planetRoot.visible = false
-  }
-
-  private stepReturnGalaxy(anim: Anim, t: number) {
-    if (!anim.swapped && t >= 0.18 && anim.nextGalaxy) {
-      const mem = this.memory.get(anim.nextGalaxy.path)
-      this.applyGalaxy(anim.nextGalaxy, {
-        anchor: mem?.anchor ?? new THREE.Vector3(),
-        times: mem?.satTimes,
-        keepId: anim.targetId,
-        fadeInNew: true,
-      })
-      anim.swapped = true
-    }
-    if (!anim.swapped) {
-      const fade = 1 - easeOutCubic(clamp(t / 0.18, 0, 1))
-      for (const body of this.planets.values()) {
-        if (body.id !== anim.targetId) this.setOpacity(body, fade)
+    if (t >= 1 && this.anim === anim && this.generation === anim.generation) {
+      if (anim.kind === 'enter-leaf') {
+        this.workspace = true
+        this.leafId = anim.targetId
+        this.planetRoot.visible = false
       }
-    } else {
-      const appear = easeOutCubic(clamp((t - 0.18) / 0.55, 0, 1))
-      for (const body of this.planets.values()) {
-        if (body.id === anim.targetId) this.setOpacity(body, 1)
-        else this.setOpacity(body, appear)
-      }
-    }
-    if (!anim.covered && t >= 0.4) {
-      anim.covered = true
-      anim.hooks.onCovered?.()
-    }
-  }
-
-  private stepReturnLeaf(anim: Anim, t: number) {
-    this.workspace = false
-    this.planetRoot.visible = true
-    if (!anim.swapped && anim.nextGalaxy) {
-      const mem = this.memory.get(anim.nextGalaxy.path)
-      this.applyGalaxy(anim.nextGalaxy, {
-        anchor: mem?.anchor ?? new THREE.Vector3(),
-        times: mem?.satTimes,
-        fadeInNew: false,
-      })
-      anim.swapped = true
-      for (const body of this.planets.values()) this.setOpacity(body, 0.15)
-    }
-    const appear = easeOutCubic(clamp(t / 0.45, 0, 1))
-    for (const body of this.planets.values()) this.setOpacity(body, appear)
-    if (!anim.covered && t >= 0.28) {
-      anim.covered = true
-      anim.hooks.onCovered?.()
+      for (const body of this.planets.values()) body.speedScale = 0
+      this.routePath = anim.nextPath
+      this.anim = null
+      this.expectedPath = null
+      this.idleWeight = 0
+      if (!anim.covered) anim.hooks.onCovered?.()
+      anim.hooks.onDone?.()
     }
   }
 
   private updateMagnet(dt: number) {
-    if (this.workspace || this.anim || this.reduce || this.paused) {
+    if (this.anim || this.paused || this.reduce) return
+    if (this.workspace || this.reduce || this.paused) {
       if (!this.focusId && this.attractedId) this.setAttracted(null)
       for (const body of this.planets.values()) {
         body.magnet.lerp(this.scratch.set(0, 0, 0), 1 - 0.86 ** (dt * 60))
@@ -573,6 +544,7 @@ export class SpaceController {
     } else if (!this.focusId) {
       bestId = null
     }
+    if (this.hoverId && this.planets.get(this.hoverId)?.role === 'sat') bestId = this.hoverId
     if (this.focusId) {
       const focused = this.planets.get(this.focusId)
       if (focused?.role === 'sat') bestId = this.focusId
@@ -580,8 +552,8 @@ export class SpaceController {
     this.setAttracted(bestId)
     for (const body of this.planets.values()) {
       const hold = body.role === 'sat' && body.id === bestId
-      body.speedScale = lerp(body.speedScale, hold ? (this.focusId === body.id ? 0 : 0.14) : 1, 0.1)
-      if (!hold || body.role === 'center') {
+      body.speedScale = lerp(body.speedScale, hold ? 0 : 1, 1 - Math.exp(-dt * 6))
+      if (!hold || body.role === 'center' || this.focusId === body.id) {
         body.magnet.lerp(this.scratch.set(0, 0, 0), 1 - 0.88 ** (dt * 60))
         continue
       }
@@ -603,20 +575,19 @@ export class SpaceController {
   private updateBodies(dt: number) {
     for (const body of this.planets.values()) {
       body.radius = lerp(body.radius, body.radiusGoal, 1 - 0.9 ** (dt * 60))
-      const breath = body.role === 'center' && !this.reduce && !this.paused
-        ? 1 + Math.sin(this.time * 0.65) * 0.012
-        : 1
-      body.group.scale.setScalar(body.radius * breath)
+      body.group.scale.setScalar(body.radius)
       if (body.role === 'center') {
         body.group.position.copy(this.anchor)
         if (this.anim?.targetId === body.id && (this.anim.kind === 'enter-galaxy' || this.anim.kind === 'enter-leaf')) {
           body.group.position.copy(this.anim.lockedPos)
         }
       } else if (body.orbit) {
-        if (!this.anim && !this.reduce && !this.paused && !this.workspace) {
+        const settling = this.anim?.kind.startsWith('enter') && !this.anim.settled && body.id !== this.anim.targetId
+        if ((!this.anim || settling) && !this.reduce && !this.paused && !this.workspace) {
+          if (settling) body.speedScale *= Math.exp(-dt * 35)
           body.orbitTime += dt * body.speedScale
         }
-        if (!this.anim || this.anim.swapped) {
+        if (!this.anim || this.anim.swapped || settling) {
           const theta = orbitAngle(body.orbit, body.orbitTime)
           orbitOffset(body.orbit, theta, this.orbitPoint, body.orbitScale)
           body.group.position.set(
@@ -626,40 +597,21 @@ export class SpaceController {
           )
         }
       }
+      if (this.anim?.kind.startsWith('enter') && this.anim.targetId === body.id) body.group.position.copy(this.anim.lockedPos)
       if (!this.reduce && !this.paused) body.spin.rotation.y += (body.role === 'center' ? 0.045 : 0.07) * dt
-      if (body.role === 'center') {
-        body.surface.emissiveIntensity = this.reduce ? 0.16 : 0.18 + Math.sin(this.time * 0.7) * 0.035
-      }
+      const highlighted = this.focusId === body.id || this.hoverId === body.id || this.attractedId === body.id
+      const breath = body.role === 'center' && !this.reduce && !this.paused ? Math.sin(this.time * .7) * .025 : 0
+      body.surface.emissiveIntensity = lerp(body.surface.emissiveIntensity, .20 + breath + (highlighted ? .12 : 0), 1 - Math.exp(-dt * 8))
     }
   }
 
   private updateDust(dt: number) {
     if (this.reduce || this.paused) return
-    const pos = this.dust.geometry.getAttribute('position')
-    const cam = this.camPos
-    for (let i = 0; i < pos.count; i += 1) {
-      let x = pos.getX(i)
-      let y = pos.getY(i) + this.dustVel[i] * dt
-      let z = pos.getZ(i)
-      const dx = x - cam.x
-      const dy = y - cam.y
-      const dz = z - cam.z
-      const dist = Math.hypot(dx, dy, dz)
-      if (dist < 4.2 || dist > 20) {
-        const dir = this.scratch.set(dx || 0.2, dy || 0.1, dz || 1).normalize()
-        if (dist < 4.2) dir.negate()
-        const r = 9 + (i % 7) * 0.9
-        x = cam.x + dir.x * r
-        y = cam.y + dir.y * r
-        z = cam.z + dir.z * r
-      }
-      pos.setXYZ(i, x, y, z)
-    }
-    pos.needsUpdate = true
+    this.dust.rotation.y += dt * .0005
   }
 
-  private updateCamera(dt: number) {
-    if (!this.anim) {
+  private updateCamera(_dt: number) {
+    if (!this.anim && !this.workspace && !this.paused) {
       this.restFromAnchor()
       this.camPos.copy(this.restPos)
       this.camLook.copy(this.restLook)
@@ -667,72 +619,87 @@ export class SpaceController {
         const w = this.idleWeight
         this.camPos.x += Math.sin(this.time / 18 * TAU) * 0.045 * w
         this.camPos.y += Math.cos(this.time / 23 * TAU) * 0.028 * w
-        this.camLook.x += Math.sin(this.time / 20 * TAU) * 0.01 * w
-        this.camLook.y += Math.cos(this.time / 16 * TAU) * 0.007 * w
-        if (this.fine && this.pointerInside) {
-          this.camPos.x += this.pointerNdc.x * 0.05 * w
-          this.camPos.y += this.pointerNdc.y * 0.032 * w
-        }
+
       }
     }
     this.camera.position.copy(this.camPos)
     lookQuat(this.camPos, this.camLook, this.up, this.desiredQuat)
-    if (this.anim) this.camera.quaternion.copy(this.desiredQuat)
-    else this.camera.quaternion.slerp(this.desiredQuat, 1 - 0.86 ** (dt * 60))
+    this.camera.quaternion.copy(this.desiredQuat)
   }
 
   private updateLabels() {
     const box = this.canvas.getBoundingClientRect()
-    const tan = Math.tan((this.camera.fov * Math.PI) / 360)
-    const busy = this.anim !== null
-    const center = [...this.planets.values()].find((body) => body.role === 'center')
-    const placed: Array<{ id: string; x: number; y: number; visible: boolean; occluded: boolean; z: number }> = []
-    for (const body of this.planets.values()) {
-      this.ndc.copy(body.group.position).project(this.camera)
-      const behind = this.ndc.z < -1 || this.ndc.z > 1
-      const sx = (this.ndc.x * 0.5 + 0.5) * box.width + box.left
-      const sy = (-this.ndc.y * 0.5 + 0.5) * box.height + box.top
-      const dist = this.camPos.distanceTo(body.group.position)
-      const px = (body.radius / Math.max(dist, 0.2)) * (box.height / (2 * tan))
-      const y = sy + px + (body.role === 'center' ? 22 : 16)
-      const off = sx < -80 || sy < -80 || sx > box.right + 80 || sy > box.bottom + 80
-      let occluded = false
-      if (center && body.role === 'sat') {
-        const farther = this.camPos.distanceTo(body.group.position) > this.camPos.distanceTo(center.group.position) + 0.15
-        const cNdc = this.scratch.copy(center.group.position).project(this.camera)
-        const csx = (cNdc.x * 0.5 + 0.5) * box.width + box.left
-        const csy = (-cNdc.y * 0.5 + 0.5) * box.height + box.top
-        const cpx = (center.radius / Math.max(this.camPos.distanceTo(center.group.position), 0.2)) * (box.height / (2 * tan))
-        const onFace = Math.hypot(sx - csx, y - csy) < cpx * 1.15
-        occluded = farther && (Math.hypot(sx - csx, sy - csy) < cpx * 1.05 || onFace)
-      }
-      const visible = !this.workspace && !behind && !off && !busy && this.planetRoot.visible && body.opacity > 0.35
-      placed.push({ id: body.id, x: sx, y, visible, occluded, z: this.ndc.z })
-    }
-    for (let i = 0; i < placed.length; i += 1) {
-      for (let j = i + 1; j < placed.length; j += 1) {
-        const a = placed[i]
-        const b = placed[j]
-        if (!a.visible || !b.visible || a.occluded || b.occluded) continue
-        if (Math.hypot(a.x - b.x, a.y - b.y) < 88) {
-          if (a.y <= b.y) b.y += 30
-          else a.y += 30
+    const tan = Math.tan(this.camera.fov * Math.PI / 360)
+    const bodies = [...this.planets.values()].map(body => {
+      const p = body.group.position.clone().project(this.camera)
+      const depth = body.group.position.clone().applyMatrix4(this.camera.matrixWorldInverse).z * -1
+      return { body, x: box.left + (p.x + 1) * box.width / 2, y: box.top + (1 - p.y) * box.height / 2,
+        r: body.radius * box.height / (2 * tan * Math.max(.2, depth)), depth }
+    }).sort((a, b) => Number(b.body.role === 'center') - Number(a.body.role === 'center') || a.depth - b.depth)
+    const rects: Array<{ x: number; y: number; w: number; h: number }> = []
+    for (const item of bodies) {
+      const el = this.labels.get(item.body.id)
+      if (!el) continue
+      const w = el.offsetWidth || 124, h = Math.max(44, el.offsetHeight)
+      const center = item.body.role === 'center'
+      const candidates = center ? [[0, item.r + 12]] : [
+        [0, item.r + 8], [0, -item.r - h - 8], [item.r + w / 2 + 8, -h / 2], [-item.r - w / 2 - 8, -h / 2],
+        [0, item.r + 56], [0, -item.r - h - 56],
+      ]
+      if (!center) {
+        // Extra nearby placements are needed for narrow panes and coincident
+        // projections. These move only the DOM label, never the 3D body or orbit.
+        for (let ring = 1; ring <= 5; ring += 1) {
+          for (let j = 0; j < 12; j += 1) {
+            const a = j * TAU / 12
+            candidates.push([Math.cos(a) * (item.r + w * .55 + ring * 20), Math.sin(a) * (item.r + h + ring * 22) - h / 2])
+          }
         }
       }
-    }
-    for (const item of placed) {
-      const el = this.labels.get(item.id)
-      if (!el) continue
-      el.style.transform = `translate3d(${item.x}px, ${item.y}px, 0) translate(-50%, 0)`
-      el.style.opacity = item.visible && !item.occluded ? '1' : '0'
-      el.style.zIndex = String(4 + Math.round((1 - item.z) * 12))
-      el.style.pointerEvents = item.visible && !item.occluded && !this.anim ? 'auto' : 'none'
-      el.classList.toggle('is-attracted', this.attractedId === item.id || this.focusId === item.id)
+      let chosen = { x: item.x, y: item.y + item.r + 8, w, h }, best = Infinity
+      for (const [dx, dy] of candidates) {
+        const r = { x: clamp(item.x + dx, box.left + w / 2 + 6, box.right - w / 2 - 6),
+          y: clamp(item.y + dy, box.top + 4, box.bottom - h - 4), w, h }
+        let penalty = 0
+        for (const other of rects) {
+          if (Math.abs(r.x - other.x) < (r.w + other.w) / 2 + 6 && r.y < other.y + other.h + 5 && r.y + r.h + 5 > other.y) penalty += 1000
+        }
+        for (const other of bodies) {
+          if (other.body === item.body) continue
+          const nearX = clamp(other.x, r.x - w / 2, r.x + w / 2)
+          const nearY = clamp(other.y, r.y, r.y + h)
+          if (Math.hypot(other.x - nearX, other.y - nearY) < other.r + 6) penalty += 100
+        }
+        if (penalty < best) { best = penalty; chosen = r }
+        if (best === 0) break
+      }
+      if (best >= 1000 && !center) {
+        // Rare compact-view conjunction: search free DOM space, keeping all labels
+        // operable rather than hiding an entrance or moving its orbital position.
+        let nearest = Infinity
+        for (let y = box.top + 4; y <= box.bottom - h - 4; y += 4) {
+          for (let x = box.left + w / 2 + 6; x <= box.right - w / 2 - 6; x += 4) {
+            if (rects.some(r => Math.abs(x - r.x) < (w + r.w) / 2 + 2 && y < r.y + r.h + 2 && y + h + 2 > r.y)) continue
+            if (bodies.some(b => Math.hypot(b.x - clamp(b.x, x - w / 2, x + w / 2), b.y - clamp(b.y, y, y + h)) < b.r + 4)) continue
+            const distance = Math.hypot(x - item.x, y - item.y - item.r - 8)
+            if (distance < nearest) { chosen = { x, y, w, h }; nearest = distance }
+          }
+        }
+      }
+      rects.push(chosen)
+      // Labels are placed beside, never through, a foreground sphere. Every entry
+      // remains a keyboard target even during a brief physical occultation.
+      const visible = !this.workspace && !this.anim && this.planetRoot.visible && item.body.opacity > .35
+      el.style.transform = `translate3d(${chosen.x}px, ${chosen.y}px, 0) translate(-50%, 0)`
+      el.style.opacity = visible ? '1' : '0'
+      el.style.pointerEvents = visible ? 'auto' : 'none'
+      el.style.zIndex = center ? '5' : '4'
+      el.classList.toggle('is-attracted', this.attractedId === item.body.id || this.focusId === item.body.id)
     }
   }
 
   private rememberLayer() {
-    if (!this.galaxy) return
+    if (!this.galaxy || this.workspace) return
     const satTimes: Record<string, number> = {}
     for (const body of this.planets.values()) {
       if (body.role === 'sat') satTimes[body.id] = body.orbitTime
@@ -741,6 +708,9 @@ export class SpaceController {
       path: this.galaxy.path,
       anchor: this.anchor.clone(),
       satTimes,
+      magnets: Object.fromEntries([...this.planets.values()].filter(b => b.role === 'sat').map(b => [b.id, b.magnet.clone()])),
+      cam: this.camPos.clone(),
+      look: this.camLook.clone(),
     })
   }
 
@@ -749,6 +719,7 @@ export class SpaceController {
     opts: {
       anchor: THREE.Vector3
       times?: Record<string, number>
+      magnets?: Record<string, THREE.Vector3>
       keepId?: string
       fadeInNew?: boolean
     },
@@ -760,12 +731,14 @@ export class SpaceController {
     const wanted = new Set<string>([layer.center.id, ...layer.children.map((node) => node.id)])
     for (const [id, body] of [...this.planets]) {
       if (!wanted.has(id)) {
-        this.disposeBody(body)
+        body.group.visible = false
         this.planets.delete(id)
       }
     }
     const center = this.ensureBody(layer.center, 'center', opts.fadeInNew)
     center.role = 'center'
+    center.magnet.set(0, 0, 0)
+    this.setOpacity(center, opts.fadeInNew && opts.keepId !== center.id ? 0 : 1)
     center.orbit = null
     center.radiusGoal = centerRadius(layer.center.id)
     center.group.position.copy(this.anchor)
@@ -776,7 +749,8 @@ export class SpaceController {
       body.orbit = orbitFor(node.id, index, layer.children.length, this.compact)
       body.orbitTime = opts.times?.[node.id] ?? 0
       body.radiusGoal = satRadius(node.id)
-      body.speedScale = 1
+      body.speedScale = 0
+      body.magnet.copy(opts.magnets?.[node.id] ?? new THREE.Vector3())
       if (opts.fadeInNew && opts.keepId !== node.id) {
         body.orbitScale = 0.76
         this.setOpacity(body, 0)
@@ -791,19 +765,24 @@ export class SpaceController {
       const theta = orbitAngle(body.orbit, body.orbitTime)
       orbitOffset(body.orbit, theta, this.orbitPoint, body.orbitScale)
       body.group.position.set(
-        this.anchor.x + this.orbitPoint.x,
-        this.anchor.y + this.orbitPoint.y,
-        this.anchor.z + this.orbitPoint.z,
+        this.anchor.x + this.orbitPoint.x + body.magnet.x,
+        this.anchor.y + this.orbitPoint.y + body.magnet.y,
+        this.anchor.z + this.orbitPoint.z + body.magnet.z,
       )
     })
     this.restFromAnchor()
   }
 
   private ensureBody(node: PlanetNode, role: Role, fadeInNew?: boolean): Body {
-    const existing = this.planets.get(node.id)
-    if (existing) return existing
+    const existing = this.bodyCache.get(node.id)
+    if (existing) {
+      existing.group.visible = true
+      this.planets.set(node.id, existing)
+      return existing
+    }
     const body = this.makePlanet(node, role)
     this.planets.set(body.id, body)
+    this.bodyCache.set(body.id, body)
     this.planetRoot.add(body.group)
     if (fadeInNew) this.setOpacity(body, 0)
     return body
@@ -825,7 +804,7 @@ export class SpaceController {
     const haze = new THREE.MeshBasicMaterial({
       color: hex(node.palette.c0),
       transparent: true,
-      opacity: 0.08,
+      opacity: 0.025,
       side: THREE.BackSide,
       depthWrite: false,
     })
@@ -863,7 +842,7 @@ export class SpaceController {
     body.surface.opacity = value
     body.surface.transparent = value < 0.98
     body.surface.depthWrite = value > 0.88
-    body.haze.opacity = 0.08 * value
+    body.haze.opacity = 0.025 * value
   }
 
   private makeAlbedo(light: string, mid: string, dark: string, id: string): THREE.CanvasTexture {
@@ -1074,30 +1053,6 @@ export class SpaceController {
     return new THREE.Points(geo, mat)
   }
 
-  private keepStarsOffCamera() {
-    const minDist = 5.6
-    this.repelCloud(this.midStars, minDist, 28, 52)
-    this.repelCloud(this.band, minDist, 22, 64)
-    this.repelCloud(this.dust, minDist, 14, 22)
-  }
-
-  private repelCloud(points: THREE.Points, minDist: number, r0: number, r1: number) {
-    const pos = points.geometry.getAttribute('position')
-    const cam = this.camPos
-    let moved = false
-    for (let i = 0; i < pos.count; i += 1) {
-      const dx = pos.getX(i) - cam.x
-      const dy = pos.getY(i) - cam.y
-      const dz = pos.getZ(i) - cam.z
-      if (dx * dx + dy * dy + dz * dz >= minDist * minDist) continue
-      const dir = this.scratch.set(dx || 0.15, dy || 0.08, dz || 1).normalize()
-      const r = r0 + (i % 11) * ((r1 - r0) / 11)
-      pos.setXYZ(i, cam.x + dir.x * r, cam.y + dir.y * r, cam.z + dir.z * r)
-      moved = true
-    }
-    if (moved) pos.needsUpdate = true
-  }
-
   private disposePoints(points: THREE.Points) {
     points.geometry.dispose()
     const mat = points.material as THREE.PointsMaterial
@@ -1114,13 +1069,13 @@ export class SpaceController {
   }
 
   private clearPlanets() {
-    for (const body of this.planets.values()) this.disposeBody(body)
+    for (const body of this.bodyCache.values()) this.disposeBody(body)
     this.planets.clear()
+    this.bodyCache.clear()
   }
 
   private camOffset() {
-    const pose = this.compact ? CAM_REST.mobile : CAM_REST.desktop
-    return this.scratch.set(pose.x, pose.y, pose.z).clone()
+    return new THREE.Vector3(0, 0, cameraDistance(this.camera.aspect, this.galaxy?.children.length ?? 5, this.viewHeight))
   }
 
   private leafOffset(radius: number) {
@@ -1174,13 +1129,27 @@ export class SpaceController {
   }
 
   private resize = () => {
-    const box = this.canvas.parentElement?.getBoundingClientRect() ?? this.canvas.getBoundingClientRect()
+    const box = this.canvas.getBoundingClientRect()
     const w = Math.max(1, box.width)
     const h = Math.max(1, box.height)
+    this.viewHeight = h
     this.camera.aspect = w / h
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false)
-    this.compact = window.matchMedia('(max-width: 760px)').matches
+    this.compact = w <= 760
+    // A resize invalidates screen framing, but not saved orbital phases.
+    for (const [path, memory] of this.memory) {
+      const count = galaxyForPath(path)?.children.length ?? 5
+      memory.cam.copy(memory.anchor).add(new THREE.Vector3(0, 0, cameraDistance(w / h, count, h)))
+      memory.look.copy(memory.anchor)
+    }
+    if (this.anim) {
+      const interrupted = this.anim
+      this.cancelAnim()
+      this.syncRoute(interrupted.nextPath)
+      if (!interrupted.covered) interrupted.hooks.onCovered?.()
+      interrupted.hooks.onDone?.()
+    }
   }
 
   private bindMedia() {
@@ -1188,6 +1157,13 @@ export class SpaceController {
     const pointer = window.matchMedia('(hover: hover) and (pointer: fine)')
     const onMotion = () => {
       this.reduce = motion.matches
+      if (this.reduce && this.anim) {
+        const interrupted = this.anim
+        this.cancelAnim()
+        this.syncRoute(interrupted.nextPath)
+        if (!interrupted.covered) interrupted.hooks.onCovered?.()
+        interrupted.hooks.onDone?.()
+      }
     }
     const onPointer = () => {
       this.fine = pointer.matches

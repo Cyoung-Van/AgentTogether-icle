@@ -20,13 +20,6 @@ export type PlanetPalette = {
   core: string
 }
 
-export type PlanetLayout = {
-  x: number
-  y: number
-  size: number
-  depth: number
-}
-
 export type PlanetNode = {
   id: string
   path: string
@@ -34,8 +27,6 @@ export type PlanetNode = {
   blurbKey: string
   icon: IconName
   palette: PlanetPalette
-  desktop: PlanetLayout
-  mobile: PlanetLayout
   children?: PlanetNode[]
 }
 
@@ -53,20 +44,4 @@ export type GalaxyLayer = {
   center: PlanetNode
   parent: PlanetNode | null
   children: PlanetNode[]
-}
-
-export type PlanetOrigin = {
-  x: number
-  y: number
-  size: number
-  palette: PlanetPalette
-  nodeId: string
-  icon?: IconName
-}
-
-export type SpaceTransition = {
-  kind: 'enter' | 'exit'
-  origin: PlanetOrigin
-  fromPath: string
-  toPath: string
 }

@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
+import { useWorkspaceSection } from '../space/useWorkspaceSection'
 import { HowItWorks } from '../components/HowItWorks'
 import { useLang } from '../i18n'
 import { formatLocalDateTime } from '../lib/dateTime'
@@ -12,6 +13,8 @@ export default function Overview() {
   const health = useQuery({ queryKey: ['health'], queryFn: api.health })
   const overview = useQuery({ queryKey: ['overview'], queryFn: api.overview })
   const intel = useQuery({ queryKey: ['intelligence-status'], queryFn: api.intelligenceStatus })
+
+  useWorkspaceSection(health.isSuccess && overview.isSuccess)
 
   if (health.isPending || overview.isPending) return <div className="empty">{t('common.loading')}</div>
   if (health.isError || overview.isError || !overview.data) return <div className="empty error">{t('overview.apiUnreachable')}</div>
@@ -55,13 +58,12 @@ export default function Overview() {
         </section>
       )}
 
-      {needsYou.length > 0 && (
-        <section>
+      <section id="needs-attention" tabIndex={-1} className="workspace-section" aria-labelledby="needs-heading">
           <div className="section-head">
-            <h2>{t('overview.needsYou')}</h2>
+            <h2 id="needs-heading">{t('overview.needsYou')}</h2>
             <span className="count">{needsYou.length}</span>
           </div>
-          <p className="page-guide">{t('home.needsHelp')}</p>
+          <p className="page-guide">{t(needsYou.length ? 'home.needsHelp' : 'space.section.noNeeds')}</p>
           <div className="grouped-box">
             {needsYou.map((task: any) => (
               <Link key={task.task_id} to={`/tasks/${task.task_id}`} className="grouped-row">
@@ -76,16 +78,14 @@ export default function Overview() {
               </Link>
             ))}
           </div>
-        </section>
-      )}
+      </section>
 
-      {active.length > 0 && (
-        <section>
+      <section id="active-work" tabIndex={-1} className="workspace-section" aria-labelledby="active-heading">
           <div className="section-head">
-            <h2>{t('home.continue')}</h2>
+            <h2 id="active-heading">{t('home.continue')}</h2>
             <Link to="/tasks" className="text-link">{t('home.allTasks')}</Link>
           </div>
-          <p className="page-guide">{t('home.continueHelp')}</p>
+          <p className="page-guide">{t(active.length ? 'home.continueHelp' : 'space.section.noActive')}</p>
           <div className="grouped-box">
             {active.slice(0, 6).map((task: any) => (
               <Link key={task.task_id} to={`/tasks/${task.task_id}`} className="grouped-row">
@@ -101,9 +101,10 @@ export default function Overview() {
               </Link>
             ))}
           </div>
-        </section>
-      )}
+      </section>
 
+      <section id="resources" tabIndex={-1} className="workspace-section" aria-labelledby="resources-heading">
+      <h2 id="resources-heading">{t('space.section.resources')}</h2>
       <footer className="home-quiet">
         <Link to="/agents/local">{agents.ready} {t('home.agentsReady')}</Link>
         <Link to="/cost">${cost.today.toFixed(2)} {t('home.spentToday')}</Link>
@@ -111,6 +112,7 @@ export default function Overview() {
           <Link to="/recommend">{recommendations.length} {t('home.recs')}</Link>
         )}
       </footer>
+      </section>
     </div>
   )
 }

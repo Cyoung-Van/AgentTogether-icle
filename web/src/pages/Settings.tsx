@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { useLang } from '../i18n'
 import { formatLocalDateTime } from '../lib/dateTime'
+import { useWorkspaceSection } from '../space/useWorkspaceSection'
 import { displayEnum } from '../lib/displayLabel'
 
 const BUDGET_OPTIONS = [1, 3, 5, 10, 20, 50, 100]
@@ -36,6 +37,8 @@ export default function Settings() {
     setMonthlyBudget(data.monthly_cost_budget_usd == null ? '' : String(data.monthly_cost_budget_usd))
     setWarningPercent(Number(data.cost_warning_percent) || 80)
   }, [query.data])
+
+  useWorkspaceSection(query.isSuccess)
 
   if (query.isPending) return <div className="empty">{t('common.loading')}</div>
   if (query.isError) return <div className="empty error">{t('settings.failed')}</div>
@@ -144,6 +147,7 @@ export default function Settings() {
         </div>
       </section>
 
+      <section id="general" tabIndex={-1} className="workspace-section" aria-label={t('space.section.general')}>
       <section className="panel">
         <h2>{t('settings.general')}</h2>
         <div className="form-grid">
@@ -182,7 +186,8 @@ export default function Settings() {
         <p className="muted">{t('settings.intelligenceModelHelp')}</p>
       </section>
 
-      <section className="panel">
+      </section>
+      <section id="pricing" tabIndex={-1} className="panel workspace-section" aria-label={t('settings.pricingCatalog')}>
         <div className="title-row">
           <h2>{t('settings.pricingCatalog')}</h2>
           <button className="secondary" disabled={pricingRefreshing} onClick={() => void refreshPricing()}>
@@ -210,6 +215,7 @@ export default function Settings() {
         {pricingMessage && <p className="ok">{pricingMessage}</p>}
       </section>
 
+      <section id="budgets" tabIndex={-1} className="workspace-section" aria-label={t('space.section.budgets')}>
       <section className="panel">
         <h2>{t('settings.replay')}</h2>
         <div className="form-grid">
@@ -253,6 +259,8 @@ export default function Settings() {
         </div>
       </section>
 
+      <Link to="/cost" className="link-button">{t('nav.cost')}</Link>
+      </section>
       <section className="panel">
         <h2>{t('settings.providers')}</h2>
         <dl className="facts">
@@ -266,6 +274,7 @@ export default function Settings() {
         </div>
       </section>
 
+      <section id="data" tabIndex={-1} className="workspace-section" aria-label={t('space.section.dataSafety')}>
       <section className="panel">
         <h2>{t('settings.data')}</h2>
         <div className="cards">
@@ -286,8 +295,9 @@ export default function Settings() {
         </div>
       </section>
 
+      </section>
       {error && <div className="error">{error}</div>}
-      <div className="actions">
+      <div className="actions settings-save-bar">
         <button onClick={save}>{saved ? t('settings.saved') : t('settings.save')}</button>
       </div>
     </div>

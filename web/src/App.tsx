@@ -80,9 +80,7 @@ function Shell() {
     <div className="space-app">
       <SpaceBackground />
       <SpaceNavProvider>
-        <SpaceScene />
         <SpaceChrome />
-        <div className={`space-main ${field ? 'is-field' : 'is-workspace'}`}>
           {authRequired && (
             <div className="auth-banner">
               <strong>{t('auth.title')}</strong>
@@ -97,6 +95,8 @@ function Shell() {
               </button>
             </div>
           )}
+        <div className={`space-main ${field ? 'is-field' : 'is-workspace'}`}>
+          <SpaceScene />
           <SpaceStage />
         </div>
       </SpaceNavProvider>

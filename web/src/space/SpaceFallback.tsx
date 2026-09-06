@@ -1,5 +1,5 @@
 import { useLang } from '../i18n'
-import { useSpaceNav } from './SpaceNav'
+import { useSpaceNav } from './SpaceNavContext'
 import type { GalaxyLayer } from './types'
 
 export default function SpaceFallback({ galaxy }: { galaxy: GalaxyLayer }) {

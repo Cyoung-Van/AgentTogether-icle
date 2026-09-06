@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
+import { useWorkspaceSection } from '../space/useWorkspaceSection'
 import { api } from '../api/client'
 import { useLang, type Lang } from '../i18n'
 import { displayContent } from '../lib/pretty'
@@ -185,6 +186,8 @@ export default function Sessions() {
       return { agent_id, session_id }
     })
 
+  const section = useWorkspaceSection(list.isSuccess)
+
   if (list.isPending) return <div className="empty">{t('common.loading')}</div>
   if (list.isError) return <div className="empty error">{t('sessions.failed')}</div>
   const agents = list.data?.agents ?? {}
@@ -195,7 +198,14 @@ export default function Sessions() {
         <h1>{t('sessions.title')}</h1>
         <p className="page-guide">{t('sessions.hint')}</p>
       </header>
-      <div className="title-row">
+      <nav className="session-workflow-tabs" aria-label={t('nav.sessions')}>
+        <Link to="/sessions#browse" aria-current={section === 'browse' ? 'page' : undefined}>{t('space.section.browse')}</Link>
+        <Link to="/sessions#task-preparation" aria-current={section === 'task-preparation' ? 'page' : undefined}>{t('space.section.sessionTask')}</Link>
+        <Link to="/sessions#analysis-preparation" aria-current={section === 'analysis-preparation' ? 'page' : undefined}>{t('space.section.sessionAnalysis')}</Link>
+      </nav>
+      <section id="task-preparation" tabIndex={-1} className="panel workspace-section" aria-labelledby="session-task-heading" hidden={section === 'analysis-preparation'}>
+        <h2 id="session-task-heading">{t('space.section.sessionTask')}</h2>
+        <p className="page-guide">{t('space.section.sessionTaskHint')}</p>
         <button
           className="secondary"
           disabled={selectedPicks.length === 0 || previewBusy}
@@ -203,6 +213,11 @@ export default function Sessions() {
         >
           {previewBusy ? t('common.loading') : `${t('sessions.previewTask')} (${selectedPicks.length})`}
         </button>
+        <Link to="#browse" className="session-pick-link">{t('space.section.backToList')}</Link>
+      </section>
+      <section id="analysis-preparation" tabIndex={-1} className="panel workspace-section" aria-labelledby="session-analysis-heading" hidden={section === 'task-preparation'}>
+        <h2 id="session-analysis-heading">{t('space.section.sessionAnalysis')}</h2>
+        <p className="page-guide">{t('space.section.sessionAnalysisHint')}</p>
         <button
           className="secondary"
           disabled={selectedPicks.length === 0 || !form.project_id.trim() || extract.isPending || analysisBusy !== null}
@@ -213,7 +228,8 @@ export default function Sessions() {
         >
           {extract.isPending ? t('sessions.analyzing') : `${t('sessions.extractBtn')} (${selectedPicks.length})`}
         </button>
-      </div>
+        <Link to="#browse" className="session-pick-link">{t('space.section.backToList')}</Link>
+      </section>
       <p className="page-guide">{t('sessions.pickHelp')}</p>
       <div className="session-project-picker">
         <ProjectPicker
@@ -267,6 +283,9 @@ export default function Sessions() {
         </div>
       )}
 
+      <section id="browse" tabIndex={-1} className="workspace-section" aria-labelledby="session-browse-heading">
+      <h2 id="session-browse-heading">{t('space.section.browse')}</h2>
+      <p className="page-guide">{t('space.section.chooseSessions')}</p>
       {Object.entries(agents).map(([agent, sessions]) => {
         const isCollapsed = collapsed[agent] !== false
         return (
@@ -433,6 +452,7 @@ export default function Sessions() {
           <Link to="/agents/local" className="link-button">{t('nav.localAgents')}</Link>
         </div>
       )}
+      </section>
     </div>
   )
 }
