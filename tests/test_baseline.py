@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
@@ -83,6 +84,14 @@ class _TempStore(unittest.TestCase):
         self.addCleanup(shutil.rmtree, root, ignore_errors=True)
         self.store = root / "store"
         self.store.mkdir()
+        # Model identity is test data, not a dependency on the developer's CLI config.
+        configured_identity = patch("icle.external_evaluation._configured_model_identity", return_value=None)
+        configured_identity.start()
+        self.addCleanup(configured_identity.stop)
+        (self.store / "agent-models.json").write_text(
+            json.dumps({"kimi": {"model": MODEL, "provider": "kimi-code"}}),
+            encoding="utf-8",
+        )
 
 
 class BaselineTargetTests(_TempStore):

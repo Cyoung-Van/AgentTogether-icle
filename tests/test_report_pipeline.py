@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
@@ -47,7 +48,7 @@ FORM = {
     "blocked_reason": "",
     "summary": "Fixed the router and verified it.",
 }
-# Same identity accept resolves for the Kimi CLI, so the lookup hits its layers.
+# The explicit test binding below makes accept and lookup use the same identity.
 ROUTE = {
     "agent": "kimi",
     "provider_id": "",
@@ -111,6 +112,13 @@ class ReportPipelineTests(unittest.TestCase):
     def setUp(self) -> None:
         self.store = Path(tempfile.mkdtemp()) / "store"
         self.store.mkdir()
+        configured_identity = patch("icle.external_evaluation._configured_model_identity", return_value=None)
+        configured_identity.start()
+        self.addCleanup(configured_identity.stop)
+        (self.store / "agent-models.json").write_text(
+            json.dumps({"kimi": {"model": ROUTE["model"], "provider": "kimi-code"}}),
+            encoding="utf-8",
+        )
 
     def _coding_task(self, title: str = "Fix bug") -> str:
         task = create_task(

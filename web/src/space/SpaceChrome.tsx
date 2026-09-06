@@ -3,11 +3,13 @@ import { useQuery } from '@tanstack/react-query'
 import IntelligenceStatus from '../components/IntelligenceStatus'
 import { api } from '../api/client'
 import { useLang, type Lang } from '../i18n'
+import { useTheme } from '../theme'
 import { isComposingPath, parentPath, trailForPath, navigationPath } from './hierarchy'
 import { useSpaceNav } from './SpaceNavContext'
 
 export default function SpaceChrome() {
   const { lang, t, setLang } = useLang()
+  const { theme, setTheme } = useTheme()
   const location = useLocation()
   const { back, home, locked } = useSpaceNav()
   const health = useQuery({ queryKey: ['health'], queryFn: api.health, refetchInterval: 30_000 })
@@ -43,6 +45,14 @@ export default function SpaceChrome() {
         </nav>
       </div>
       <div className="space-chrome-tools">
+        <div className="theme-toggle" role="group" aria-label={lang === 'zh' ? '外观模式' : 'Appearance'}>
+          <button type="button" aria-pressed={theme === 'light'} onClick={() => setTheme('light')}>
+            {lang === 'zh' ? '浅色' : 'Light'}
+          </button>
+          <button type="button" aria-pressed={theme === 'dark'} onClick={() => setTheme('dark')}>
+            {lang === 'zh' ? '深色' : 'Dark'}
+          </button>
+        </div>
         <IntelligenceStatus />
         {location.pathname !== '/' && (
           <button type="button" className="secondary space-home" onClick={home} disabled={locked}>

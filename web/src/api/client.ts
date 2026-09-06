@@ -20,23 +20,65 @@ import type {
 
 const BASE = '/api'
 const TOKEN_KEY = 'icle.apiToken'
+let sessionToken: string | null = null
 
 export function getApiToken(): string {
-  return window.localStorage.getItem(TOKEN_KEY) ?? ''
+  if (sessionToken !== null) return sessionToken
+  try {
+    const stored = window.localStorage.getItem(TOKEN_KEY)?.trim() ?? ''
+    return /[^\x20-\x7e]/.test(stored) ? '' : stored
+  } catch {
+    return ''
+  }
 }
 
 export function setApiToken(token: string): void {
   const value = token.trim()
+  sessionToken = value
   if (value) window.localStorage.setItem(TOKEN_KEY, value)
   else window.localStorage.removeItem(TOKEN_KEY)
 }
 
-function authHeaders(): HeadersInit {
-  const token = getApiToken()
+export type TokenValidationError = 'empty' | 'format' | 'invalid' | 'connection' | 'server'
+
+export async function validateAndSaveApiToken(candidate: string): Promise<
+  { ok: true; persistent: boolean } | { ok: false; reason: TokenValidationError }
+> {
+  const token = candidate.trim()
+  if (!token) return { ok: false, reason: 'empty' }
+  if (/[^\x20-\x7e]/.test(token)) return { ok: false, reason: 'format' }
+  const controller = new AbortController()
+  const timeout = window.setTimeout(() => controller.abort(), 10_000)
+  try {
+    const response = await fetch(`${BASE}/intelligence-status`, {
+      headers: authHeaders(token),
+      signal: controller.signal,
+      cache: 'no-store',
+    })
+    if (response.status === 401) return { ok: false, reason: 'invalid' }
+    if (!response.ok) return { ok: false, reason: 'server' }
+    // A reachable HTML page or proxy fallback is not proof of API authentication.
+    const body = await response.json().catch(() => null)
+    if (!body || !Array.isArray(body.active)) return { ok: false, reason: 'server' }
+  } catch {
+    return { ok: false, reason: 'connection' }
+  } finally {
+    window.clearTimeout(timeout)
+  }
+  try {
+    setApiToken(token)
+    return { ok: true, persistent: window.localStorage.getItem(TOKEN_KEY) === token }
+  } catch {
+    // setApiToken has kept the validated value in memory for this page session.
+    return { ok: true, persistent: false }
+  }
+}
+
+function authHeaders(token: string): HeadersInit {
   return token ? { 'X-ICLE-Token': token } : {}
 }
 
-async function errorFrom(response: Response): Promise<Error> {
+async function errorFrom(response: Response, requestToken: string): Promise<Error> {
   let detail = ''
   try {
     const body = await response.json()
@@ -44,31 +86,34 @@ async function errorFrom(response: Response): Promise<Error> {
   } catch {
     // non-JSON gateway errors keep the HTTP status below
   }
-  if (response.status === 401) {
+  if (response.status === 401 && requestToken === getApiToken()) {
     window.dispatchEvent(new CustomEvent('icle-auth-required'))
   }
   return new Error(detail || `${response.status} ${response.statusText}`)
 }
 
 async function get<T>(path: string): Promise<T> {
-  const response = await fetch(`${BASE}${path}`, { headers: authHeaders() })
-  if (!response.ok) throw await errorFrom(response)
+  const token = getApiToken()
+  const response = await fetch(`${BASE}${path}`, { headers: authHeaders(token) })
+  if (!response.ok) throw await errorFrom(response, token)
   return response.json() as Promise<T>
 }
 
 async function post<T>(path: string, body: unknown, method = 'POST'): Promise<T> {
+  const token = getApiToken()
   const response = await fetch(`${BASE}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
     body: JSON.stringify(body),
   })
-  if (!response.ok) throw await errorFrom(response)
+  if (!response.ok) throw await errorFrom(response, token)
   return response.json() as Promise<T>
 }
 
 async function del<T>(path: string): Promise<T> {
-  const response = await fetch(`${BASE}${path}`, { method: 'DELETE', headers: authHeaders() })
-  if (!response.ok) throw await errorFrom(response)
+  const token = getApiToken()
+  const response = await fetch(`${BASE}${path}`, { method: 'DELETE', headers: authHeaders(token) })
+  if (!response.ok) throw await errorFrom(response, token)
   return response.json() as Promise<T>
 }
 

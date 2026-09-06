@@ -4,7 +4,10 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import { LanguageProvider } from './i18n.tsx'
+import { initializeTheme } from './theme'
 import './index.css'
+
+initializeTheme()
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

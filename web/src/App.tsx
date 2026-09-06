@@ -1,6 +1,7 @@
 import * as React from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Route, Routes, useLocation } from 'react-router-dom'
-import { getApiToken, setApiToken } from './api/client'
+import { getApiToken, validateAndSaveApiToken } from './api/client'
 import { useLang } from './i18n'
 import Activity from './pages/Activity'
 import AgentProfile from './pages/AgentProfile'
@@ -65,16 +66,47 @@ function SpaceStage() {
 
 function Shell() {
   const { t } = useLang()
+  const queryClient = useQueryClient()
   const location = useLocation()
   const field = fieldForPath(location.pathname)
   const [authRequired, setAuthRequired] = React.useState(false)
   const [token, setToken] = React.useState(getApiToken())
+  const [savingToken, setSavingToken] = React.useState(false)
+  const [authError, setAuthError] = React.useState('')
+  const [authNotice, setAuthNotice] = React.useState('')
+  const savingTokenRef = React.useRef(false)
 
   React.useEffect(() => {
-    const onAuthRequired = () => setAuthRequired(true)
+    const onAuthRequired = () => { setAuthRequired(true); setAuthNotice('') }
     window.addEventListener('icle-auth-required', onAuthRequired)
     return () => window.removeEventListener('icle-auth-required', onAuthRequired)
   }, [])
+
+  async function saveToken(event: React.FormEvent) {
+    event.preventDefault()
+    if (savingTokenRef.current) return
+    savingTokenRef.current = true
+    setSavingToken(true)
+    setAuthError('')
+    try {
+      const result = await validateAndSaveApiToken(token)
+      if (!result.ok) {
+        setAuthError(t(`auth.error.${result.reason}`))
+        return
+      }
+      setAuthRequired(false)
+      setToken('')
+      setAuthNotice(t(result.persistent ? 'auth.connected' : 'auth.connectedSession'))
+      // Cancel old polling queries before refreshing them with the verified token.
+      await queryClient.cancelQueries()
+      await queryClient.invalidateQueries()
+    } catch {
+      setAuthError(t('auth.error.connection'))
+    } finally {
+      savingTokenRef.current = false
+      setSavingToken(false)
+    }
+  }
 
   return (
     <div className="space-app">
@@ -82,19 +114,27 @@ function Shell() {
       <SpaceNavProvider>
         <SpaceChrome />
           {authRequired && (
-            <div className="auth-banner">
-              <strong>{t('auth.title')}</strong>
+            <form className="auth-banner" onSubmit={saveToken} aria-busy={savingToken}>
+              <label htmlFor="api-access-token"><strong>{t('auth.title')}</strong></label>
               <input
+                id="api-access-token"
                 type="password"
                 value={token}
+                disabled={savingToken}
+                autoComplete="off"
+                spellCheck={false}
+                aria-invalid={Boolean(authError)}
+                aria-describedby={authError ? 'auth-token-error' : undefined}
                 placeholder={t('auth.placeholder')}
-                onChange={(event) => setToken(event.target.value)}
+                onChange={(event) => { setToken(event.target.value); setAuthError('') }}
               />
-              <button onClick={() => { setApiToken(token); setAuthRequired(false); window.location.reload() }}>
-                {t('auth.save')}
+              <button type="submit" disabled={savingToken}>
+                {t(savingToken ? 'auth.verifying' : 'auth.save')}
               </button>
-            </div>
+              {authError && <span id="auth-token-error" className="auth-error" role="alert">{authError}</span>}
+            </form>
           )}
+        {authNotice && !authRequired && <div className="auth-feedback" role="status">{authNotice}</div>}
         <div className={`space-main ${field ? 'is-field' : 'is-workspace'}`}>
           <SpaceScene />
           <SpaceStage />

@@ -91,17 +91,24 @@ test('real loop: same mesh becomes center, leaf opens workspace, two returns res
   c.dispose()
 })
 
-test('camera centers the locked target before dolly and never crosses its surface', () => {
+test('camera aims at the locked target during its arc and never crosses its surface', () => {
   const c = controller()
   c.playEnter('task-studio', '/space/tasks', {})
   const locked = c.anim.lockedPos.clone(), dist = c.camPos.distanceTo(locked)
   while (c.anim && c.anim.elapsed / c.anim.duration < .33) {
     c.step()
-    if (c.anim.elapsed / c.anim.duration < .33) assert.ok(Math.abs(c.camPos.distanceTo(locked) - dist) < 1e-7)
+    assert.ok(c.camPos.distanceTo(locked) <= dist + 1e-7)
+    assert.ok(c.camPos.distanceTo(locked) > c.planets.get('task-studio').radius * 3)
   }
   const p = locked.clone().project(c.camera)
   assert.ok(Math.hypot(p.x, p.y) < 1e-7)
-  while(c.anim) { c.step(); assert.ok(c.camPos.distanceTo(locked) > c.planets.get('task-studio').radius * 3) }
+  while(c.anim) {
+    c.step()
+    assert.ok(c.camPos.distanceTo(locked) > c.planets.get('task-studio').radius * 3)
+    const centered = locked.clone().project(c.camera)
+    assert.ok(Math.hypot(centered.x, centered.y) < 1e-7)
+  }
+  assert.ok(c.camPos.distanceTo(locked) < dist * .55)
   c.dispose()
 })
 
@@ -134,21 +141,23 @@ test('all complete cycles fit portrait and desktop; center occultation never hid
   for (const [width,height] of [[320,380], [462,446], [1440,762]]) {
     for (const layer of ALL_GALAXIES) {
       const camera = new THREE.PerspectiveCamera(CAM_REST.fov,width/height,.18,260)
-      camera.position.z = cameraDistance(width/height,layer.children.length,height)
+      const scale = layer.parent ? .15 : 1
+      camera.position.z = cameraDistance(width/height,layer.children.length,height) * scale
       camera.lookAt(0,0,0); camera.updateMatrixWorld()
       let minDepth=Infinity, maxDepth=-Infinity
       for(let t=0;t<=300;t+=.25) {
         for(const [i,node] of layer.children.entries()) {
           const o=orbitFor(node.id,i,layer.children.length,false), p=new THREE.Vector3()
-          orbitOffset(o,orbitAngle(o,t),p); minDepth=Math.min(minDepth,p.z); maxDepth=Math.max(maxDepth,p.z)
+          orbitOffset(o,orbitAngle(o,t),p,scale); minDepth=Math.min(minDepth,p.z); maxDepth=Math.max(maxDepth,p.z)
           const n=p.clone().project(camera), d=camera.position.z-p.z
-          const rp=satRadius(node.id)/(d*Math.tan(CAM_REST.fov*Math.PI/360))
+          const rp=satRadius(node.id)*scale/(d*Math.tan(CAM_REST.fov*Math.PI/360))
           assert.ok(Math.abs(n.x)+rp/camera.aspect<.99 && Math.abs(n.y)+rp<.99, `${width} ${node.id} leaves viewport at ${t}`)
-          const centerPx=centerRadius(layer.center.id)/(camera.position.z*Math.tan(CAM_REST.fov*Math.PI/360))
+          const radius = layer.parent ? satRadius(layer.center.id) : centerRadius(layer.center.id)
+          const centerPx=radius/(camera.position.z*Math.tan(CAM_REST.fov*Math.PI/360))
           assert.ok(Math.hypot(n.x*camera.aspect,n.y)>centerPx+rp, `${node.id} hidden by center at ${t}`)
         }
       }
-      assert.ok(maxDepth-minDepth>1.5,'depth discarded')
+      assert.ok(maxDepth-minDepth>1.5*scale,'depth discarded')
     }
   }
 })
@@ -163,7 +172,11 @@ test('projected DOM labels stay separate during the entire orbital cycle', () =>
       c.canvas.getBoundingClientRect=()=>({left:0,top:0,right:width,bottom:height,width,height})
       c.setLabels(labels)
       for(let t=0;t<=300;t+=.5) {
-        for(const b of c.planets.values()) if(b.orbit) { b.orbitTime=t; orbitOffset(b.orbit,orbitAngle(b.orbit,t),b.group.position) }
+        for(const b of c.planets.values()) if(b.orbit) {
+          b.orbitTime=t
+          orbitOffset(b.orbit,orbitAngle(b.orbit,t),b.group.position,c.systemScale)
+          b.group.position.applyQuaternion(c.systemFrame).add(c.anchor)
+        }
         c.updateLabels()
         const boxes=[...labels].map(([id,l])=>{const [x,y]=l.style.transform.match(/translate3d\(([^p]+)px, ([^p]+)px/).slice(1).map(Number);return{id,x,y,w:l.offsetWidth,h:l.offsetHeight}})
         for(let i=0;i<boxes.length;i++) for(let j=i+1;j<boxes.length;j++) {
@@ -220,7 +233,8 @@ test('cached GPU bodies are bounded by the real navigation tree and disposed tog
 test('reduced-motion entry resolves directly to final sizes without residual growth', () => {
   const c=controller(); c.reduce=true
   enter(c,'task-studio','/space/tasks')
-  assert.equal(c.planets.get('task-studio').radius,centerRadius('task-studio'))
+  assert.equal(c.planets.get('task-studio').radius,satRadius('task-studio'))
+  assert.equal(c.planets.get('task-studio').radiusGoal,satRadius('task-studio'))
   c.dispose()
 })
 
@@ -258,4 +272,71 @@ test('section siblings on the same pathname have independent identity and return
     assert.equal(c.inspect().path,'/space/settings')
   }
   c.dispose()
+})
+
+test('idle preparation warms future satellites without changing the visible system and reuses them during entry', () => {
+  const callbacks = new Map()
+  let sequence = 0, uploads = 0, compiles = 0
+  window.requestIdleCallback = callback => { callbacks.set(++sequence, callback); return sequence }
+  window.cancelIdleCallback = id => callbacks.delete(id)
+  const c = controller()
+  c.renderer.initTexture = () => uploads++
+  c.renderer.compile = () => compiles++
+  try {
+    const visible = c.inspect().visibleBodyIds
+    const original = c.inspect().bodies
+    c.queueWarmup(HOME_GALAXY)
+    while (callbacks.size) {
+      const [id, callback] = callbacks.entries().next().value
+      callbacks.delete(id); callback()
+    }
+    assert.ok(uploads > 0)
+    assert.equal(compiles, uploads)
+    assert.deepEqual(c.inspect().visibleBodyIds, visible)
+    assert.deepEqual(c.inspect().bodies, original)
+    const ids = ['today-overview', 'today-needs', 'today-active', 'today-resources']
+    const prepared = new Map(ids.map(id => [id, c.bodyCache.get(id).group.uuid]))
+    assert.ok(ids.every(id => !c.bodyCache.get(id).group.visible))
+    const cacheSize = c.bodyCache.size
+    enter(c, 'today', '/space/today')
+    assert.equal(c.bodyCache.size, cacheSize, 'entry creates no new body resources')
+    for (const id of ids) {
+      assert.equal(c.planets.get(id).group.uuid, prepared.get(id))
+      assert.equal(c.planets.get(id).radius, c.planets.get(id).radiusGoal)
+    }
+    const textures = [...c.bodyCache.values()].flatMap(body => body.textures)
+    let released = 0
+    textures.forEach(texture => texture.addEventListener('dispose', () => released++))
+    c.dispose()
+    assert.equal(released, textures.length)
+  } finally {
+    if (!c.disposed) c.dispose()
+    delete window.requestIdleCallback
+    delete window.cancelIdleCallback
+  }
+})
+
+test('background preparation never runs during camera flight and pending work is canceled on disposal', () => {
+  const callbacks = new Map()
+  let sequence = 0, uploads = 0
+  window.requestIdleCallback = callback => { callbacks.set(++sequence, callback); return sequence }
+  window.cancelIdleCallback = id => callbacks.delete(id)
+  const c = controller()
+  c.renderer.initTexture = () => uploads++
+  c.renderer.compile = () => {}
+  try {
+    c.queueWarmup(HOME_GALAXY)
+    c.playEnter('today', '/space/today', {})
+    const [id, callback] = callbacks.entries().next().value
+    callbacks.delete(id); callback()
+    assert.equal(uploads, 0, 'flight does not share its frame budget with warmup')
+    assert.equal(callbacks.size, 1, 'warmup is deferred rather than discarded')
+    c.dispose()
+    assert.equal(callbacks.size, 0)
+    assert.equal(c.warmQueue.length, 0)
+  } finally {
+    if (!c.disposed) c.dispose()
+    delete window.requestIdleCallback
+    delete window.cancelIdleCallback
+  }
 })

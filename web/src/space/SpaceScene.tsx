@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useLang } from '../i18n'
+import { useTheme } from '../theme'
 import { SpaceController } from './engine/SpaceController'
 import { galaxyForPath } from './hierarchy'
 import SpaceFallback from './SpaceFallback'
+import SystemInfo from './SystemInfo'
 import { useSpaceNav } from './SpaceNavContext'
 
 export default function SpaceScene() {
   const location = useLocation()
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  const { theme } = useTheme()
   const { enter, back, locked, lastFocusId, motionPaused, setMotionPaused, registerController, setWebgl, webgl } = useSpaceNav()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const hostRef = useRef<HTMLDivElement>(null)
   const labelsRef = useRef<Map<string, HTMLElement>>(new Map())
+  const centerInfoRef = useRef<HTMLDivElement>(null)
   const controllerRef = useRef<SpaceController | null>(null)
   const [attractedId, setAttractedId] = useState<string | null>(null)
   const [failed, setFailed] = useState(false)
@@ -36,6 +40,7 @@ export default function SpaceScene() {
     controllerRef.current = controller
     registerController(controller)
     controller.setLabels(labelsRef.current)
+    controller.setCenterInfo(centerInfoRef.current)
     return () => {
       registerController(null)
       controllerRef.current = null
@@ -45,7 +50,12 @@ export default function SpaceScene() {
 
   useEffect(() => {
     controllerRef.current?.setLabels(labelsRef.current)
+    controllerRef.current?.setCenterInfo(centerInfoRef.current)
   }, [galaxy])
+
+  useEffect(() => {
+    controllerRef.current?.setTheme(theme)
+  }, [theme])
 
   if (failed || !webgl) {
     return galaxy ? <SpaceFallback galaxy={galaxy} /> : null
@@ -54,7 +64,7 @@ export default function SpaceScene() {
   const nodes = galaxy ? [galaxy.center, ...galaxy.children] : []
 
   return (
-    <div ref={hostRef} className={`space-scene ${galaxy ? 'is-field' : 'is-workspace'}`} aria-hidden={!galaxy}>
+    <div ref={hostRef} lang={lang === 'zh' ? 'zh-CN' : 'en'} className={`space-scene ${galaxy ? 'is-field' : 'is-workspace'}`} aria-hidden={!galaxy}>
       <canvas
         ref={canvasRef}
         className="space-webgl"
@@ -72,9 +82,15 @@ export default function SpaceScene() {
         }}
       />
       {galaxy && (
+        <div ref={centerInfoRef} className="space-body-info" data-system-id={galaxy.id} aria-hidden={locked}>
+          <SystemInfo galaxy={galaxy} motionPaused={motionPaused} />
+        </div>
+      )}
+      {galaxy && (
         <div className="planet-field-copy">
-          <p className="planet-field-kicker">AgentTogether</p>
-          <h1>{galaxy.id === 'home' ? t('space.explore') : t(galaxy.titleKey)}</h1>
+          <p className="planet-field-kicker">{t(galaxy.id === 'home' ? 'space.stellarSystem' : 'space.planetarySystem')}</p>
+          <h1>{galaxy.id === 'home' ? t('space.systemTitle') : t(galaxy.titleKey)}</h1>
+          <p className="planet-field-description">{t(galaxy.id === 'home' ? 'space.stellarHint' : 'space.planetaryHint')}</p>
           <button
             type="button"
             className="space-pause"
@@ -104,7 +120,7 @@ export default function SpaceScene() {
               }}
             >
               <span className="space-label-name">{t('space.brand')}</span>
-              <span className="space-label-here">{t('space.youAreHere')}</span>
+              <span className="space-label-here">{t('space.centralStar')}</span>
             </div>
           )
         }
@@ -129,7 +145,7 @@ export default function SpaceScene() {
               else enter(node.path, node.id)
             }}
           >
-            <span className="space-label-name">{label}</span>
+            {!isCenter && <span className="space-label-name">{label}</span>}
             {canReturn ? (
               <><span className="space-label-here">{t('space.youAreHere')}</span><span className="space-label-return">{returnHint}</span></>
             ) : (

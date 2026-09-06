@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test:space": "node --import ./tests/register.mjs --test tests/space.test.mjs"
+    "test:space": "node --import ./tests/register.mjs --test tests/space.test.mjs tests/space-flight.test.mjs",
+    "test:auth": "node --import ./tests/register.mjs --test tests/auth.test.mjs",
+    "test:flight": "node --import ./tests/register.mjs --test tests/space-flight.test.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.4",

@@ -19,26 +19,57 @@ export const CAM_REST = {
 export const CENTER_RADIUS: Record<string, number> = { home: 1.12, 'task-studio': 1.02, agents: 1.02, today: 1.02, sessions: 1.02, settings: 1.02 }
 export const SAT_RADIUS: Record<string, number> = { 'task-studio': .4, agents: .38 }
 export const ORBIT_SLOTS = [
-  { a: 2.35, inc: 1.20, lan: .12, arg: .2, phase: .35, period: 216 },
-  { a: 3.35, inc: 1.34, lan: -.18, arg: .35, phase: 1.8, period: 232 },
-  { a: 4.35, inc: 1.13, lan: .25, arg: -.22, phase: 3.0, period: 248 },
-  { a: 5.35, inc: 1.39, lan: -.32, arg: .16, phase: 4.25, period: 268 },
-  { a: 6.35, inc: 1.26, lan: .18, arg: -.12, phase: 5.4, period: 292 },
+  { a: 2.35, inc: .82, lan: .12, arg: .2, phase: .35, period: 216 },
+  { a: 3.35, inc: .76, lan: -.18, arg: .35, phase: 1.8, period: 232 },
+  { a: 4.35, inc: .92, lan: .25, arg: -.22, phase: 3.0, period: 248 },
+  { a: 5.35, inc: .78, lan: -.32, arg: .16, phase: 4.25, period: 268 },
+  { a: 6.35, inc: .86, lan: .18, arg: -.12, phase: 5.4, period: 292 },
 ] as const
 
-export function orbitFor(_id: string, index: number, _count: number, _compact: boolean): OrbitParams {
+const PRIMARY_PLANETS = new Set(['today', 'task-studio', 'agents', 'sessions', 'settings'])
+
+export function orbitFor(id: string, index: number, _count: number, _compact: boolean): OrbitParams {
   const slot = ORBIT_SLOTS[index % ORBIT_SLOTS.length]
-  return { ...slot, b: slot.a * .98 }
+  // A planetary system has tightly spaced moon orbits with room for its planet.
+  const primary = PRIMARY_PLANETS.has(id)
+  const a = primary ? slot.a : 3.6 + index * .6
+  const inc = primary ? slot.inc : [1.28, 1.08, .98, .92, .86][index % 5]
+  return { ...slot, a, b: a * .98, inc }
 }
 
 // Conservative envelope for every phase, including DOM labels and camera drift.
 // Framing changes the camera, never the orbital path when the viewport changes.
 export function cameraDistance(aspect: number, count: number, height = 700): number {
-  const radius = ORBIT_SLOTS[Math.max(0, count - 1) % ORBIT_SLOTS.length].a
   const halfH = Math.tan(CAM_REST.fov * Math.PI / 360)
   const horizontal = Math.max(.2, aspect * .90)
   const vertical = Math.max(.5, 1 - 60 / Math.max(280, height))
-  return Math.max(9, (radius + .45) / (halfH * Math.min(horizontal, vertical)) + radius * .44)
+  const slopeX = halfH * horizontal
+  const slopeY = halfH * vertical
+  const cos = { x: 0, y: 0, z: 0 }
+  const sin = { x: 0, y: 0, z: 0 }
+  let distance = 9
+
+  // A tilted ellipse reaches its largest screen extent at a different phase
+  // from its nearest depth. Fit their combined projection instead of adding
+  // those two independent maxima, which leaves unnecessary space on desktop.
+  for (let index = 0; index < Math.max(1, count); index++) {
+    // Count alone cannot distinguish a primary system from its moon systems.
+    for (const id of ['today', 'moon']) {
+      const orbit = orbitFor(id, index, count, false)
+      orbitOffset(orbit, 0, cos)
+      orbitOffset(orbit, Math.PI / 2, sin)
+      for (const sign of [-1, 1]) {
+        // max(z + sign * x / slope) over every phase is the length of
+        // its cosine/sine coefficients. The sphere term includes body
+        // edges and idle drift; the viewport slopes reserve label margins.
+        distance = Math.max(distance,
+          Math.hypot(cos.z + sign * cos.x / slopeX, sin.z + sign * sin.x / slopeX) + .45 * Math.hypot(1, 1 / slopeX),
+          Math.hypot(cos.z + sign * cos.y / slopeY, sin.z + sign * sin.y / slopeY) + .45 * Math.hypot(1, 1 / slopeY),
+        )
+      }
+    }
+  }
+  return distance
 }
 
 export function centerRadius(id: string): number {

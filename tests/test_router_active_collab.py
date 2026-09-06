@@ -218,7 +218,7 @@ class ActiveReplayTests(unittest.TestCase):
         replay(store, episode["episode_id"], target_agent_revision=revision("hermes"),
                executor=executor_with("A"))
         record_result_mark(store, episode_id=episode["episode_id"], mark="accept", agent_id="hermes")
-        suggestions = suggest_replays(store)
+        suggestions = suggest_replays(store, candidates=["hermes", "kimi"])
         self.assertTrue(suggestions["suggestions"])
         top = suggestions["suggestions"][0]
         self.assertNotEqual(top["agent"], "hermes")  # already replayed
@@ -238,7 +238,7 @@ class ActiveReplayTests(unittest.TestCase):
             replay(store, episode["episode_id"], target_agent_revision=revision("hermes"),
                    executor=executor_with("x"))
         set_budget(store, 1)
-        suggestions = suggest_replays(store, limit=5)
+        suggestions = suggest_replays(store, limit=5, candidates=["hermes", "kimi"])
         self.assertEqual(len(suggestions["suggestions"]), 1)
 
 
