@@ -31,7 +31,7 @@ const newTask: PlanetNode = {
   titleKey: 'nav.newTask',
   blurbKey: 'space.blurb.newTask',
   icon: 'newTask',
-  palette: { c0: '#b4d8cc', c1: '#3d7f6c', c2: '#142820', core: '#e4f2ec' },
+  palette: { c0: '#dfe6dc', c1: '#a8b3a4', c2: '#6f776c', core: '#eef1ea' },
 }
 
 const episodes: PlanetNode = {
@@ -40,7 +40,7 @@ const episodes: PlanetNode = {
   titleKey: 'nav.episodes',
   blurbKey: 'space.blurb.episodes',
   icon: 'episodes',
-  palette: { c0: '#b0cddd', c1: '#447088', c2: '#142430', core: '#e2eef4' },
+  palette: { c0: '#d8e0e4', c1: '#9aa7ae', c2: '#6a7378', core: '#eef1f2' },
 }
 
 const collabs: PlanetNode = {
@@ -49,7 +49,7 @@ const collabs: PlanetNode = {
   titleKey: 'nav.collabs',
   blurbKey: 'space.blurb.collabs',
   icon: 'collabs',
-  palette: { c0: '#a8c8d4', c1: '#3a6c80', c2: '#142428', core: '#deecee' },
+  palette: { c0: '#d7e0dc', c1: '#9aaba6', c2: '#6a756f', core: '#eef1ee' },
 }
 
 const agentDir: PlanetNode = {
@@ -67,7 +67,7 @@ const localAgents: PlanetNode = {
   titleKey: 'nav.localAgents',
   blurbKey: 'space.blurb.localAgents',
   icon: 'local',
-  palette: { c0: '#b0c4dc', c1: '#446088', c2: '#162030', core: '#e4ecf4' },
+  palette: { c0: '#d8dde4', c1: '#9aa3ae', c2: '#6a7178', core: '#eef0f2' },
 }
 
 const recommend: PlanetNode = {
@@ -76,7 +76,7 @@ const recommend: PlanetNode = {
   titleKey: 'nav.recommend',
   blurbKey: 'space.blurb.recommend',
   icon: 'recommend',
-  palette: { c0: '#b8c8dc', c1: '#4a6488', c2: '#182436', core: '#e6eef4' },
+  palette: { c0: '#dce0e4', c1: '#a2a8b0', c2: '#6e747a', core: '#f0f1f2' },
 }
 
 const taskStudio: PlanetNode = {

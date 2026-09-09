@@ -19,11 +19,11 @@ export const CAM_REST = {
 export const CENTER_RADIUS: Record<string, number> = { home: 1.12, 'task-studio': 1.02, agents: 1.02, today: 1.02, sessions: 1.02, settings: 1.02 }
 export const SAT_RADIUS: Record<string, number> = { 'task-studio': .4, agents: .38 }
 export const ORBIT_SLOTS = [
-  { a: 2.35, inc: .82, lan: .12, arg: .2, phase: .35, period: 216 },
-  { a: 3.35, inc: .76, lan: -.18, arg: .35, phase: 1.8, period: 232 },
-  { a: 4.35, inc: .92, lan: .25, arg: -.22, phase: 3.0, period: 248 },
-  { a: 5.35, inc: .78, lan: -.32, arg: .16, phase: 4.25, period: 268 },
-  { a: 6.35, inc: .86, lan: .18, arg: -.12, phase: 5.4, period: 292 },
+  { a: 2.35, inc: .82, lan: .12, arg: .2, phase: .35, period: 248 },
+  { a: 3.35, inc: .76, lan: -.18, arg: .35, phase: 1.8, period: 262 },
+  { a: 4.35, inc: .92, lan: .25, arg: -.22, phase: 3.0, period: 276 },
+  { a: 5.35, inc: .78, lan: -.32, arg: .16, phase: 4.25, period: 288 },
+  { a: 6.35, inc: .86, lan: .18, arg: -.12, phase: 5.4, period: 298 },
 ] as const
 
 const PRIMARY_PLANETS = new Set(['today', 'task-studio', 'agents', 'sessions', 'settings'])

@@ -8,3 +8,5 @@ Noto Sans SC and Space Grotesk are served locally as unmodified WOFF2 Unicode su
 - Downloaded: 2026-09-07
 
 The 27 selected Unicode subsets cover the current static UI text. Characters outside these ranges use the system fallback. Font files are loaded only as their Unicode ranges are needed; the UI does not request fonts from Google at runtime.
+
+Display titles use a local serif stack (`Iowan Old Style`, Palatino, `Songti SC` / `STSong` / `Noto Serif SC`) so Chinese keeps complete system glyphs instead of mixing a Latin-only webfont. Space Grotesk remains for numbers and English small text.

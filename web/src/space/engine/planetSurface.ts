@@ -75,21 +75,24 @@ export function createPlanetSurface(id: string, palette: PlanetPalette): THREE.C
   const isMineral = id === 'task-studio' || id === 'agents'
   const isGas = id === 'sessions'
   const isMoon = !isIce && !isMineral && !isGas
-  // Keep the selected family visible while allowing enough albedo contrast
-  // for terrain to read on a small globe against the default light canvas.
-  let low = blend(rgb(palette.c2), rgb('#718da3'), .36)
-  let mid = blend(rgb(palette.c1), rgb('#c3ced3'), .22)
-  let high = blend(rgb(palette.c0), rgb('#f0f0e9'), .20)
-  if (id === 'task-studio') {
-    low = rgb('#a29b91'); mid = rgb('#d0c4b0'); high = rgb('#ede8d9')
+  // Matte editorial albedos: enough relief for a terminator, never candy stripes.
+  let low = blend(rgb(palette.c2), rgb('#7a7d74'), .28)
+  let mid = blend(rgb(palette.c1), rgb('#c4c0b6'), .18)
+  let high = blend(rgb(palette.c0), rgb('#efece4'), .16)
+  if (isIce) {
+    low = rgb('#a8b0b4'); mid = rgb('#cdd2d6'); high = rgb('#eef1f2')
+  } else if (id === 'task-studio') {
+    low = rgb('#8a8274'); mid = rgb('#c0b49c'); high = rgb('#e6decc')
   } else if (id === 'agents') {
-    low = rgb('#8d92a6'); mid = rgb('#c4c8d2'); high = rgb('#e9e9ec')
+    low = rgb('#6e747a'); mid = rgb('#9aa2aa'); high = rgb('#d8dce0')
+  } else if (id === 'settings') {
+    low = rgb('#78746c'); mid = rgb('#b0aaa0'); high = rgb('#e0d8ce')
   } else if (isGas) {
-    low = rgb('#789ca5'); mid = rgb('#b3d0d1'); high = rgb('#e6eded')
+    low = rgb('#78786e'); mid = rgb('#a8a898'); high = rgb('#dddcc8')
   } else if (isMoon) {
-    low = blend(rgb(palette.c2), rgb('#939596'), .78)
-    mid = blend(rgb(palette.c1), rgb('#bfc1c0'), .78)
-    high = blend(rgb(palette.c0), rgb('#e0e0d9'), .72)
+    low = blend(rgb(palette.c2), rgb('#8a8a84'), .62)
+    mid = blend(rgb(palette.c1), rgb('#b4b2aa'), .55)
+    high = blend(rgb(palette.c0), rgb('#dcd8d0'), .55)
   }
 
   const craters = isMoon ? Array.from({ length: 14 }, () => {
@@ -119,17 +122,15 @@ export function createPlanetSurface(id: string, palette: PlanetPalette): THREE.C
       let cloud = 0
 
       if (isIce) {
-        // Uneven coastlines and a few thin cloud sheets, rather than stripes.
         const land = smooth(.46, .55, terrain)
-        value = .13 + land * .69 + (fine - .5) * .10
-        const polar = smooth(.73, .98, Math.abs(sy) + (medium - .5) * .14)
-        cloud = Math.max(polar * .83, smooth(.68, .83, medium * .7 + fine * .3) * .55)
+        value = .34 + land * .4 + (fine - .5) * .05
+        const polar = smooth(.76, .98, Math.abs(sy) + (medium - .5) * .12)
+        cloud = Math.max(polar * .62, smooth(.72, .88, medium * .7 + fine * .3) * .32)
       } else if (isGas) {
-        // Latitude flow is domain-warped in 3D: broken, soft storm bands.
-        const flow = sy * 13 + (broad - .5) * 8 + (medium - .5) * 2
+        const flow = sy * 9 + (broad - .5) * 11 + (medium - .5) * 3
         const bands = Math.sin(flow) * .5 + .5
-        value = .25 + bands * .43 + (fine - .5) * .10
-        cloud = smooth(.67, .87, broad * .6 + medium * .4) * .45
+        value = .38 + bands * .2 + (fine - .5) * .05
+        cloud = smooth(.74, .9, broad * .55 + medium * .45) * .22
       } else if (isMineral) {
         const ridges = 1 - Math.abs(medium * 2 - 1)
         value = smooth(.20, .86, terrain * .8 + ridges * .2)
@@ -143,7 +144,7 @@ export function createPlanetSurface(id: string, palette: PlanetPalette): THREE.C
           if (q < 1.35) {
             const bowl = 1 - smooth(.12, .84, q)
             const rim = smooth(.56, .84, q) * (1 - smooth(.86, 1.35, q))
-            value += rim * .16 - bowl * .16
+            value += rim * .1 - bowl * .1
           }
         }
       }

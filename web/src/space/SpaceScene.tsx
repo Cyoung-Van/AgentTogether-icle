@@ -82,7 +82,7 @@ export default function SpaceScene() {
         }}
       />
       {galaxy && (
-        <div ref={centerInfoRef} className="space-body-info" data-system-id={galaxy.id} aria-hidden={locked}>
+        <div ref={centerInfoRef} className="space-body-info" data-system-id={galaxy.id} data-center-id={galaxy.center.id} aria-hidden={locked}>
           <SystemInfo galaxy={galaxy} motionPaused={motionPaused} />
         </div>
       )}

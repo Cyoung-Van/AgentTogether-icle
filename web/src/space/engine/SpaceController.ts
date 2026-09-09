@@ -24,7 +24,7 @@ type Body = {
   spin: THREE.Group
   mesh: THREE.Mesh
   surface: THREE.MeshStandardMaterial
-  haze: THREE.MeshBasicMaterial
+  haze: THREE.SpriteMaterial
   radius: number
   radiusGoal: number
   orbit: OrbitParams | null
@@ -81,7 +81,9 @@ type Anim = {
 }
 
 const TAU = Math.PI * 2
-const CLEAR = 0xf5f5f7
+const CLEAR_LIGHT = 0xd6d6d2
+const CLEAR_DARK = 0x1c1c1a
+const ACCENT = 0x3e6e78
 const MAGNET_NDC = 0.15
 const MAGNET_KEEP = 0.2
 const MAGNET_MAX = 0.06
@@ -119,7 +121,7 @@ export class SpaceController {
   private fill: THREE.DirectionalLight
   private starLight: THREE.PointLight
   private sphereGeo: THREE.SphereGeometry
-  private atmosphereGeo: THREE.SphereGeometry
+  private coronaTex: THREE.CanvasTexture
   private planets = new Map<string, Body>()
   private bodyCache = new Map<string, Body>()
   private warmQueue: Array<{ node: PlanetNode; radius: number }> = []
@@ -164,6 +166,9 @@ export class SpaceController {
   private hoverId: string | null = null
   private pointerNdc = new THREE.Vector2(-9, -9)
   private pointerInside = false
+  private lookNudge = new THREE.Vector2()
+  private lookNudgeGoal = new THREE.Vector2()
+  private highlightTint = new THREE.Color(ACCENT)
   private anchor = new THREE.Vector3()
   private restPos = new THREE.Vector3()
   private restLook = new THREE.Vector3()
@@ -178,6 +183,7 @@ export class SpaceController {
   private ndc = new THREE.Vector3()
   private raycaster = new THREE.Raycaster()
   private labels = new Map<string, HTMLElement>()
+  private labelAnchors = new Map<string, { dx: number; dy: number }>()
   private centerInfo: HTMLElement | null = null
   private memory = new Map<string, LayerMemory>()
   private onAttracted: (id: string | null) => void
@@ -204,11 +210,11 @@ export class SpaceController {
       powerPreference: 'low-power',
       stencil: false,
     })
-    this.renderer.setClearColor(CLEAR, 0)
+    this.renderer.setClearColor(CLEAR_LIGHT, 1)
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5))
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.1
+    this.renderer.toneMappingExposure = 1
     this.renderer.shadowMap.enabled = false
 
     this.scene = new THREE.Scene()
@@ -217,17 +223,17 @@ export class SpaceController {
     this.camera = new THREE.PerspectiveCamera(CAM_REST.fov, 1, 0.18, 260)
     this.applyRest(true)
 
-    this.hemi = new THREE.HemisphereLight(0x3a5478, 0x0a0c12, 0.9)
-    this.keyLight = new THREE.DirectionalLight(0xf2f6fb, 1.18)
-    this.keyLight.position.set(-4.2, 5.4, 6.2)
-    this.fill = new THREE.DirectionalLight(0x9eb4d0, 0.28)
-    this.fill.position.set(5.2, -1.4, -3.4)
-    this.scene.add(this.hemi, this.keyLight, this.fill)
-    this.starLight = new THREE.PointLight(0xffe5ba, 10, 45, 2)
+    this.hemi = new THREE.HemisphereLight(0xe8e8e4, 0xb4b6b2, 0.32)
+    this.keyLight = new THREE.DirectionalLight(0xf0eee8, 0.72)
+    this.keyLight.position.set(-2.4, 3.6, 5.2)
+    this.fill = new THREE.DirectionalLight(0xb4bcc4, 0.14)
+    this.fill.position.set(4.8, -1.6, -3.2)
+    this.scene.add(this.hemi, this.keyLight, this.keyLight.target, this.fill)
+    this.starLight = new THREE.PointLight(0xeee8dc, 4.6, 56, 1.15)
     this.scene.add(this.starLight)
 
     this.sphereGeo = new THREE.SphereGeometry(1, 48, 32)
-    this.atmosphereGeo = new THREE.SphereGeometry(1.025, 32, 20)
+    this.coronaTex = this.makeCoronaTexture()
     this.planetRoot = new THREE.Group()
     this.nebulaRoot = new THREE.Group()
     this.scene.add(this.planetRoot, this.nebulaRoot)
@@ -249,6 +255,7 @@ export class SpaceController {
     window.addEventListener('pointermove', this.onWindowPointer)
     this.lastTime = performance.now()
     this.frame = requestAnimationFrame(this.tick)
+    ;(window as unknown as { __icleSpace?: SpaceController }).__icleSpace = this
   }
 
   inspect() {
@@ -301,11 +308,12 @@ export class SpaceController {
     for (const off of this.mediaFns) off()
     window.removeEventListener('pointermove', this.onWindowPointer)
     this.clearPlanets()
+    this.labelAnchors.clear()
     this.depthBackdrop.dispose()
     for (const visuals of this.systemVisuals.values()) visuals.dispose()
     this.systemVisuals.clear()
     this.sphereGeo.dispose()
-    this.atmosphereGeo.dispose()
+    this.coronaTex.dispose()
     this.disposePoints(this.farStars)
     this.disposePoints(this.midStars)
     this.disposePoints(this.band)
@@ -328,29 +336,21 @@ export class SpaceController {
   setTheme(theme: Theme) {
     this.theme = theme
     const light = theme === 'light'
-    this.renderer.setClearColor(light ? CLEAR : 0x161618, 0)
-    this.hemi.color.set(light ? 0xffffff : 0xe9eff7)
-    this.hemi.groundColor.set(light ? 0xb5c0ce : 0x8795a8)
-    this.hemi.intensity = light ? 1.75 : 1.2
-    this.keyLight.color.set(light ? 0xffffff : 0xf0f4fa)
-    this.keyLight.intensity = light ? 1.6 : 1.7
-    this.fill.color.set(light ? 0xc8d4e2 : 0x8c9eb6)
-    this.fill.intensity = light ? 0.7 : 0.58
-    this.starLight.intensity = light ? 9 : 13
+    this.renderer.setClearColor(light ? CLEAR_LIGHT : CLEAR_DARK, 1)
+    this.hemi.color.set(light ? 0xe8e8e4 : 0xd8d2c6)
+    this.hemi.groundColor.set(light ? 0xb4b6b2 : 0x3a3834)
+    this.hemi.intensity = light ? 0.4 : 0.26
+    this.keyLight.color.set(light ? 0xf0eee8 : 0xe8e2d6)
+    this.keyLight.intensity = light ? 0.56 : 0.58
+    this.fill.color.set(light ? 0xb4bcc4 : 0x5a646c)
+    this.fill.intensity = light ? 0.18 : 0.12
+    this.starLight.color.set(light ? 0xeee8dc : 0xe8d4a8)
+    this.starLight.intensity = light ? 4.6 : 5.6
 
-    // Theme changes restyle the existing scene without losing orbital or camera state.
     for (const body of this.bodyCache.values()) this.applyBodyTheme(body)
     this.depthBackdrop.setTheme(theme)
     this.farStars.visible = false
     this.midStars.visible = false
-    const farMaterial = this.farStars.material as THREE.PointsMaterial
-    farMaterial.color.set(0xd1d6de)
-    farMaterial.opacity = 0.28
-    farMaterial.size = 0.3
-    const midMaterial = this.midStars.material as THREE.PointsMaterial
-    midMaterial.color.set(0xd1d6de)
-    midMaterial.opacity = 0.14
-    midMaterial.size = 0.08
     this.band.visible = false
     this.dust.visible = false
     this.nebulaRoot.visible = false
@@ -517,6 +517,7 @@ export class SpaceController {
     this.updateBodies(dt)
     this.updateDust(dt)
     this.depthBackdrop.root.visible = !this.workspace
+    this.depthBackdrop.update(this.time, !this.reduce && !this.workspace)
     this.updateCamera(dt)
     this.camera.updateMatrixWorld()
     this.planetRoot.updateMatrixWorld(true)
@@ -788,15 +789,34 @@ export class SpaceController {
       }
       if (this.anim?.kind.startsWith('enter') && this.anim.targetId === body.id) body.group.position.copy(this.anim.lockedPos)
       if (!this.reduce && !this.paused) body.spin.rotation.y += (body.role === 'center' ? 0.045 : 0.07) * dt
-      const highlighted = this.focusId === body.id || this.hoverId === body.id || this.attractedId === body.id
-      const breath = body.role === 'center' && !this.reduce && !this.paused ? Math.sin(this.time * .7) * .003 : 0
-      const emission = body.id === 'home' ? (this.theme === 'light' ? .62 : .95)
-        : this.theme === 'light' ? (body.role === 'center' ? .025 : .008) : (body.role === 'center' ? .10 : .035)
-      body.surface.emissiveIntensity = lerp(body.surface.emissiveIntensity, emission + breath + (highlighted ? .045 : 0), 1 - Math.exp(-dt * 8))
+      const highlighted = body.role === 'sat' && (this.focusId === body.id || this.hoverId === body.id || this.attractedId === body.id)
+      const breath = body.id === 'home' && !this.reduce && !this.paused ? Math.sin(this.time * .55) * .012 : 0
+      if (body.id === 'home') {
+        body.surface.emissiveIntensity = lerp(body.surface.emissiveIntensity, (this.theme === 'light' ? .46 : .62) + breath, 1 - Math.exp(-dt * 8))
+      } else {
+        body.surface.emissiveIntensity = lerp(body.surface.emissiveIntensity, highlighted ? .055 : .01, 1 - Math.exp(-dt * 8))
+        body.surface.color.setHex(0xffffff).lerp(this.highlightTint, highlighted ? .12 : 0)
+      }
     }
+    this.updateLighting()
+  }
+
+  private updateLighting() {
     const star = this.bodyCache.get('home')
     this.starLight.visible = Boolean(star)
-    if (star) this.starLight.position.copy(star.group.position)
+    if (!star) return
+    this.starLight.position.copy(star.group.position)
+    const range = star.group.position.distanceTo(this.anchor)
+    this.starLight.distance = Math.max(48, range + 24)
+    this.starLight.intensity = (this.theme === 'light' ? 5.2 : 5.6) * (range < 0.8 ? 1 : 1.25)
+    if (range < 0.8) {
+      this.keyLight.position.copy(star.group.position).add(this.scratch.set(-2.4, 3.6, 5.2))
+      this.keyLight.target.position.copy(star.group.position)
+    } else {
+      this.keyLight.position.copy(star.group.position)
+      this.keyLight.target.position.copy(this.anchor)
+    }
+    this.keyLight.target.updateMatrixWorld()
   }
 
   private updateDust(dt: number) {
@@ -804,18 +824,27 @@ export class SpaceController {
     this.dust.rotation.y += dt * .0005
   }
 
-  private updateCamera(_dt: number) {
+  private updateCamera(dt: number) {
     if (!this.anim && !this.workspace && !this.paused) {
       this.restFromAnchor()
       this.camPos.copy(this.restPos)
       this.camLook.copy(this.restLook)
       this.up.set(0, 1, 0).applyQuaternion(this.systemFrame)
-      if (!this.reduce && !this.paused && this.idleWeight > 0.01 && !this.workspace) {
+      const dist = Math.max(0.01, this.restPos.distanceTo(this.restLook))
+      if (!this.reduce && this.idleWeight > 0.01) {
         const w = this.idleWeight
-        this.camPos.x += Math.sin(this.time / 18 * TAU) * 0.045 * w * this.systemScale
-        this.camPos.y += Math.cos(this.time / 23 * TAU) * 0.028 * w * this.systemScale
-
+        this.camPos.x += Math.sin(this.time / 22 * TAU) * dist * 0.0035 * w
+        this.camPos.y += Math.cos(this.time / 26 * TAU) * dist * 0.0024 * w
       }
+      const allowLook = !this.reduce && this.fine && this.pointerInside && this.idleWeight > 0.01
+      this.lookNudgeGoal.set(allowLook ? this.pointerNdc.x * 0.016 : 0, allowLook ? this.pointerNdc.y * 0.01 : 0)
+      this.lookNudge.lerp(this.lookNudgeGoal, 1 - Math.exp(-dt * 4))
+      this.scratch2.copy(this.camLook).sub(this.camPos).normalize()
+      this.scratch.crossVectors(this.up, this.scratch2).normalize()
+      this.camPos.addScaledVector(this.scratch, this.lookNudge.x * dist)
+      this.camPos.addScaledVector(this.up, this.lookNudge.y * dist)
+    } else {
+      this.lookNudge.lerp(this.lookNudgeGoal.set(0, 0), 1 - Math.exp(-dt * 8))
     }
     this.camera.position.copy(this.camPos)
     lookQuat(this.camPos, this.camLook, this.up, this.desiredQuat)
@@ -852,10 +881,25 @@ export class SpaceController {
       this.centerInfo.style.opacity = core.depth > 0 && diameter >= 34 && this.centerInfo.dataset.systemId === core.body.id ? '1' : '0'
     }
     const rects: Array<{ x: number; y: number; w: number; h: number }> = []
+    const place = (r: { x: number; y: number; w: number; h: number }, self: (typeof bodies)[number]['body']) => {
+      let penalty = 0
+      for (const other of rects) {
+        if (Math.abs(r.x - other.x) < (r.w + other.w) / 2 + 6 && r.y < other.y + other.h + 5 && r.y + r.h + 5 > other.y) penalty += 1000
+      }
+      for (const other of bodies) {
+        if (other.body === self) continue
+        const nearX = clamp(other.x, r.x - r.w / 2, r.x + r.w / 2)
+        const nearY = clamp(other.y, r.y, r.y + r.h)
+        if (Math.hypot(other.x - nearX, other.y - nearY) < other.r + 6) penalty += 100
+      }
+      return penalty
+    }
     for (const item of bodies) {
       const el = this.labels.get(item.body.id)
       if (!el) continue
-      const { w, h } = sizes.get(item.body.id)!
+      const measured = sizes.get(item.body.id)!
+      const w = measured.w
+      const h = item.body.role === 'center' ? measured.h : 44
       const center = item.body.role === 'center'
       const candidates = center ? [
         [0, item.r + 12], [0, -item.r - h - 12],
@@ -875,36 +919,45 @@ export class SpaceController {
           }
         }
       }
-      let chosen = { x: item.x, y: item.y + item.r + 8, w, h }, best = Infinity
+      const fit = (dx: number, dy: number) => ({
+        x: clamp(item.x + dx, box.left + w / 2 + 6, box.right - w / 2 - 6),
+        y: clamp(item.y + dy, box.top + 4, box.bottom - h - 4),
+        w, h,
+      })
+      let chosen = { x: item.x, y: item.y + item.r + 8, w, h }, best = Infinity, nearest = Infinity
+      const prev = this.labelAnchors.get(item.body.id)
       for (const [dx, dy] of candidates) {
-        const r = { x: clamp(item.x + dx, box.left + w / 2 + 6, box.right - w / 2 - 6),
-          y: clamp(item.y + dy, box.top + 4, box.bottom - h - 4), w, h }
-        let penalty = 0
-        for (const other of rects) {
-          if (Math.abs(r.x - other.x) < (r.w + other.w) / 2 + 6 && r.y < other.y + other.h + 5 && r.y + r.h + 5 > other.y) penalty += 1000
+        const r = fit(dx, dy)
+        const penalty = place(r, item.body)
+        const dist = prev ? Math.hypot(r.x - item.x - prev.dx, r.y - item.y - prev.dy) : 0
+        if (penalty < best || (penalty === best && dist < nearest)) {
+          best = penalty
+          nearest = dist
+          chosen = r
         }
-        for (const other of bodies) {
-          if (other.body === item.body) continue
-          const nearX = clamp(other.x, r.x - w / 2, r.x + w / 2)
-          const nearY = clamp(other.y, r.y, r.y + h)
-          if (Math.hypot(other.x - nearX, other.y - nearY) < other.r + 6) penalty += 100
+        if (best === 0 && !prev) break
+      }
+      if (prev) {
+        const stuck = fit(prev.dx, prev.dy)
+        if (place(stuck, item.body) < 1000) {
+          chosen = stuck
+          best = 0
         }
-        if (penalty < best) { best = penalty; chosen = r }
-        if (best === 0) break
       }
       if (best >= 1000 && !center) {
         // Rare compact-view conjunction: search free DOM space, keeping all labels
         // operable rather than hiding an entrance or moving its orbital position.
-        let nearest = Infinity
+        let closest = Infinity
         for (let y = box.top + 4; y <= box.bottom - h - 4; y += 4) {
           for (let x = box.left + w / 2 + 6; x <= box.right - w / 2 - 6; x += 4) {
             if (rects.some(r => Math.abs(x - r.x) < (w + r.w) / 2 + 2 && y < r.y + r.h + 2 && y + h + 2 > r.y)) continue
             if (bodies.some(b => Math.hypot(b.x - clamp(b.x, x - w / 2, x + w / 2), b.y - clamp(b.y, y, y + h)) < b.r + 4)) continue
             const distance = Math.hypot(x - item.x, y - item.y - item.r - 8)
-            if (distance < nearest) { chosen = { x, y, w, h }; nearest = distance }
+            if (distance < closest) { chosen = { x, y, w, h }; closest = distance }
           }
         }
       }
+      this.labelAnchors.set(item.body.id, { dx: chosen.x - item.x, dy: chosen.y - item.y })
       rects.push(chosen)
       // Labels are placed beside, never through, a foreground sphere. Every entry
       // remains a keyboard target even during a brief physical occultation.
@@ -953,6 +1006,7 @@ export class SpaceController {
     this.galaxy = layer
     this.workspace = false
     this.planetRoot.visible = true
+    this.labelAnchors.clear()
     this.anchor.copy(opts.anchor)
     this.systemScale = opts.scale ?? (layer.parent ? .15 : 1)
     this.systemFrame.copy(opts.frame ?? new THREE.Quaternion())
@@ -1015,6 +1069,7 @@ export class SpaceController {
     visuals.setTheme(this.theme)
     for (const [path, system] of this.systemVisuals) system.setContext(path !== layer.path)
     this.restFromAnchor()
+    this.depthBackdrop.setProximity(Boolean(layer.parent))
     this.queueWarmup(layer)
   }
 
@@ -1090,28 +1145,35 @@ export class SpaceController {
     const surface = new THREE.MeshStandardMaterial({
       map: albedo,
       color: 0xffffff,
-      roughness: 0.62,
-      metalness: 0.025,
-      emissive: node.palette.core,
-      emissiveIntensity: 0.025,
+      roughness: node.id === 'home' ? 0.8 : 0.88,
+      metalness: 0,
+      emissive: node.id === 'home' ? 0xe8e2d4 : 0x000000,
+      emissiveIntensity: node.id === 'home' ? 0.46 : 0.01,
       transparent: true,
       opacity: 1,
     })
     const mesh = new THREE.Mesh(this.sphereGeo, surface)
-    const haze = new THREE.MeshBasicMaterial({
-      color: hex(node.palette.c0),
+    const haze = new THREE.SpriteMaterial({
+      map: this.coronaTex,
+      color: hex(node.id === 'home' ? '#e6e6e4' : node.palette.c0),
       transparent: true,
-      opacity: 0.012,
-      side: THREE.BackSide,
       depthWrite: false,
+      depthTest: true,
+      toneMapped: false,
+      blending: THREE.AdditiveBlending,
+      opacity: node.id === 'home' ? 0.32 : 0.24,
     })
-    const atmo = new THREE.Mesh(this.atmosphereGeo, haze)
+    const corona = new THREE.Sprite(haze)
+    corona.name = `corona-${node.id}`
+    corona.scale.setScalar(node.id === 'home' ? 6.8 : 6.4)
+    corona.raycast = () => {}
+    corona.renderOrder = 2
     const spin = new THREE.Group()
-    spin.add(mesh, atmo)
+    spin.add(mesh)
     const group = new THREE.Group()
     const radius = preparedRadius ?? (role === 'center' ? this.systemCenterRadius : nodeRadius(node, role) * this.systemScale)
     group.scale.setScalar(radius)
-    group.add(spin)
+    group.add(spin, corona)
     const body: Body = {
       id: node.id,
       node,
@@ -1137,24 +1199,21 @@ export class SpaceController {
 
   private applyBodyTheme(body: Body) {
     const light = this.theme === 'light'
-    const center = body.role === 'center'
-    if (center) body.surface.color.set(0xffffff)
-    else body.surface.color.set(body.node.palette.c1).lerp(new THREE.Color(light ? 0xffffff : 0xe8f0fa), 0.6)
-    body.surface.roughness = center ? 0.58 : 0.65
-    body.surface.metalness = light ? 0.025 : 0.04
-    body.surface.emissive.set(body.node.palette.core)
-    body.surface.emissiveIntensity = light ? (center ? 0.025 : 0.008) : (center ? 0.10 : 0.035)
-    body.haze.color.set(light ? 0xe5ebf1 : 0xbdcbdc)
-    body.haze.opacity = (light ? 0.012 : 0.018) * body.opacity
+    const satellite = body.role === 'sat'
+    body.surface.color.setHex(0xffffff)
+    body.surface.roughness = body.id === 'home' ? 0.8 : satellite ? 0.92 : 0.88
+    body.surface.metalness = 0
     if (body.id === 'home') {
-      body.surface.color.set(0xffedc9)
-      body.surface.emissive.set(0xffd58d)
-      body.surface.emissiveIntensity = light ? .62 : .95
-      body.surface.roughness = .9
-      body.surface.metalness = 0
-      body.haze.color.set(0xffd7a0)
-      body.haze.opacity = .07 * body.opacity
+      body.surface.emissive.setHex(0xe8e2d4)
+      body.surface.emissiveIntensity = light ? 0.46 : 0.62
+      body.haze.color.setHex(0xe6e6e4)
+      body.haze.opacity = (light ? 0.32 : 0.22) * body.opacity
+      return
     }
+    body.surface.emissive.setHex(0x000000)
+    body.surface.emissiveIntensity = 0.01
+    body.haze.color.set(body.node.palette.c0).lerp(new THREE.Color(0xd8d8d6), 0.45)
+    body.haze.opacity = (light ? 0.24 : 0.18) * body.opacity
   }
 
   private setOpacity(body: Body, opacity: number) {
@@ -1163,7 +1222,7 @@ export class SpaceController {
     body.surface.opacity = value
     body.surface.transparent = value < 0.98
     body.surface.depthWrite = value > 0.88
-    body.haze.opacity = (this.theme === 'light' ? 0.012 : 0.018) * value
+    body.haze.opacity = (body.id === 'home' ? 0.32 : this.theme === 'light' ? 0.24 : 0.18) * value
   }
 
   private makeAlbedo(light: string, mid: string, dark: string, id: string): THREE.CanvasTexture {
@@ -1175,12 +1234,12 @@ export class SpaceController {
     if (!ctx) return tex
     const seed = [...id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0)
     if (id === 'home') {
-      ctx.fillStyle = '#ffe5ac'
+      ctx.fillStyle = '#eeeae4'
       ctx.fillRect(0, 0, 256, 128)
       const random = seedRng(seed)
-      for (let i = 0; i < 1100; i++) {
-        ctx.fillStyle = i % 2 ? 'rgba(255,251,227,.12)' : 'rgba(209,136,53,.07)'
-        ctx.beginPath(); ctx.arc(random() * 256, random() * 128, .7 + random() * 2.2, 0, TAU); ctx.fill()
+      for (let i = 0; i < 900; i++) {
+        ctx.fillStyle = i % 2 ? 'rgba(255,252,244,.22)' : 'rgba(214,190,140,.08)'
+        ctx.beginPath(); ctx.arc(random() * 256, random() * 128, .6 + random() * 1.8, 0, TAU); ctx.fill()
       }
       tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = THREE.RepeatWrapping; tex.needsUpdate = true
       return tex
@@ -1211,6 +1270,47 @@ export class SpaceController {
     return tex
   }
 
+  private makeCoronaTexture() {
+    const size = 256
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const context = canvas.getContext('2d')
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    if (!context) return texture
+    const pixels = context.createImageData(size, size)
+    const center = size * 0.5
+    const limb = 0.31
+    for (let y = 0; y < size; y += 1) {
+      for (let x = 0; x < size; x += 1) {
+        const radius = Math.hypot(x - center + 0.5, y - center + 0.5) / center
+        let alpha = 0
+        if (radius < 1) {
+          const fromLimb = radius - limb
+          if (fromLimb < 0) {
+            const inward = -fromLimb / limb
+            alpha = Math.exp(-inward * inward * 14) * 0.1
+          } else {
+            const t = fromLimb / (1 - limb)
+            alpha = Math.exp(-t * 1.05) * (1 - t) * (1 - t) * 0.55
+          }
+        }
+        const offset = (y * size + x) * 4
+        pixels.data[offset] = 255
+        pixels.data[offset + 1] = 255
+        pixels.data[offset + 2] = 255
+        pixels.data[offset + 3] = Math.round(Math.max(0, Math.min(1, alpha)) * 255)
+      }
+    }
+    context.putImageData(pixels, 0, 0)
+    texture.generateMipmaps = false
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    texture.needsUpdate = true
+    return texture
+  }
+
   private makePointSprite(): THREE.CanvasTexture {
     const canvas = document.createElement('canvas')
     canvas.width = 64
@@ -1235,23 +1335,18 @@ export class SpaceController {
     return tex
   }
 
+  private emptyPoints() {
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(0), 3))
+    return new THREE.Points(geo, new THREE.PointsMaterial({ visible: false }))
+  }
+
   private makeStars() {
-    const haloN = this.compact ? 900 : 2100
-    const midN = this.compact ? 600 : 1400
-    const diskN = this.compact ? 700 : 1500
-    const dustN = this.compact ? 8 : 12
-    const far = this.haloPoints(haloN, 2026, 60, 150, 0.55, 0.88)
-    const mid = this.haloPoints(midN, 5501, 18, 54, 0.16, 0.78)
-    const band = this.diskPoints(diskN, 3111)
-    const dust = this.haloPoints(dustN, 4099, 14, 22, 0.04, 0.08)
-    const dustVel = new Float32Array(dustN)
-    const rng = seedRng(4099)
-    for (let i = 0; i < dustN; i += 1) dustVel[i] = (rng() - 0.5) * 0.06
-    far.renderOrder = -8
-    mid.renderOrder = -6
-    band.renderOrder = -5
-    dust.renderOrder = -3
-    return { far, mid, band, dust, dustVel }
+    const far = this.emptyPoints()
+    const mid = this.emptyPoints()
+    const band = this.emptyPoints()
+    const dust = this.emptyPoints()
+    return { far, mid, band, dust, dustVel: new Float32Array(0) }
   }
 
   private makeNebulaTex(color: string): THREE.CanvasTexture {
@@ -1279,31 +1374,7 @@ export class SpaceController {
     return tex
   }
 
-  private makeNebulae() {
-    const spots = [
-      { x: -11, y: 7.2, z: -8, sx: 9, sy: 6.2, c: '#4a74c4', a: 0.38 },
-      { x: 12, y: 5.6, z: -10, sx: 8, sy: 5.4, c: '#3d5f98', a: 0.3 },
-      { x: -10, y: -5.8, z: -7, sx: 7.2, sy: 5, c: '#2f4d7a', a: 0.28 },
-      { x: 11, y: -6.4, z: -12, sx: 8.4, sy: 5.8, c: '#6a8fd0', a: 0.26 },
-    ]
-    for (const spot of spots) {
-      const tex = this.makeNebulaTex(spot.c)
-      this.nebulaTex.push(tex)
-      const mat = new THREE.SpriteMaterial({
-        map: tex,
-        transparent: true,
-        opacity: spot.a,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      })
-      const sprite = new THREE.Sprite(mat)
-      sprite.position.set(spot.x, spot.y, spot.z)
-      sprite.scale.set(spot.sx, spot.sy, 1)
-      sprite.renderOrder = -12
-      this.nebulae.push(sprite)
-      this.nebulaRoot.add(sprite)
-    }
-  }
+  private makeNebulae() {}
 
   private disposeNebulae() {
     for (const sprite of this.nebulae) {
