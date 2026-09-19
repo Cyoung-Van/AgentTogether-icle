@@ -1,0 +1,9 @@
+{
+  "frozen_sha256": "9caa5732fdf54367915de3f135595c3f63ee4fd0a449e3e4eab97396c1bd0494",
+  "engine_commit": "fc0201932c306d0f2a737acc92c7a19ccac24d87",
+  "core_files": {
+    "src/icle/intelligence.py": "4090a7e77615d1a5e46e990e73e67cde829b2071eecfaf3ba26d11a9d4131d37",
+    "skills/task-intelligence/scripts/validate_profile.py": "44e97ec5d0d17187227fe9ec75ca1fa624960a09b992ff4c05ffc35c5855232a",
+    "skills/task-intelligence/references/profiling.md": "3a47e10b13ab00224b891d4a8215c6de6875743934c2e85f0d5b5567ca4eef37"
+  }
+}

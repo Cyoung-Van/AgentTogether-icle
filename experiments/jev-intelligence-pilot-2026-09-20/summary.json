@@ -1,0 +1,36 @@
+{
+  "model": [
+    "jev-1.13.0"
+  ],
+  "counts": {
+    "numeric_warning_responses": 1,
+    "valid_responses": 18,
+    "profile_cases": 8,
+    "readiness_correct": 8,
+    "profile_field_count": 36,
+    "profile_field_correct": 35,
+    "profile_full_match": 5,
+    "profile_schema_valid": 6,
+    "profile_proposed": 2,
+    "profile_proposed_with_label_error": 0,
+    "nonready_blocked": 2,
+    "retrieval_positive_cases": 5,
+    "baseline_top1_correct": 2,
+    "jev_top1_correct": 5,
+    "retrieval_none_correct": 1,
+    "failure_cases": 6,
+    "baseline_failure_correct": 3,
+    "hybrid_failure_correct": 6
+  },
+  "usage": {
+    "calls": 18,
+    "request_bytes": 72217,
+    "input_tokens": 30635,
+    "output_tokens": 6324
+  },
+  "estimated_cost_usd": 0.0012866700000000002,
+  "median_seconds": 0.8940123544889502,
+  "total_response_seconds": 16.19015712570399,
+  "evidence": "real Jev inference over synthetic pre-labeled cases; no real tasks executed",
+  "production_changes": false
+}

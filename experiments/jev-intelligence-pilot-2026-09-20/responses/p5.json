@@ -1,0 +1,171 @@
+{
+  "case_id": "p5",
+  "request_sha256": "7df91cda612b62b13a58d058d22f0cc884b36afe67165ea3768d348bf5f22cab",
+  "started_at": "2026-09-19T16:49:26.340815+00:00",
+  "status": 200,
+  "raw": "{\"model\":\"jev-1.13.0\",\"answers\":{\"readiness\":{\"type\":\"choice\",\"choice\":\"ready\",\"confidence\":0.9,\"probabilities\":{\"ready\":0.9400000000000001,\"none\":0.0,\"clarify\":0.06}},\"primary_type\":{\"type\":\"choice\",\"choice\":\"SYSTEM_OPERATION\",\"confidence\":0.99,\"probabilities\":{\"PLANNING\":0.0,\"SYSTEM_OPERATION\":1.0,\"OTHER\":0.0,\"ANALYSIS\":0.0,\"MULTIMODAL\":0.0,\"DATA\":0.0,\"RESEARCH\":0.0,\"WRITING\":0.0,\"CODING\":0.0,\"UNKNOWN\":0.0}},\"difficulty\":{\"type\":\"choice\",\"choice\":\"D1\",\"confidence\":1.0,\"probabilities\":{\"D2\":0.0,\"D4\":0.0,\"D5\":0.0,\"D1\":1.0,\"UNKNOWN\":0.0,\"D3\":0.0}},\"risk\":{\"type\":\"choice\",\"choice\":\"R3\",\"confidence\":0.82,\"probabilities\":{\"R0\":0.13,\"R1\":0.01,\"R2\":0.01,\"R3\":0.85,\"UNKNOWN\":0.0}},\"context_requirement\":{\"type\":\"choice\",\"choice\":\"LOW\",\"confidence\":0.83,\"probabilities\":{\"HIGH\":0.02,\"MEDIUM\":0.1,\"LOW\":0.88,\"UNKNOWN\":0.0}},\"estimated_duration\":{\"type\":\"choice\",\"choice\":\"short\",\"confidence\":1.0,\"probabilities\":{\"long\":0.0,\"short\":1.0,\"medium\":0.0,\"UNKNOWN\":0.0}},\"decomposition\":{\"type\":\"choice\",\"choice\":\"not_recommended\",\"confidence\":0.99,\"probabilities\":{\"not_recommended\":1.0,\"required\":0.0,\"UNKNOWN\":0.0,\"recommended\":0.0}},\"review\":{\"type\":\"choice\",\"choice\":\"required\",\"confidence\":0.77,\"probabilities\":{\"not_recommended\":0.13,\"required\":0.83,\"UNKNOWN\":0.0,\"recommended\":0.04}},\"sub_CODING\":{\"type\":\"choice\",\"choice\":\"integration\",\"confidence\":0.73,\"probabilities\":{\"debugging\":0.0,\"architecture\":0.0,\"implementation\":0.21,\"review\":0.01,\"integration\":0.78,\"testing\":0.0,\"refactor\":0.0}},\"sub_RESEARCH\":{\"type\":\"choice\",\"choice\":\"verification\",\"confidence\":0.78,\"probabilities\":{\"verification\":0.83,\"synthesis\":0.06,\"search\":0.09,\"literature\":0.02,\"comparison\":0.0}},\"sub_PLANNING\":{\"type\":\"choice\",\"choice\":\"workflow\",\"confidence\":0.87,\"probabilities\":{\"decision\":0.02,\"architecture\":0.0,\"workflow\":0.9,\"project\":0.04,\"decomposition\":0.04}},\"tool_filesystem\":{\"type\":\"noul\",\"noul\":0.48},\"tool_shell\":{\"type\":\"noul\",\"noul\":0.68},\"tool_git\":{\"type\":\"noul\",\"noul\":0.15},\"tool_web\":{\"type\":\"noul\",\"noul\":0.13},\"tool_mcp\":{\"type\":\"noul\",\"noul\":0.27}},\"usage\":{\"input_tokens\":3116,\"output_tokens\":712}}",
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "readiness": {
+        "type": "choice",
+        "choice": "ready",
+        "confidence": 0.9,
+        "probabilities": {
+          "ready": 0.9400000000000001,
+          "none": 0.0,
+          "clarify": 0.06
+        }
+      },
+      "primary_type": {
+        "type": "choice",
+        "choice": "SYSTEM_OPERATION",
+        "confidence": 0.99,
+        "probabilities": {
+          "PLANNING": 0.0,
+          "SYSTEM_OPERATION": 1.0,
+          "OTHER": 0.0,
+          "ANALYSIS": 0.0,
+          "MULTIMODAL": 0.0,
+          "DATA": 0.0,
+          "RESEARCH": 0.0,
+          "WRITING": 0.0,
+          "CODING": 0.0,
+          "UNKNOWN": 0.0
+        }
+      },
+      "difficulty": {
+        "type": "choice",
+        "choice": "D1",
+        "confidence": 1.0,
+        "probabilities": {
+          "D2": 0.0,
+          "D4": 0.0,
+          "D5": 0.0,
+          "D1": 1.0,
+          "UNKNOWN": 0.0,
+          "D3": 0.0
+        }
+      },
+      "risk": {
+        "type": "choice",
+        "choice": "R3",
+        "confidence": 0.82,
+        "probabilities": {
+          "R0": 0.13,
+          "R1": 0.01,
+          "R2": 0.01,
+          "R3": 0.85,
+          "UNKNOWN": 0.0
+        }
+      },
+      "context_requirement": {
+        "type": "choice",
+        "choice": "LOW",
+        "confidence": 0.83,
+        "probabilities": {
+          "HIGH": 0.02,
+          "MEDIUM": 0.1,
+          "LOW": 0.88,
+          "UNKNOWN": 0.0
+        }
+      },
+      "estimated_duration": {
+        "type": "choice",
+        "choice": "short",
+        "confidence": 1.0,
+        "probabilities": {
+          "long": 0.0,
+          "short": 1.0,
+          "medium": 0.0,
+          "UNKNOWN": 0.0
+        }
+      },
+      "decomposition": {
+        "type": "choice",
+        "choice": "not_recommended",
+        "confidence": 0.99,
+        "probabilities": {
+          "not_recommended": 1.0,
+          "required": 0.0,
+          "UNKNOWN": 0.0,
+          "recommended": 0.0
+        }
+      },
+      "review": {
+        "type": "choice",
+        "choice": "required",
+        "confidence": 0.77,
+        "probabilities": {
+          "not_recommended": 0.13,
+          "required": 0.83,
+          "UNKNOWN": 0.0,
+          "recommended": 0.04
+        }
+      },
+      "sub_CODING": {
+        "type": "choice",
+        "choice": "integration",
+        "confidence": 0.73,
+        "probabilities": {
+          "debugging": 0.0,
+          "architecture": 0.0,
+          "implementation": 0.21,
+          "review": 0.01,
+          "integration": 0.78,
+          "testing": 0.0,
+          "refactor": 0.0
+        }
+      },
+      "sub_RESEARCH": {
+        "type": "choice",
+        "choice": "verification",
+        "confidence": 0.78,
+        "probabilities": {
+          "verification": 0.83,
+          "synthesis": 0.06,
+          "search": 0.09,
+          "literature": 0.02,
+          "comparison": 0.0
+        }
+      },
+      "sub_PLANNING": {
+        "type": "choice",
+        "choice": "workflow",
+        "confidence": 0.87,
+        "probabilities": {
+          "decision": 0.02,
+          "architecture": 0.0,
+          "workflow": 0.9,
+          "project": 0.04,
+          "decomposition": 0.04
+        }
+      },
+      "tool_filesystem": {
+        "type": "noul",
+        "noul": 0.48
+      },
+      "tool_shell": {
+        "type": "noul",
+        "noul": 0.68
+      },
+      "tool_git": {
+        "type": "noul",
+        "noul": 0.15
+      },
+      "tool_web": {
+        "type": "noul",
+        "noul": 0.13
+      },
+      "tool_mcp": {
+        "type": "noul",
+        "noul": 0.27
+      }
+    },
+    "usage": {
+      "input_tokens": 3116,
+      "output_tokens": 712
+    }
+  },
+  "elapsed_seconds": 0.8048413340002298
+}

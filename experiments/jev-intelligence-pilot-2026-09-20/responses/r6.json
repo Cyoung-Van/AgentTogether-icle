@@ -1,0 +1,29 @@
+{
+  "case_id": "r6",
+  "request_sha256": "24034924ece053a7ea3ae1435bf05ad2ce330976cafd7f5a709b524a906d155b",
+  "started_at": "2026-09-19T16:49:34.474005+00:00",
+  "status": 200,
+  "raw": "{\"model\":\"jev-1.13.0\",\"answers\":{\"c\":{\"type\":\"noul\",\"noul\":0.02},\"b\":{\"type\":\"noul\",\"noul\":0.02},\"a\":{\"type\":\"noul\",\"noul\":0.02}},\"usage\":{\"input_tokens\":616,\"output_tokens\":52}}",
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "c": {
+        "type": "noul",
+        "noul": 0.02
+      },
+      "b": {
+        "type": "noul",
+        "noul": 0.02
+      },
+      "a": {
+        "type": "noul",
+        "noul": 0.02
+      }
+    },
+    "usage": {
+      "input_tokens": 616,
+      "output_tokens": 52
+    }
+  },
+  "elapsed_seconds": 0.9957303329138085
+}

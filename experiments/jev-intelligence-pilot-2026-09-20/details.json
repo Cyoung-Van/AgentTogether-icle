@@ -1,0 +1,736 @@
+[
+  {
+    "id": "p1",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "CODING"
+      ],
+      "subtype": [
+        "implementation"
+      ],
+      "difficulty": [
+        "D1"
+      ],
+      "risk": [
+        "R0"
+      ],
+      "tools": []
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "CODING",
+      "difficulty": "D1",
+      "risk": "R0",
+      "context_requirement": "LOW",
+      "estimated_duration": "short",
+      "decomposition": "not_recommended",
+      "review": "not_recommended",
+      "subtype": "implementation",
+      "tool_requirement": [
+        "none"
+      ],
+      "reason": "结构化判断提议：任务类型CODING，难度D1，风险R0；此说明由代码模板生成。"
+    },
+    "errors": [],
+    "schema_valid": true,
+    "decision": "propose",
+    "gate_reasons": []
+  },
+  {
+    "id": "p2",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "WRITING"
+      ],
+      "subtype": [
+        ""
+      ],
+      "difficulty": [
+        "D1"
+      ],
+      "risk": [
+        "R0"
+      ],
+      "tools": []
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "WRITING",
+      "difficulty": "D1",
+      "risk": "R0",
+      "context_requirement": "LOW",
+      "estimated_duration": "short",
+      "decomposition": "not_recommended",
+      "review": "not_recommended",
+      "subtype": "",
+      "tool_requirement": [
+        "none"
+      ],
+      "reason": "结构化判断提议：任务类型WRITING，难度D1，风险R0；此说明由代码模板生成。"
+    },
+    "errors": [],
+    "schema_valid": true,
+    "decision": "propose",
+    "gate_reasons": []
+  },
+  {
+    "id": "p3",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "CODING"
+      ],
+      "subtype": [
+        "debugging"
+      ],
+      "difficulty": [
+        "D3"
+      ],
+      "risk": [
+        "R1"
+      ],
+      "tools": [
+        "filesystem",
+        "shell"
+      ]
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "CODING",
+      "difficulty": "D3",
+      "risk": "R1",
+      "context_requirement": "MEDIUM",
+      "estimated_duration": "medium",
+      "decomposition": "not_recommended",
+      "review": "recommended",
+      "subtype": "debugging",
+      "tool_requirement": [
+        "filesystem",
+        "shell"
+      ],
+      "reason": "结构化判断提议：任务类型CODING，难度D3，风险R1；此说明由代码模板生成。"
+    },
+    "errors": [],
+    "schema_valid": true,
+    "decision": "review",
+    "gate_reasons": [
+      "tool_uncertain"
+    ]
+  },
+  {
+    "id": "p4",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "DATA"
+      ],
+      "subtype": [
+        ""
+      ],
+      "difficulty": [
+        "D2"
+      ],
+      "risk": [
+        "R0"
+      ],
+      "tools": [
+        "filesystem"
+      ]
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "DATA",
+      "difficulty": "D2",
+      "risk": "R0",
+      "context_requirement": "MEDIUM",
+      "estimated_duration": "medium",
+      "decomposition": "not_recommended",
+      "review": "not_recommended",
+      "subtype": "",
+      "tool_requirement": [
+        "filesystem",
+        "shell"
+      ],
+      "reason": "结构化判断提议：任务类型DATA，难度D2，风险R0；此说明由代码模板生成。"
+    },
+    "errors": [
+      {
+        "field": "tools",
+        "expected": [
+          "filesystem"
+        ],
+        "actual": [
+          "filesystem",
+          "shell"
+        ]
+      }
+    ],
+    "schema_valid": true,
+    "decision": "review",
+    "gate_reasons": [
+      "tool_uncertain"
+    ]
+  },
+  {
+    "id": "p5",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "SYSTEM_OPERATION"
+      ],
+      "subtype": [
+        ""
+      ],
+      "difficulty": [
+        "D1"
+      ],
+      "risk": [
+        "R3"
+      ],
+      "tools": [
+        "shell"
+      ]
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "SYSTEM_OPERATION",
+      "difficulty": "D1",
+      "risk": "R3",
+      "context_requirement": "LOW",
+      "estimated_duration": "short",
+      "decomposition": "not_recommended",
+      "review": "required",
+      "subtype": "",
+      "tool_requirement": [
+        "shell"
+      ],
+      "reason": "结构化判断提议：任务类型SYSTEM_OPERATION，难度D1，风险R3；此说明由代码模板生成。"
+    },
+    "errors": [],
+    "schema_valid": true,
+    "decision": "review",
+    "gate_reasons": [
+      "tool_uncertain"
+    ]
+  },
+  {
+    "id": "p6",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "ready"
+      ],
+      "primary_type": [
+        "CODING"
+      ],
+      "subtype": [
+        "refactor",
+        "integration"
+      ],
+      "difficulty": [
+        "D4"
+      ],
+      "risk": [
+        "R2"
+      ],
+      "tools": [
+        "filesystem",
+        "shell"
+      ]
+    },
+    "wire_warnings": [],
+    "readiness": "ready",
+    "profile": {
+      "primary_type": "CODING",
+      "difficulty": "D4",
+      "risk": "R2",
+      "context_requirement": "HIGH",
+      "estimated_duration": "long",
+      "decomposition": "recommended",
+      "review": "recommended",
+      "subtype": "refactor",
+      "tool_requirement": [
+        "filesystem",
+        "shell"
+      ],
+      "reason": "结构化判断提议：任务类型CODING，难度D4，风险R2；此说明由代码模板生成。"
+    },
+    "errors": [],
+    "schema_valid": true,
+    "decision": "review",
+    "gate_reasons": [
+      "tool_uncertain"
+    ]
+  },
+  {
+    "id": "p7",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "clarify"
+      ]
+    },
+    "wire_warnings": [],
+    "readiness": "clarify",
+    "decision": "no_profile"
+  },
+  {
+    "id": "p8",
+    "group": "profile",
+    "expected": {
+      "readiness": [
+        "none"
+      ]
+    },
+    "wire_warnings": [
+      "primary_type:rounded_sum"
+    ],
+    "readiness": "none",
+    "decision": "no_profile"
+  },
+  {
+    "id": "r1",
+    "group": "retrieval",
+    "expected": {
+      "target": "a"
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "用户结算支付页面文字改版，显示两次历史扣款，但不处理重复请求。",
+        "score": 0.3056,
+        "token_overlap": [
+          "两",
+          "付",
+          "复",
+          "户",
+          "扣",
+          "支",
+          "次",
+          "用",
+          "算",
+          "结"
+        ]
+      },
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "为结算接口增加幂等键和唯一约束，避免重试造成重复扣款。",
+        "score": 0.1622,
+        "token_overlap": [
+          "一",
+          "复",
+          "扣",
+          "算",
+          "结",
+          "重"
+        ]
+      },
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "给支付账单增加PDF导出。",
+        "score": 0.0741,
+        "token_overlap": [
+          "付",
+          "支"
+        ]
+      }
+    ],
+    "scores": {
+      "a": 0.94,
+      "b": 0.03,
+      "c": 0.02
+    },
+    "selected": "a",
+    "passed": true
+  },
+  {
+    "id": "r2",
+    "group": "retrieval",
+    "expected": {
+      "target": "a"
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "修改搜索结果页面中“很慢”和“数据库”两处提示文字。",
+        "score": 0.3,
+        "token_overlap": [
+          "库",
+          "很",
+          "慢",
+          "据",
+          "搜",
+          "数",
+          "果",
+          "索",
+          "结"
+        ]
+      },
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "给慢查询增加合适索引并检查执行计划，减少扫描行数。",
+        "score": 0.2188,
+        "token_overlap": [
+          "减",
+          "少",
+          "慢",
+          "扫",
+          "描",
+          "数",
+          "索"
+        ]
+      },
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "修复登录Cookie过期。",
+        "score": 0.0,
+        "token_overlap": []
+      }
+    ],
+    "scores": {
+      "c": 0.03,
+      "b": 0.03,
+      "a": 0.84
+    },
+    "selected": "a",
+    "passed": true
+  },
+  {
+    "id": "r3",
+    "group": "retrieval",
+    "expected": {
+      "target": "a"
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "Change error message colors and padding without changing the page layout.",
+        "score": 0.3077,
+        "token_overlap": [
+          "changing",
+          "error",
+          "message",
+          "without"
+        ]
+      },
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "Rewrite a blunt validation notice in polite, clear language while preserving its",
+        "score": 0.0556,
+        "token_overlap": [
+          "its"
+        ]
+      },
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "Retry a failed network request.",
+        "score": 0.0,
+        "token_overlap": []
+      }
+    ],
+    "scores": {
+      "a": 0.91,
+      "c": 0.03,
+      "b": 0.04
+    },
+    "selected": "a",
+    "passed": true
+  },
+  {
+    "id": "r4",
+    "group": "retrieval",
+    "expected": {
+      "target": "a"
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "增加CSV导出的UTF-8 BOM以修复Excel中文乱码。",
+        "score": 1.0,
+        "token_overlap": [
+          "8",
+          "bom",
+          "csv",
+          "excel",
+          "utf",
+          "中",
+          "乱",
+          "以",
+          "修",
+          "出"
+        ]
+      },
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "修正Excel图表的颜色。",
+        "score": 0.1364,
+        "token_overlap": [
+          "excel",
+          "修",
+          "的"
+        ]
+      },
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "统计CSV行数并展示在页面上。",
+        "score": 0.0357,
+        "token_overlap": [
+          "csv"
+        ]
+      }
+    ],
+    "scores": {
+      "c": 0.03,
+      "b": 0.03,
+      "a": 0.86
+    },
+    "selected": "a",
+    "passed": true
+  },
+  {
+    "id": "r5",
+    "group": "retrieval",
+    "expected": {
+      "target": "a"
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "为过期登录令牌编写单元测试。",
+        "score": 1.0,
+        "token_overlap": [
+          "为",
+          "令",
+          "元",
+          "写",
+          "单",
+          "录",
+          "期",
+          "测",
+          "牌",
+          "登"
+        ]
+      },
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "写一篇单元测试入门博客，不测试登录代码。",
+        "score": 0.3182,
+        "token_overlap": [
+          "元",
+          "写",
+          "单",
+          "录",
+          "测",
+          "登",
+          "试"
+        ]
+      },
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "更换登录页图标。",
+        "score": 0.1111,
+        "token_overlap": [
+          "录",
+          "登"
+        ]
+      }
+    ],
+    "scores": {
+      "c": 0.03,
+      "a": 0.87,
+      "b": 0.02
+    },
+    "selected": "a",
+    "passed": true
+  },
+  {
+    "id": "r6",
+    "group": "retrieval",
+    "expected": {
+      "target": null
+    },
+    "wire_warnings": [],
+    "baseline": [
+      {
+        "episode_id": "c",
+        "project_id": "same",
+        "request": "分析购物订单的退款比例。",
+        "score": 0.0435,
+        "token_overlap": [
+          "的"
+        ]
+      },
+      {
+        "episode_id": "b",
+        "project_id": "same",
+        "request": "翻译市场宣传稿。",
+        "score": 0.0,
+        "token_overlap": []
+      },
+      {
+        "episode_id": "a",
+        "project_id": "same",
+        "request": "实现网页登录。",
+        "score": 0.0,
+        "token_overlap": []
+      }
+    ],
+    "scores": {
+      "c": 0.02,
+      "b": 0.02,
+      "a": 0.02
+    },
+    "selected": null,
+    "passed": true
+  },
+  {
+    "id": "f1",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "auth"
+      ]
+    },
+    "baseline": [
+      "auth"
+    ],
+    "hybrid": [
+      "auth"
+    ],
+    "jev_called": false,
+    "passed": true
+  },
+  {
+    "id": "f2",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "not_a_failure"
+      ]
+    },
+    "baseline": [
+      "not_a_failure"
+    ],
+    "hybrid": [
+      "not_a_failure"
+    ],
+    "jev_called": false,
+    "passed": true
+  },
+  {
+    "id": "f3",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "network"
+      ]
+    },
+    "wire_warnings": [],
+    "baseline": [
+      "unknown"
+    ],
+    "hybrid": [
+      "network"
+    ],
+    "jev_called": true,
+    "passed": true
+  },
+  {
+    "id": "f4",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "environment"
+      ]
+    },
+    "wire_warnings": [],
+    "baseline": [
+      "unknown"
+    ],
+    "hybrid": [
+      "environment"
+    ],
+    "jev_called": true,
+    "passed": true
+  },
+  {
+    "id": "f5",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "test_failure"
+      ]
+    },
+    "wire_warnings": [],
+    "baseline": [
+      "auth",
+      "test_failure",
+      "network"
+    ],
+    "hybrid": [
+      "test_failure"
+    ],
+    "jev_called": true,
+    "passed": true
+  },
+  {
+    "id": "f6",
+    "group": "failure",
+    "expected": {
+      "categories": [
+        "unknown"
+      ]
+    },
+    "wire_warnings": [],
+    "baseline": [
+      "unknown"
+    ],
+    "hybrid": [
+      "unknown"
+    ],
+    "jev_called": true,
+    "passed": true
+  }
+]
